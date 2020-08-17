@@ -6,11 +6,11 @@ package frontend.helper;
  */
 public class HttpHelper {
 
-    public static String get() {
+    public static String Get(String url, String id) {
         return null;
     }
 
-    public static String post() {
+    public static String Post(String url, Object object) {
         return null;
     }
 }
