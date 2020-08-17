@@ -11,7 +11,7 @@ import java.io.Serializable;
  * @author Simon-the-coder
  * @date 17/08/20 2:23 pm
  */
-public class GenerateReport {
+public class GenerateReportPage {
 
     public void generateReport(User user) {
         HttpHelper.Post("generateReport", user);
