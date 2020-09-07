@@ -3,6 +3,7 @@ package nz.ac.autuni.qmssystem.daoImpl;
 import nz.ac.autuni.qmssystem.dao.RiskProcedureDao;
 import nz.ac.autuni.qmssystem.model.FMEATable;
 import nz.ac.autuni.qmssystem.model.RiskProcedure;
+import nz.ac.autuni.qmssystem.util.BaseUtil;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -33,27 +34,20 @@ public class RiskProcedureDaoImpl implements RiskProcedureDao {
 
     @Override
     public void updateRiskProcedure(RiskProcedure riskProcedure) {
-        Query query = new Query(Criteria.where("riskProcedureId").is(riskProcedure.getRiskProcedureId()));
-
-        Update update = new Update();
-        update.set("severity", riskProcedure.getSeverity());
-        update.set("severityDescription", riskProcedure.getSeverityDescription());
-        update.set("probability", riskProcedure.getProbability());
-        update.set("probabilityDescription", riskProcedure.getProbabilityDescription());
-
-        mongoTemplate.updateFirst(query, update, FMEATable.class);
+        Query query = new Query(Criteria.where("_id").is(riskProcedure.getRiskProcedureId()));
+        mongoTemplate.updateFirst(query, BaseUtil.getInstance().pushObjectToUpdate(riskProcedure), FMEATable.class);
     }
 
     @Override
     public RiskProcedure findRiskProcedureById(Long id) {
-        Query query = new Query(Criteria.where("riskProcedureId").is(id));
+        Query query = new Query(Criteria.where("_id").is(id));
         RiskProcedure riskProcedure = mongoTemplate.findOne(query, RiskProcedure.class);
         return riskProcedure;
     }
 
     @Override
     public void approveRiskProcedure(Long id) {
-        Query query = new Query(Criteria.where("riskProcedureId").is(id));
+        Query query = new Query(Criteria.where("_id").is(id));
 
         Update update = new Update();
         update.set("isApprove", true);

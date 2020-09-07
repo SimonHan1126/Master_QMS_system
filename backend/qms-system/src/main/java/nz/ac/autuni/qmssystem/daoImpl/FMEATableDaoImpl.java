@@ -2,6 +2,7 @@ package nz.ac.autuni.qmssystem.daoImpl;
 
 import nz.ac.autuni.qmssystem.dao.FMEATableDao;
 import nz.ac.autuni.qmssystem.model.FMEATable;
+import nz.ac.autuni.qmssystem.util.BaseUtil;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -32,30 +33,22 @@ public class FMEATableDaoImpl implements FMEATableDao {
 
     @Override
     public void updateFMEATable(FMEATable fmeaTable) {
-        Query query = new Query(Criteria.where("fmeaTableId").is(fmeaTable.getFmeaTableId()));
-
-        Update update = new Update();
-        update.set("hazardId", fmeaTable.getHazardId());
-        update.set("hazardClass", fmeaTable.getHazardClass());
-        update.set("severityOfHarms", fmeaTable.getSeverityOfHarms());
-        update.set("probabilityOfHazardous", fmeaTable.getProbabilityOfHazardous());
-
-        mongoTemplate.updateFirst(query, update, FMEATable.class);
+        Query query = new Query(Criteria.where("_id").is(fmeaTable.getHazardId()));
+        mongoTemplate.updateFirst(query, BaseUtil.getInstance().pushObjectToUpdate(fmeaTable), FMEATable.class);
     }
 
     @Override
     public FMEATable findFMEATableById(Long id) {
-        Query query = new Query(Criteria.where("fmeaTableId").is(id));
+        Query query = new Query(Criteria.where("_id").is(id));
         FMEATable fmeaTable = mongoTemplate.findOne(query, FMEATable.class);
         return fmeaTable;
     }
 
     @Override
     public void approveFMEATable(Long id) {
-        Query query = new Query(Criteria.where("fmeaTableId").is(id));
-
+        Query query = new Query(Criteria.where("_id").is(id));
         Update update = new Update();
-        update.set("isApprove", true);
+        update.set("acceptability", true);
         mongoTemplate.updateFirst(query, update, FMEATable.class);
     }
 }
