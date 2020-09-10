@@ -1,8 +1,11 @@
 import 'package:QMS_system/constant/strings.dart';
 import 'package:QMS_system/constant/text_styles.dart';
+import 'package:QMS_system/pages/fmea_table_page.dart';
+import 'package:QMS_system/pages/report_page.dart';
+import 'package:QMS_system/pages/risk_procedure_page.dart';
 import 'package:QMS_system/util/screen_util.dart';
 import 'package:QMS_system/util/size_util.dart';
-import 'package:QMS_system/widget/responsive_widget.dart';
+import 'package:QMS_system/widget/common/responsive_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -15,7 +18,7 @@ class HomePage extends StatefulWidget {
 
 class HomePageState extends State<HomePage> {
 
-  int _selectedDrawerIndex = 1;
+  int _selectedDrawerIndex = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -44,23 +47,14 @@ class HomePageState extends State<HomePage> {
   }
 
   _getDrawerItemWidget(int pos) {
-    return SizedBox.shrink();
-    // switch (pos) {
-    //   case 0:
-    //     return JetPackPage();
-    //   case 1:
-    //     return BlogTabs();
-    //   case 2:
-    //     return BlogTabs();
-    //   case 3:
-    //     return BlogTabs();
-    //   case 4:
-    //     return HomeBlogger();
-    //   case 5:
-    //     return LayoutBuilder(builder: (context, constraints) {
-    //       return _buildBody(context, constraints);
-    //     });
-    // }
+    switch (pos) {
+      case 0:
+        return RiskProcedurePage();
+      case 1:
+        return FMEATablePage();
+      case 2:
+        return ReportPage();
+    }
   }
 
   Widget _buildTitle() {
@@ -99,7 +93,7 @@ class HomePageState extends State<HomePage> {
         ),
         onPressed: () {
           setState(() {
-            _selectedDrawerIndex = 1;
+            _selectedDrawerIndex = 0;
           });
           if (ResponsiveWidget.isSmallScreen(context)) Navigator.pop(context);
         },
@@ -113,7 +107,7 @@ class HomePageState extends State<HomePage> {
         ),
         onPressed: () {
           setState(() {
-            _selectedDrawerIndex = 2;
+            _selectedDrawerIndex = 1;
           });
           if (ResponsiveWidget.isSmallScreen(context)) Navigator.pop(context);
         },
@@ -127,7 +121,7 @@ class HomePageState extends State<HomePage> {
         ),
         onPressed: () {
           setState(() {
-            _selectedDrawerIndex = 3;
+            _selectedDrawerIndex = 2;
           });
           if (ResponsiveWidget.isSmallScreen(context)) Navigator.pop(context);
         },
