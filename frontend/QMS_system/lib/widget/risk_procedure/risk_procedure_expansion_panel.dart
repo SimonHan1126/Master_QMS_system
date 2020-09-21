@@ -1,3 +1,4 @@
+import 'package:QMS_system/widget/risk_procedure/risk_estimation_table.dart';
 import 'package:flutter/material.dart';
 
 class RiskProcedureExpansionPanelWidget extends StatefulWidget {
@@ -8,7 +9,7 @@ class RiskProcedureExpansionPanelWidgetState extends State<RiskProcedureExpansio
 
   bool _isExpanded = false;
 
-  List _subTitleList = ["Severity","Severity Description", "Probability", "Probability Description"];
+  List _subTitleList = ["Harm", "Severity","Severity Description", "Probability", "Probability Description"];
 
   @override
   void initState() {
@@ -16,7 +17,7 @@ class RiskProcedureExpansionPanelWidgetState extends State<RiskProcedureExpansio
   }
 
   List<Widget> _buildExpansionPanelItemList() {
-    List<Widget> tiles = []; //先建一个数组用于存放循环生成的widget
+    List<Widget> tiles = [];
     for (var item in _subTitleList) {
       tiles.add(
         Card(
@@ -34,6 +35,7 @@ class RiskProcedureExpansionPanelWidgetState extends State<RiskProcedureExpansio
         ),
       );
     }
+    tiles.add(RiskEstimationTable());
     return tiles;
   }
 
@@ -47,14 +49,38 @@ class RiskProcedureExpansionPanelWidgetState extends State<RiskProcedureExpansio
               ExpansionPanel(
                 headerBuilder: (context, isExpanded) {
                   return ListTile(
-                    title: Text("Risk Procedure"),
+                    title: Text("Risk Procedure", style: TextStyle(fontWeight: FontWeight.bold)),
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: <Widget>[
+                        IconButton(
+                          icon: Icon(
+                            Icons.save,
+                            size: 25.0,
+                            color: Color(0xFF50AFC0),
+                          ),
+                          onPressed: () {
+                            print("this is save Button");
+                          },
+                        ),
+                        IconButton(
+                          icon: Icon(
+                            Icons.delete,
+                            size: 25.0,
+                            color: Color(0xFF50AFC0),
+                          ),
+                          onPressed: () {
+                            print("this is delete Button");
+                          },
+                        ),
+                      ],
+                    ),
                   );
                 },
                 body: Padding(
                   padding: EdgeInsets.fromLTRB(15, 10, 15, 15),
                   child: ListBody(
-                    children: _buildExpansionPanelItemList(),
-
+                    children: _buildExpansionPanelItemList()
                   ),
                 ),
                 isExpanded: _isExpanded,
@@ -62,10 +88,6 @@ class RiskProcedureExpansionPanelWidgetState extends State<RiskProcedureExpansio
               ),
             ],
             expansionCallback: (panelIndex, isExpanded) {
-              print("this is expansionCallback panelIndex " +
-                  panelIndex.toString() +
-                  " isExpanded " +
-                  isExpanded.toString());
               setState(() {
                 _isExpanded = !isExpanded;
               });

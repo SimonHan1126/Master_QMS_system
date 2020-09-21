@@ -62,7 +62,32 @@ class FMEATableExpansionPanelWidgetState extends State<FMEATableExpansionPanelWi
               ExpansionPanel(
                 headerBuilder: (context, isExpanded) {
                   return ListTile(
-                    title: Text("FMEA Table"),
+                    title: Text("FMEA Table", style: TextStyle(fontWeight: FontWeight.bold)),
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: <Widget>[
+                        IconButton(
+                          icon: Icon(
+                            Icons.save,
+                            size: 25.0,
+                            color: Color(0xFF50AFC0),
+                          ),
+                          onPressed: () {
+                            print("this is save Button");
+                          },
+                        ),
+                        IconButton(
+                          icon: Icon(
+                            Icons.delete,
+                            size: 25.0,
+                            color: Color(0xFF50AFC0),
+                          ),
+                          onPressed: () {
+                            print("this is delete Button");
+                          },
+                        ),
+                      ],
+                    ),
                   );
                 },
                 body: Padding(
