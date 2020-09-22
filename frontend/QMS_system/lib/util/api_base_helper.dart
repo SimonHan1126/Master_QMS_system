@@ -26,8 +26,6 @@ class ApiBaseHelper {
 
   Future<dynamic> post(String url, dynamic body) async {
     print('Api Post, url $url');
-    print('Api Post 11111111 url ' + _baseUrl + url);
-    print('Api Post 22222222 url ' + body.toString());
 
     Map<String, String> headers = {
       'Content-type': 'application/json',
