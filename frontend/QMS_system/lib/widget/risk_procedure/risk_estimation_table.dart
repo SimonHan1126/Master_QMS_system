@@ -9,12 +9,12 @@ class RiskEstimationTable extends StatefulWidget {
 class _RiskEstimationTableState extends State<RiskEstimationTable> {
 
   List _tableList = [
-    ["Frequent"   ,"#"          ,"#"      ,"#"        ,"#"      ,"#"],
-    ["Probable"   ,"#"          ,"#"      ,"#"        ,"#"      ,"#"],
-    ["Occasional" ,"#"          ,"#"      ,"#"        ,"#"      ,"#"],
-    ["Remote"     ,"#"          ,"#"      ,"#"        ,"#"      ,"#"],
-    ["Improbable" ,"#"          ,"#"      ,"#"        ,"#"      ,"#"],
-    [""           ,"Negligible" ,"Minor"  ,"Serious"  ,"Major"  ,"Critical"],
+    ["Frequent"   ,"#"          ,"#"      ,"#"        ,"#"      ,"#"        ],
+    ["Probable"   ,"#"          ,"#"      ,"#"        ,"#"      ,"#"        ],
+    ["Occasional" ,"#"          ,"#"      ,"#"        ,"#"      ,"#"        ],
+    ["Remote"     ,"#"          ,"#"      ,"#"        ,"#"      ,"#"        ],
+    ["Improbable" ,"#"          ,"#"      ,"#"        ,"#"      ,"#"        ],
+    [""           ,"Negligible" ,"Minor"  ,"Serious"  ,"Major"  ,"Critical" ],
   ];
 
   List<TableRow> _buildTableRowItemList() {
