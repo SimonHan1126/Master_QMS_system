@@ -22,7 +22,8 @@ import static javax.persistence.GenerationType.IDENTITY;
 public class RiskProcedure implements Serializable {
 
     @Id @GeneratedValue(strategy = IDENTITY)
-    private Long riskProcedureId;
+    private String riskProcedureId;
+    private String harm;
     private int severity;
     private String severityDescription;
     private int probability;

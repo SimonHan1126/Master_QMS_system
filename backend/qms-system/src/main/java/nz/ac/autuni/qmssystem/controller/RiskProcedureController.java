@@ -6,6 +6,7 @@ import nz.ac.autuni.qmssystem.errorModel.NonExistentObjectQuery;
 import nz.ac.autuni.qmssystem.model.RiskProcedure;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,17 +31,17 @@ public class RiskProcedureController {
         } else {
             return ResponseEntity.status(HttpStatus.OK).body(riskProcedure);
         }
-
     }
 
-    @PostMapping("/saveRiskProcedure")
-    public ResponseEntity<Void> saveRiskProcedure(@RequestBody RiskProcedure riskProcedure) {
+    @PostMapping(value = "/saveRiskProcedure", consumes = MediaType.APPLICATION_JSON_VALUE )
+    public ResponseEntity<Serializable> saveRiskProcedure(@RequestBody RiskProcedure riskProcedure) {
         /*
             1. Verify that the user is logged in
             2. Verify that there are variables in the RiskProcedure that are null
          */
         riskProcedureService.saveRiskProcedure(riskProcedure);
-        return new ResponseEntity<>(HttpStatus.OK);
+//        return new ResponseEntity<>(HttpStatus.OK);
+        return ResponseEntity.status(HttpStatus.OK).body(riskProcedure);
     }
 
     @PostMapping("/updateRiskProcedure")
