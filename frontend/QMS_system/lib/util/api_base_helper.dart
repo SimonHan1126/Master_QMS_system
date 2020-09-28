@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:QMS_system/model/risk_procedure.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'dart:async';
@@ -6,15 +7,13 @@ import 'dart:async';
 import 'app_exceptions.dart';
 
 class ApiBaseHelper {
-  final String _baseUrl = "http://127.0.0.1:8081/api/v1/";
+  final String _baseUrl = "http://45.77.234.245:8080/qms/api/v1/";
 
   Future<dynamic> get(String url) async {
     print('Api Get, url $url');
     var responseJson;
     try {
-      print('Api Get 11111111 url ' + _baseUrl + url);
       final response = await http.get(_baseUrl + url);
-      print('Api Get 22222222 url $url');
       responseJson = _returnResponse(response);
     } on SocketException {
       print('No net');

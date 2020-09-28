@@ -1,14 +1,14 @@
 
-class RiskProcedure {
-  final String riskProcedureId;
-  final String harm;
-  final int severity;
-  final String severityDescription;
-  final int probability;
-  final String probabilityDescription;
-  final bool isApprove;
+class RiskProcedure{
+  String riskProcedureId;
+  String harm;
+  String severity;
+  String severityDescription;
+  String probability;
+  String probabilityDescription;
+  bool isApprove;
 
-  RiskProcedure(this.riskProcedureId, this.severity, this.severityDescription, this.probability, this.probabilityDescription, this.isApprove, this.harm);
+  RiskProcedure({this.riskProcedureId, this.severity, this.severityDescription, this.probability, this.probabilityDescription, this.isApprove, this.harm});
 
   RiskProcedure.fromJson(Map<String, dynamic> json)
       : riskProcedureId = json['riskProcedureId'],

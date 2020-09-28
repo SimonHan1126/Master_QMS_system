@@ -20,7 +20,6 @@ class RiskProcedureBloc implements Bloc {
   }
   
   void saveRiskProcedure(riskProcedure) async {
-    print("this is RiskProcedureBloc saveRiskProcedure " + riskProcedure.toString());
     final response = await _helper.post("risk_procedure/saveRiskProcedure", riskProcedure);
     _riskProcedureController.sink.add(RiskProcedure.fromJson(response));
   }
