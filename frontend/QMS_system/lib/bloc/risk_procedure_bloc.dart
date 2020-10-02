@@ -18,11 +18,6 @@ class RiskProcedureBloc implements Bloc {
     final response = await _helper.get("risk_procedure/findRiskProcedureById?riskProcedureId=78789");
     _riskProcedureController.sink.add(RiskProcedure.fromJson(response));
   }
-  
-  void saveRiskProcedure(riskProcedure) async {
-    final response = await _helper.post("risk_procedure/saveRiskProcedure", riskProcedure);
-    _riskProcedureController.sink.add(RiskProcedure.fromJson(response));
-  }
 
   @override
   void dispose() {

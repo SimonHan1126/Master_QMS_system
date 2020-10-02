@@ -1,5 +1,4 @@
 import 'package:QMS_system/bloc/bloc_provider.dart';
-import 'package:QMS_system/bloc/risk_procedure_bloc.dart';
 import 'package:QMS_system/bloc/risk_procedure_list_bloc.dart';
 import 'package:QMS_system/model/risk_procedure.dart';
 import 'package:QMS_system/util/snackbar_util.dart';
@@ -11,11 +10,10 @@ class RiskProcedureExpansionPanelWidget extends StatefulWidget {
 }
 
 class RiskProcedureExpansionPanelWidgetState extends State<RiskProcedureExpansionPanelWidget> {
-
-  final _rpBloc = RiskProcedureBloc();
   final _rpListBloc = RiskProcedureListBloc();
 
-  bool _isExpanded = true;
+  int _pressedPanelIndex = -1;
+  bool _pressedPanelIsExpanded = false;
 
   Map<String, TextEditingController>  _textEditingControllerMap = {};
 
@@ -34,13 +32,13 @@ class RiskProcedureExpansionPanelWidgetState extends State<RiskProcedureExpansio
   @override
   void initState() {
     super.initState();
+    _rpListBloc.getAllRiskProcedure();
   }
 
 
   @override
   void dispose() {
     super.dispose();
-    _rpBloc.dispose();
     _rpListBloc.dispose();
   }
 
@@ -87,6 +85,15 @@ class RiskProcedureExpansionPanelWidgetState extends State<RiskProcedureExpansio
     );
   }
 
+  _updateUI(RiskProcedure riskProcedure) {
+    setState(() {
+      int length = _expansionPanelContentList.length;
+      _expansionPanelContentList.add(Item(riskProcedure: riskProcedure, index: length));
+    });
+
+    SnackBarUtil.showSnackBar(context, "save Risk Procedure successfully");
+  }
+
   _saveInputtedRiskProcedure(BuildContext context, RiskProcedure riskProcedure) async {
 
     riskProcedure.harm = _textFieldContentMap["harm" + riskProcedure.riskProcedureId];
@@ -94,18 +101,27 @@ class RiskProcedureExpansionPanelWidgetState extends State<RiskProcedureExpansio
     riskProcedure.severityDescription = _textFieldContentMap["severityDescription" + riskProcedure.riskProcedureId];
     riskProcedure.probability = _textFieldContentMap["probability" + riskProcedure.riskProcedureId];
     riskProcedure.probabilityDescription =  _textFieldContentMap["probabilityDescription" + riskProcedure.riskProcedureId];
-    // "isApprove" : false
+    riskProcedure.isApprove = false;
 
-    _rpBloc.saveRiskProcedure(riskProcedure);
-    SnackBarUtil.showSnackBar(context, "save Risk Procedure successfully");
+    _rpListBloc.saveRiskProcedure(riskProcedure);
+    _updateUI(riskProcedure);
   }
 
-  _saveEmptyRiskProcedure(BuildContext context, RiskProcedure riskProcedure) async {
-    _rpBloc.saveRiskProcedure(riskProcedure);
+  _saveEmptyRiskProcedure(BuildContext context) async {
+    RiskProcedure riskProcedure = RiskProcedure(
+        riskProcedureId: DateTime.now().millisecondsSinceEpoch.toString(),
+        harm: "",
+        severity: "",
+        severityDescription: "",
+        probability: "",
+        probabilityDescription: "",
+        isApprove: false);
+    _rpListBloc.saveRiskProcedure(riskProcedure);
+    _updateUI(riskProcedure);
   }
 
   _removeRisProcedure(BuildContext context, RiskProcedure riskProcedure) async {
-    _isExpanded = false;
+
     _rpListBloc.deleteRiskProcedure(riskProcedure.riskProcedureId);
     int index = -1;
     _expansionPanelContentList.asMap().forEach((listIndex, element) {
@@ -122,7 +138,6 @@ class RiskProcedureExpansionPanelWidgetState extends State<RiskProcedureExpansio
   }
 
   void _initExpansionPanelContentList(List<RiskProcedure> rpList) {
-
     _expansionPanelContentList = [];
     rpList.asMap().forEach((index, element) {
       Item item = Item(riskProcedure: element, index: index);
@@ -132,6 +147,9 @@ class RiskProcedureExpansionPanelWidgetState extends State<RiskProcedureExpansio
         _expansionPanelContentList.add(item);
       }
     });
+    if (_pressedPanelIndex >= 0) {
+      _expansionPanelContentList[_pressedPanelIndex].isExpanded = !_pressedPanelIsExpanded;
+    }
   }
 
   Widget _buildExpansionPanelList(List<RiskProcedure> rpList) {
@@ -142,10 +160,10 @@ class RiskProcedureExpansionPanelWidgetState extends State<RiskProcedureExpansio
     _initExpansionPanelContentList(rpList);
 
     return ExpansionPanelList(
-      expansionCallback: (panelIndex, isExpanded) {
+      expansionCallback: (int panelIndex, bool isExpanded) {
         setState(() {
-          // _expansionPanelContentList[panelIndex].isExpanded = !isExpanded;
-          _isExpanded = !isExpanded;
+          _pressedPanelIndex = panelIndex;
+          _pressedPanelIsExpanded = isExpanded;
         });
       },
       children: _expansionPanelContentList.map<ExpansionPanel>((Item item) {
@@ -185,8 +203,7 @@ class RiskProcedureExpansionPanelWidgetState extends State<RiskProcedureExpansio
           body: Padding(
               padding: EdgeInsets.fromLTRB(15, 10, 15, 15),
               child: _buildExpansionPanelItemList(element)),
-          isExpanded: _isExpanded,//item.isExpanded,
-          canTapOnHeader: true,
+          isExpanded: item.isExpanded,
         );
       }).toList(),
     );
@@ -194,7 +211,7 @@ class RiskProcedureExpansionPanelWidgetState extends State<RiskProcedureExpansio
 
   @override
   Widget build(BuildContext context) {
-    _rpListBloc.getAllRiskProcedure();
+
     return SingleChildScrollView(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -213,19 +230,7 @@ class RiskProcedureExpansionPanelWidgetState extends State<RiskProcedureExpansio
           ),
           FlatButton(
             onPressed: () {
-              setState(() {
-                _isExpanded = false;
-              });
-
-              _saveEmptyRiskProcedure(context,RiskProcedure(
-                  riskProcedureId: DateTime.now().millisecondsSinceEpoch.toString(),
-                  harm: "",
-                  severity: "",
-                  severityDescription: "",
-                  probability: "",
-                  probabilityDescription: "",
-                  isApprove: false
-              ));
+              _saveEmptyRiskProcedure(context);
             },
             child: Text(
                 "Add", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20, color: Color(0xFF50AFC0))

@@ -11,12 +11,12 @@ class RiskProcedurePage extends StatefulWidget {
 }
 
 class _RiskProcedurePageState extends State<RiskProcedurePage> {
-  final RiskProcedureListBloc _bloc = RiskProcedureListBloc();
   @override
   Widget build(BuildContext context) {
     return Container(
       child: SingleChildScrollView(
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             SubPageTitle(title: "Risk Procedure Management"),
             RiskProcedureExpansionPanelWidget()
@@ -29,8 +29,5 @@ class _RiskProcedurePageState extends State<RiskProcedurePage> {
   @override
   void dispose() {
     super.dispose();
-    _bloc.dispose();
   }
-
-
 }

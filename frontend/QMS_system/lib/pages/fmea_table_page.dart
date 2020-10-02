@@ -21,6 +21,7 @@ class _FMEATablePageState extends State<FMEATablePage> {
     return Container(
       child: SingleChildScrollView(
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             SubPageTitle(title: "FMEA Table Management"),
             FMEATableExpansionPanelWidget()

@@ -29,6 +29,14 @@ class RiskProcedureListBloc implements Bloc {
     );
   }
 
+  void saveRiskProcedure(riskProcedure) async {
+    final response = await _helper.post("risk_procedure/saveRiskProcedure", riskProcedure);
+    _riskProcedureList.add(response);
+    _riskProcedureListController.sink.add(
+        _riskProcedureList.map<RiskProcedure>((json) => RiskProcedure.fromJson(json)).toList(growable: false)
+    );
+  }
+
   @override
   void dispose() {
     _riskProcedureListController.close();

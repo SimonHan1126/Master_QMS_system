@@ -14,6 +14,7 @@ class _ReportPageState extends State<ReportPage> {
     return Container(
       child: Center(
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             // ExpansionPanelWidget(),
             SubPageTitle(title: "Generate Report"),
