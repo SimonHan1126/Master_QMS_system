@@ -1,19 +1,25 @@
 package nz.ac.autuni.qmssystem.dao;
 
+import com.mongodb.client.result.DeleteResult;
 import nz.ac.autuni.qmssystem.model.RiskProcedure;
+
+import java.util.List;
 
 /**
  * @author Simon-the-coder
  * @date 3/09/20 6:02 pm
  */
 public interface RiskProcedureDao {
+
     void saveRiskProcedure(RiskProcedure riskProcedure);
 
-    void removeRiskProcedure(Long id);
+    DeleteResult removeRiskProcedure(String id);
 
     void updateRiskProcedure(RiskProcedure riskProcedure);
 
-    RiskProcedure findRiskProcedureById(Long id);
+    RiskProcedure findRiskProcedureById(String id);
 
-    void approveRiskProcedure(Long id);
+    List<RiskProcedure> getAllRiskProcedure();
+
+    void approveRiskProcedure(String id);
 }

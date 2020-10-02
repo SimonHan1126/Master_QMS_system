@@ -21,7 +21,7 @@ import static javax.persistence.GenerationType.IDENTITY;
 @Document(collection = "FMEATable")
 public class FMEATable implements Serializable {
     @Id @GeneratedValue(strategy = IDENTITY)
-    private int hazardId;
+    private String hazardId;
     private String hazardClass;
     private String sourceId;
     private String foreseeableSequenceOfEvents; //both normal and fault conditions

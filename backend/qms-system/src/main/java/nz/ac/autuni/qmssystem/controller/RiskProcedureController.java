@@ -1,9 +1,12 @@
 package nz.ac.autuni.qmssystem.controller;
 
+import com.mongodb.client.result.DeleteResult;
 import nz.ac.autuni.qmssystem.constant.ErrorMessageConstant;
 import nz.ac.autuni.qmssystem.dao.RiskProcedureDao;
 import nz.ac.autuni.qmssystem.errorModel.NonExistentObjectQuery;
 import nz.ac.autuni.qmssystem.model.RiskProcedure;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -11,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * @author Simon-the-coder
@@ -20,17 +24,26 @@ import java.io.Serializable;
 @RequestMapping("/api/v1/risk_procedure")
 public class RiskProcedureController {
 
+    private static final Logger logger = LogManager.getLogger(RiskProcedureController.class);
+
     @Autowired
     private RiskProcedureDao riskProcedureService;
 
     @GetMapping("/findRiskProcedureById")
-    public ResponseEntity<Serializable> findRiskProcedureById(Long riskProcedureId) {
+    public ResponseEntity<Serializable> findRiskProcedureById(String riskProcedureId) {
         RiskProcedure riskProcedure = riskProcedureService.findRiskProcedureById(riskProcedureId);
         if(riskProcedure == null) {
             return ResponseEntity.status(HttpStatus.OK).body(new NonExistentObjectQuery(ErrorMessageConstant.NON_EXISTENT_OBJECT));
         } else {
             return ResponseEntity.status(HttpStatus.OK).body(riskProcedure);
         }
+    }
+
+    @GetMapping("/getAllRiskProcedure")
+    public ResponseEntity<List<RiskProcedure>> getAllRiskProcedure() {
+        List<RiskProcedure> list = riskProcedureService.getAllRiskProcedure();
+        logger.info("this is getAllRiskProcedure " + list.toString());
+        return ResponseEntity.status(HttpStatus.OK).body(list);
     }
 
     @PostMapping(value = "/saveRiskProcedure", consumes = MediaType.APPLICATION_JSON_VALUE )
@@ -50,9 +63,12 @@ public class RiskProcedureController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @PostMapping("/removeRiskProcedure")
-    public ResponseEntity<Void> removeRiskProcedure(Long riskProcedureId) {
-        riskProcedureService.removeRiskProcedure(riskProcedureId);
-        return new ResponseEntity<>(HttpStatus.OK);
+    @GetMapping("/removeRiskProcedure")
+    public ResponseEntity<List<RiskProcedure>> removeRiskProcedure(String riskProcedureId) {
+        DeleteResult result =  riskProcedureService.removeRiskProcedure(riskProcedureId);
+        logger.info("this is removeRiskProcedure result " + result.toString());
+        List<RiskProcedure> list = riskProcedureService.getAllRiskProcedure();
+        logger.info("this is removeRiskProcedure " + list.toString());
+        return ResponseEntity.status(HttpStatus.OK).body(list);
     }
 }

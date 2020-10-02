@@ -1,5 +1,6 @@
 package nz.ac.autuni.qmssystem.daoImpl;
 
+import com.mongodb.client.result.DeleteResult;
 import nz.ac.autuni.qmssystem.dao.RiskProcedureDao;
 import nz.ac.autuni.qmssystem.model.FMEATable;
 import nz.ac.autuni.qmssystem.model.RiskProcedure;
@@ -11,6 +12,7 @@ import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * @author Simon-the-coder
@@ -28,8 +30,10 @@ public class RiskProcedureDaoImpl implements RiskProcedureDao {
     }
 
     @Override
-    public void removeRiskProcedure(Long id) {
-        mongoTemplate.remove(id);
+    public DeleteResult removeRiskProcedure(String id) {
+        Query query = new Query(Criteria.where("_id").is(id));
+        DeleteResult deleteResult = mongoTemplate.remove(query, RiskProcedure.class);
+        return deleteResult;
     }
 
     @Override
@@ -39,14 +43,19 @@ public class RiskProcedureDaoImpl implements RiskProcedureDao {
     }
 
     @Override
-    public RiskProcedure findRiskProcedureById(Long id) {
+    public RiskProcedure findRiskProcedureById(String id) {
         Query query = new Query(Criteria.where("_id").is(id));
         RiskProcedure riskProcedure = mongoTemplate.findOne(query, RiskProcedure.class);
         return riskProcedure;
     }
 
     @Override
-    public void approveRiskProcedure(Long id) {
+    public List<RiskProcedure> getAllRiskProcedure() {
+        return mongoTemplate.findAll(RiskProcedure.class);
+    }
+
+    @Override
+    public void approveRiskProcedure(String id) {
         Query query = new Query(Criteria.where("_id").is(id));
 
         Update update = new Update();

@@ -1,5 +1,6 @@
 package nz.ac.autuni.qmssystem.daoImpl;
 
+import com.mongodb.client.result.DeleteResult;
 import nz.ac.autuni.qmssystem.dao.FMEATableDao;
 import nz.ac.autuni.qmssystem.model.FMEATable;
 import nz.ac.autuni.qmssystem.util.BaseUtil;
@@ -10,6 +11,7 @@ import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * @author Simon-the-coder
@@ -27,8 +29,10 @@ public class FMEATableDaoImpl implements FMEATableDao {
     }
 
     @Override
-    public void removeFMEATable(Long id) {
-        mongoTemplate.remove(id);
+    public DeleteResult removeFMEATable(String id) {
+        Query query = new Query(Criteria.where("_id").is(id));
+        DeleteResult deleteResult = mongoTemplate.remove(query, FMEATable.class);
+        return deleteResult;
     }
 
     @Override
@@ -38,14 +42,19 @@ public class FMEATableDaoImpl implements FMEATableDao {
     }
 
     @Override
-    public FMEATable findFMEATableById(Long id) {
+    public FMEATable findFMEATableById(String id) {
         Query query = new Query(Criteria.where("_id").is(id));
         FMEATable fmeaTable = mongoTemplate.findOne(query, FMEATable.class);
         return fmeaTable;
     }
 
     @Override
-    public void approveFMEATable(Long id) {
+    public List<FMEATable> getAllFMEATable() {
+        return mongoTemplate.findAll(FMEATable.class);
+    }
+
+    @Override
+    public void approveFMEATable(String id) {
         Query query = new Query(Criteria.where("_id").is(id));
         Update update = new Update();
         update.set("acceptability", true);

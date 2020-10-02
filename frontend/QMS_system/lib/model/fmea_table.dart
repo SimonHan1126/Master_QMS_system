@@ -1,22 +1,22 @@
-class RMEATable {
-  final int hazardId;
-  final String hazardClass;
-  final String sourceId;
-  final String foreseeableSequenceOfEvents; //both normal and fault conditions
-  final String hazardousSituation;
-  final String harm; //result of hazardous situation
-  final int severityOfHarm; //1-7
-  final int probability; // Probability of hazardous situation occurring, Probability of hazardous situation leading to harm (1-7)
-  final int riskPriority; //Risk Priority Number (SxP)
-  final String recommendingAction; //Risk Control Method
-  final String typeOfAction;
-  final String actionDone;
-  final int severityOfHarm2;
-  final int probability2;
-  final int residualRisk; //(S2xP2)
-  final bool acceptability;
+class FMEATable {
+  String hazardId;
+  String hazardClass;
+  String sourceId;
+  String foreseeableSequenceOfEvents; //both normal and fault conditions
+  String hazardousSituation;
+  String harm; //result of hazardous situation
+  int severityOfHarm; //1-7
+  int probability; // Probability of hazardous situation occurring, Probability of hazardous situation leading to harm (1-7)
+  int riskPriority; //Risk Priority Number (SxP)
+  String recommendingAction; //Risk Control Method
+  String typeOfAction;
+  String actionDone;
+  int severityOfHarm2;
+  int probability2;
+  int residualRisk; //(S2xP2)
+  bool acceptability;
 
-  RMEATable(
+  FMEATable({
     this.hazardId,
     this.hazardClass,
     this.sourceId,
@@ -33,9 +33,9 @@ class RMEATable {
     this.probability2,
     this.residualRisk,
     this.acceptability,
-  );
+  });
 
-  RMEATable.fromJson(Map<String, dynamic> json)
+  FMEATable.fromJson(Map<String, dynamic> json)
       : hazardId = json['hazardId'],
         hazardClass = json['hazardClass'],
         sourceId = json['sourceId'],

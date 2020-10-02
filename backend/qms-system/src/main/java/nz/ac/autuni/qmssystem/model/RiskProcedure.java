@@ -24,9 +24,9 @@ public class RiskProcedure implements Serializable {
     @Id @GeneratedValue(strategy = IDENTITY)
     private String riskProcedureId;
     private String harm;
-    private int severity;
+    private String severity;
     private String severityDescription;
-    private int probability;
+    private String probability;
     private String probabilityDescription;
     private boolean isApprove;
 }

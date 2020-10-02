@@ -24,7 +24,7 @@ public class GenerateReportController {
     private RiskProcedureDao riskProcedureService;
 
     @PostMapping("/generateReport")
-    public ResponseEntity<Report> generateReport(Long fmeaTableId, Long riskProcedureId) {
+    public ResponseEntity<Report> generateReport(String fmeaTableId, String riskProcedureId) {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(new Report(riskProcedureService.findRiskProcedureById(riskProcedureId),fmeaTableService.findFMEATableById(fmeaTableId)));
     }

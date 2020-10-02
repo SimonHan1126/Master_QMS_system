@@ -42,49 +42,6 @@ class RiskProcedureExpansionPanelWidgetState extends State<RiskProcedureExpansio
     _rpListBloc.dispose();
   }
 
-  Widget _buildExpansionPanelItemList(RiskProcedure riskProcedure) {
-    List<Widget> tiles = [];
-    if(riskProcedure != null) {
-      Map<String, dynamic> mapRiskProcedure = riskProcedure.toJson();
-      mapRiskProcedure.forEach((key, value) {
-        value = value ?? "";
-        if (key.compareTo("riskProcedureId") != 0 && key.compareTo("isApprove") != 0) {
-          _textEditingControllerMap[key] = TextEditingController();
-          tiles.add(
-              Container(
-                padding: EdgeInsets.all(10),
-                child:  Text(_subTitleMap[key.toString()], style: TextStyle(fontWeight: FontWeight.bold)),
-              )
-          );
-          tiles.add(
-            Card(
-              margin: EdgeInsets.fromLTRB(10, 0, 0, 10),
-              child: Padding(
-                padding: EdgeInsets.all(8),
-                child: new TextFormField(
-                  controller: _textEditingControllerMap[key],
-                  onChanged: (String value) async {
-                    _textFieldContentMap[key + riskProcedure.riskProcedureId] = value;
-                  },
-                  decoration: new InputDecoration(
-                    labelText: value.toString(),
-                  ),
-                ),
-              ),
-            ),
-          );
-        }
-      });
-    }
-
-
-    tiles.add(RiskEstimationTable());
-
-    return ListBody(
-      children: tiles,
-    );
-  }
-
   _updateUI(RiskProcedure riskProcedure) {
     setState(() {
       int length = _expansionPanelContentList.length;
@@ -152,6 +109,48 @@ class RiskProcedureExpansionPanelWidgetState extends State<RiskProcedureExpansio
     }
   }
 
+  Widget _buildExpansionPanelItemList(RiskProcedure riskProcedure) {
+    List<Widget> tiles = [];
+    if(riskProcedure != null) {
+      Map<String, dynamic> mapRiskProcedure = riskProcedure.toJson();
+      mapRiskProcedure.forEach((key, value) {
+        value = value ?? "";
+        if (key.compareTo("riskProcedureId") != 0 && key.compareTo("isApprove") != 0) {
+          _textEditingControllerMap[key] = TextEditingController();
+          tiles.add(
+              Container(
+                padding: EdgeInsets.all(10),
+                child:  Text(_subTitleMap[key.toString()], style: TextStyle(fontWeight: FontWeight.bold)),
+              )
+          );
+          tiles.add(
+            Card(
+              margin: EdgeInsets.fromLTRB(10, 0, 0, 10),
+              child: Padding(
+                padding: EdgeInsets.all(8),
+                child: new TextFormField(
+                  controller: _textEditingControllerMap[key],
+                  onChanged: (String value) async {
+                    _textFieldContentMap[key + riskProcedure.riskProcedureId] = value;
+                  },
+                  decoration: new InputDecoration(
+                    labelText: value.toString(),
+                  ),
+                ),
+              ),
+            ),
+          );
+        }
+      });
+    }
+
+    tiles.add(RiskEstimationTable());
+
+    return ListBody(
+      children: tiles,
+    );
+  }
+
   Widget _buildExpansionPanelList(List<RiskProcedure> rpList) {
     if (rpList == null || rpList.length <= 0) {
       return SizedBox.shrink();
@@ -168,11 +167,23 @@ class RiskProcedureExpansionPanelWidgetState extends State<RiskProcedureExpansio
       },
       children: _expansionPanelContentList.map<ExpansionPanel>((Item item) {
         final RiskProcedure element = item.riskProcedure;
+        element.isApprove??=false;
+        final isApproveText = element.isApprove ? "Approved" : "Unapproved";
         return ExpansionPanel(
           headerBuilder: (context, isExpandEd) {
             return ListTile(
-              title: Text("Risk Procedure " + element.riskProcedureId,
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
+              title: RichText(
+                text: TextSpan(
+                  text: "Risk Procedure " + element.riskProcedureId ,
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20, color: Colors.black),
+                  children: <TextSpan>[
+                    TextSpan(
+                        text: " (" + isApproveText + ")",
+                        style: TextStyle(color: Colors.red)
+                    ),
+                  ],
+                ),
+              ),
               trailing: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[

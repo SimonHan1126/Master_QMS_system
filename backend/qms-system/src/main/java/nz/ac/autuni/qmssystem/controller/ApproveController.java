@@ -24,13 +24,13 @@ public class ApproveController {
     private RiskProcedureDao riskProcedureService;
 
     @PostMapping("/approveFMEATable")
-    public ResponseEntity<Void> approveFMEATable(Long fmeaTableId) {
+    public ResponseEntity<Void> approveFMEATable(String fmeaTableId) {
         fmeaTableService.approveFMEATable(fmeaTableId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PostMapping("/removeFMEATable")
-    public ResponseEntity<Void> approveRiskProcedure(Long riskProcedureId) {
+    public ResponseEntity<Void> approveRiskProcedure(String riskProcedureId) {
         riskProcedureService.approveRiskProcedure(riskProcedureId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
