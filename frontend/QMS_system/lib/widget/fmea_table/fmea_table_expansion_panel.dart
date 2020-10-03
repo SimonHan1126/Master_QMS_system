@@ -20,20 +20,20 @@ class FMEATableExpansionPanelWidgetState extends State<FMEATableExpansionPanelWi
   Map<String, String> _textFieldContentMap = {};
 
   Map<String, String> _subTitleMap = {
-    "hazardClass": "Hazard Class",
-    "sourceId": "Source Id",
-    "foreseeableSequenceOfEvents": "Foreseeable Sequence of Events",
-    "hazardousSituation": "Hazardous Situation",
-    "harm": "Harm",
-    "severityOfHarm": "Severity of Harm",
-    "probability": "Probability",
-    "riskPriority": "Risk Priority",
-    "recommendingAction": "Recommending Action",
-    "typeOfAction": "Type of Action",
-    "actionDone": "Action Done",
-    "severityOfHarm2": "Severity Of Harm 2",
-    "probability2": "Probability 2",
-    "residualRisk": "Residual Risk",
+    "hazardClass"                 : "Hazard Class",
+    "sourceId"                    : "Source Id",
+    "foreseeableSequenceOfEvents" : "Foreseeable Sequence of Events",
+    "hazardousSituation"          : "Hazardous Situation",
+    "harm"                        : "Harm",
+    "severityOfHarm"              : "Severity of Harm",
+    "probability"                 : "Probability",
+    "riskPriority"                : "Risk Priority",
+    "recommendingAction"          : "Recommending Action",
+    "typeOfAction"                : "Type of Action",
+    "actionDone"                  : "Action Done",
+    "severityOfHarm2"             : "Severity Of Harm 2",
+    "probability2"                : "Probability 2",
+    "residualRisk"                : "Residual Risk",
   };
 
   List<Item> _expansionPanelContentList = [];
@@ -65,7 +65,7 @@ class FMEATableExpansionPanelWidgetState extends State<FMEATableExpansionPanelWi
     }
   }
 
-  _updateUI(FMEATable fmeaTable) {
+  _updateUI(BuildContext context, FMEATable fmeaTable) {
     setState(() {
       int length = _expansionPanelContentList.length;
       _expansionPanelContentList.add(Item(fmeaTable: fmeaTable, index: length));
@@ -74,17 +74,42 @@ class FMEATableExpansionPanelWidgetState extends State<FMEATableExpansionPanelWi
     SnackBarUtil.showSnackBar(context, "save FMEA table successfully");
   }
 
-  _saveInputtedRiskProcedure(BuildContext context, FMEATable fmeaTable) async {
+  _saveInputtedFMEATable(BuildContext context,FMEATable fmeaTable) async {
 
-    // riskProcedure.harm = _textFieldContentMap["harm" + riskProcedure.riskProcedureId];
-    // riskProcedure.severity = _textFieldContentMap["severity" + riskProcedure.riskProcedureId];
-    // riskProcedure.severityDescription = _textFieldContentMap["severityDescription" + riskProcedure.riskProcedureId];
-    // riskProcedure.probability = _textFieldContentMap["probability" + riskProcedure.riskProcedureId];
-    // riskProcedure.probabilityDescription =  _textFieldContentMap["probabilityDescription" + riskProcedure.riskProcedureId];
-    // riskProcedure.isApprove = false;
+    fmeaTable.hazardClass                 = _textFieldContentMap['hazardClass' + fmeaTable.hazardId];
+    fmeaTable.sourceId                    = _textFieldContentMap['sourceId' + fmeaTable.hazardId];
+    fmeaTable.foreseeableSequenceOfEvents = _textFieldContentMap['foreseeableSequenceOfEvents' + fmeaTable.hazardId];
+    fmeaTable.hazardousSituation          = _textFieldContentMap['hazardousSituation' + fmeaTable.hazardId];
+    fmeaTable.harm                        = _textFieldContentMap['harm' + fmeaTable.hazardId];
+    fmeaTable.severityOfHarm              = _textFieldContentMap['severityOfHarm' + fmeaTable.hazardId];
+    fmeaTable.probability                 = _textFieldContentMap['probability' + fmeaTable.hazardId];
+    fmeaTable.riskPriority                = _textFieldContentMap['riskPriority' + fmeaTable.hazardId];
+    fmeaTable.recommendingAction          = _textFieldContentMap['recommendingAction' + fmeaTable.hazardId];
+    fmeaTable.typeOfAction                = _textFieldContentMap['typeOfAction' + fmeaTable.hazardId];
+    fmeaTable.actionDone                  = _textFieldContentMap['actionDone' + fmeaTable.hazardId];
+    fmeaTable.severityOfHarm2             = _textFieldContentMap['severityOfHarm2' + fmeaTable.hazardId];
+    fmeaTable.probability2                = _textFieldContentMap['probability2' + fmeaTable.hazardId];
+    fmeaTable.residualRisk                = _textFieldContentMap['residualRisk' + fmeaTable.hazardId];
 
-    _ftListBloc.saveFMEATable(fmeaTable);
-    _updateUI(fmeaTable);
+    Map<String, dynamic> mapFMEATable = fmeaTable.toJson();
+
+    bool isAnyFieldTEmpty = false;
+    String emptyKey = "";
+    mapFMEATable.forEach((key, value) {
+      String sValue = value;
+      sValue??="";
+      if (sValue.length <= 0 && key != "hazardId" && key != "acceptability") {
+        emptyKey = _subTitleMap[key];
+        isAnyFieldTEmpty = true;
+      }
+    });
+
+    if(!isAnyFieldTEmpty) {
+      _ftListBloc.saveFMEATable(fmeaTable);
+      _updateUI(context, fmeaTable);
+    } else {
+      SnackBarUtil.showSnackBar(context, emptyKey + " cannot be empty!!!");
+    }
   }
 
   _removeRisProcedure(BuildContext context, FMEATable fmeaTable) async {
@@ -187,7 +212,7 @@ class FMEATableExpansionPanelWidgetState extends State<FMEATableExpansionPanelWi
                       color: Color(0xFF50AFC0),
                     ),
                     onPressed: () {
-                      _saveInputtedRiskProcedure(context, element);
+                      _saveInputtedFMEATable(context, element);
                     },
                   ),
                   IconButton(

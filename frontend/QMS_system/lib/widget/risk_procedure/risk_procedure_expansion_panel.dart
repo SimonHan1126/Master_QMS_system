@@ -42,7 +42,7 @@ class RiskProcedureExpansionPanelWidgetState extends State<RiskProcedureExpansio
     _rpListBloc.dispose();
   }
 
-  _updateUI(RiskProcedure riskProcedure) {
+  _updateUI(BuildContext context,RiskProcedure riskProcedure) {
     setState(() {
       int length = _expansionPanelContentList.length;
       _expansionPanelContentList.add(Item(riskProcedure: riskProcedure, index: length));
@@ -51,7 +51,7 @@ class RiskProcedureExpansionPanelWidgetState extends State<RiskProcedureExpansio
     SnackBarUtil.showSnackBar(context, "save Risk Procedure successfully");
   }
 
-  _saveInputtedRiskProcedure(BuildContext context, RiskProcedure riskProcedure) async {
+  _updateInputtedRiskProcedure(BuildContext context, RiskProcedure riskProcedure) async {
 
     riskProcedure.harm = _textFieldContentMap["harm" + riskProcedure.riskProcedureId];
     riskProcedure.severity = _textFieldContentMap["severity" + riskProcedure.riskProcedureId];
@@ -61,7 +61,28 @@ class RiskProcedureExpansionPanelWidgetState extends State<RiskProcedureExpansio
     riskProcedure.isApprove = false;
 
     _rpListBloc.saveRiskProcedure(riskProcedure);
-    _updateUI(riskProcedure);
+
+    Map<String, dynamic> mapFMEATable = riskProcedure.toJson();
+
+    bool isAnyFieldTEmpty = false;
+    String emptyKey = "";
+    mapFMEATable.forEach((key, value) {
+      if (key != "riskProcedureId" && key != "isApprove") {
+        String sValue = value;
+        sValue??="";
+        if (sValue.length <= 0) {
+          emptyKey = _subTitleMap[key];
+          isAnyFieldTEmpty = true;
+        }
+      }
+    });
+
+    if(!isAnyFieldTEmpty) {
+      _rpListBloc.saveRiskProcedure(riskProcedure);
+      _updateUI(context, riskProcedure);
+    } else {
+      SnackBarUtil.showSnackBar(context, emptyKey + " cannot be empty!!!");
+    }
   }
 
   _saveEmptyRiskProcedure(BuildContext context) async {
@@ -73,8 +94,8 @@ class RiskProcedureExpansionPanelWidgetState extends State<RiskProcedureExpansio
         probability: "",
         probabilityDescription: "",
         isApprove: false);
-    _rpListBloc.saveRiskProcedure(riskProcedure);
-    _updateUI(riskProcedure);
+    _rpListBloc.addRiskProcedure(riskProcedure);
+    _updateUI(context,riskProcedure);
   }
 
   _removeRisProcedure(BuildContext context, RiskProcedure riskProcedure) async {
@@ -194,7 +215,7 @@ class RiskProcedureExpansionPanelWidgetState extends State<RiskProcedureExpansio
                       color: Color(0xFF50AFC0),
                     ),
                     onPressed: () {
-                      _saveInputtedRiskProcedure(context, element);
+                      _updateInputtedRiskProcedure(context, element);
                     },
                   ),
                   IconButton(

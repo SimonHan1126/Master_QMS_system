@@ -29,12 +29,27 @@ class RiskProcedureListBloc implements Bloc {
     );
   }
 
-  void saveRiskProcedure(riskProcedure) async {
+  void addRiskProcedure(RiskProcedure riskProcedure) async {
     final response = await _helper.post("risk_procedure/saveRiskProcedure", riskProcedure);
     _riskProcedureList.add(response);
     _riskProcedureListController.sink.add(
         _riskProcedureList.map<RiskProcedure>((json) => RiskProcedure.fromJson(json)).toList(growable: false)
     );
+  }
+
+  void saveRiskProcedure(RiskProcedure riskProcedure) async {
+    final response = await _helper.post("risk_procedure/saveRiskProcedure", riskProcedure);
+    RiskProcedure responsedRP= RiskProcedure.fromJson(response);
+    List<RiskProcedure> list = [];
+    _riskProcedureList.asMap().forEach((key, value) {
+      RiskProcedure riskProcedure = RiskProcedure.fromJson(value);
+      if (riskProcedure.riskProcedureId == responsedRP.riskProcedureId) {
+        list.add(responsedRP);
+      } else {
+        list.add(riskProcedure);
+      }
+    });
+    _riskProcedureListController.sink.add(list);
   }
 
   @override

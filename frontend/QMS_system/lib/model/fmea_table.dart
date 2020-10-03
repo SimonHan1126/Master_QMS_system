@@ -5,15 +5,15 @@ class FMEATable {
   String foreseeableSequenceOfEvents; //both normal and fault conditions
   String hazardousSituation;
   String harm; //result of hazardous situation
-  int severityOfHarm; //1-7
-  int probability; // Probability of hazardous situation occurring, Probability of hazardous situation leading to harm (1-7)
-  int riskPriority; //Risk Priority Number (SxP)
+  String severityOfHarm; //1-7
+  String probability; // Probability of hazardous situation occurring, Probability of hazardous situation leading to harm (1-7)
+  String riskPriority; //Risk Priority Number (SxP)
   String recommendingAction; //Risk Control Method
   String typeOfAction;
   String actionDone;
-  int severityOfHarm2;
-  int probability2;
-  int residualRisk; //(S2xP2)
+  String severityOfHarm2;
+  String probability2;
+  String residualRisk; //(S2xP2)
   bool acceptability;
 
   FMEATable({

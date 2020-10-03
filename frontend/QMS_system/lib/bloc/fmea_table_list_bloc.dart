@@ -31,10 +31,18 @@ class FMEATableListBloc implements Bloc {
 
   void saveFMEATable(fmeaTable) async {
     final response = await _helper.post("fmea/saveFMEATable", fmeaTable);
-    _fmeaTableList.add(response);
-    _fmeaTableListController.sink.add(
-        _fmeaTableList.map<FMEATable>((json) => FMEATable.fromJson(json)).toList(growable: false)
-    );
+
+    FMEATable responseTable = FMEATable.fromJson(response);
+    List<FMEATable> list = [];
+    _fmeaTableList.asMap().forEach((key, value) {
+      FMEATable table = FMEATable.fromJson(value);
+      if (table.hazardId == responseTable.hazardId) {
+        list.add(responseTable);
+      } else {
+        list.add(table);
+      }
+    });
+    _fmeaTableListController.sink.add(list);
   }
 
   @override
