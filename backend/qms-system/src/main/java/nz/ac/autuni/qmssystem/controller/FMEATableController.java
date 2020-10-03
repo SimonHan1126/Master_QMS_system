@@ -24,7 +24,7 @@ import java.util.List;
 @RequestMapping("/api/v1/fmea")
 public class FMEATableController {
 
-    private static final Logger logger = LogManager.getLogger(RiskProcedureController.class);
+    private static final Logger logger = LogManager.getLogger(FMEATableController.class);
 
     @Autowired
     private FMEATableDao fmeaTableService;
@@ -47,13 +47,13 @@ public class FMEATableController {
     }
 
     @PostMapping(value = "/saveFMEATable", consumes = MediaType.APPLICATION_JSON_VALUE )
-    public ResponseEntity<Void> saveFMEATable(@RequestBody FMEATable table) {
+    public ResponseEntity<Serializable> saveFMEATable(@RequestBody FMEATable table) {
         /*
             1. Verify that the user is logged in
             2. Verify that there are variables in the FMEATable that are null
          */
         fmeaTableService.saveFMEATable(table);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return ResponseEntity.status(HttpStatus.OK).body(table);
     }
 
     @PostMapping("/updateFMEATable")
@@ -62,7 +62,7 @@ public class FMEATableController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @PostMapping("/removeFMEATable")
+    @GetMapping("/removeFMEATable")
     public ResponseEntity<List<FMEATable>> removeFMEATable(String fmeaTableId) {
         DeleteResult result = fmeaTableService.removeFMEATable(fmeaTableId);
         logger.info("this is removeFMEATable result " + result.toString());

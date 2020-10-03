@@ -37,8 +37,8 @@ public class FMEATableDaoImpl implements FMEATableDao {
 
     @Override
     public void updateFMEATable(FMEATable fmeaTable) {
-        Query query = new Query(Criteria.where("_id").is(fmeaTable.getHazardId()));
-        mongoTemplate.updateFirst(query, BaseUtil.getInstance().pushObjectToUpdate(fmeaTable), FMEATable.class);
+//        Query query = new Query(Criteria.where("_id").is(fmeaTable.getHazardId()));
+//        mongoTemplate.updateFirst(query, BaseUtil.getInstance().setObjectToUpdate(fmeaTable), FMEATable.class);
     }
 
     @Override

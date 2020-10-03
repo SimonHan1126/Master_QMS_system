@@ -2,9 +2,10 @@ package nz.ac.autuni.qmssystem.daoImpl;
 
 import com.mongodb.client.result.DeleteResult;
 import nz.ac.autuni.qmssystem.dao.RiskProcedureDao;
-import nz.ac.autuni.qmssystem.model.FMEATable;
 import nz.ac.autuni.qmssystem.model.RiskProcedure;
 import nz.ac.autuni.qmssystem.util.BaseUtil;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -20,6 +21,8 @@ import java.util.List;
  */
 @Component
 public class RiskProcedureDaoImpl implements RiskProcedureDao {
+
+    private static final Logger logger = LogManager.getLogger(RiskProcedureDaoImpl.class);
 
     @Resource
     MongoTemplate mongoTemplate;
@@ -38,8 +41,12 @@ public class RiskProcedureDaoImpl implements RiskProcedureDao {
 
     @Override
     public void updateRiskProcedure(RiskProcedure riskProcedure) {
-        Query query = new Query(Criteria.where("_id").is(riskProcedure.getRiskProcedureId()));
-        mongoTemplate.updateFirst(query, BaseUtil.getInstance().pushObjectToUpdate(riskProcedure), FMEATable.class);
+//        logger.info("this is RisProcedureDaoImpl updateRiskProcedure ----- 111111");
+//        Query query = new Query(Criteria.where("_id").is(riskProcedure.getRiskProcedureId()));
+//        logger.info("this is RisProcedureDaoImpl updateRiskProcedure ----- 2222222");
+//        mongoTemplate.updateFirst(query, BaseUtil.getInstance().setObjectToUpdate(riskProcedure), RiskProcedure.class);
+//        logger.info("this is RisProcedureDaoImpl updateRiskProcedure ----- 333333");
+        mongoTemplate.save(riskProcedure);
     }
 
     @Override
@@ -60,6 +67,6 @@ public class RiskProcedureDaoImpl implements RiskProcedureDao {
 
         Update update = new Update();
         update.set("isApprove", true);
-        mongoTemplate.updateFirst(query, update, FMEATable.class);
+        mongoTemplate.updateFirst(query, update, RiskProcedure.class);
     }
 }

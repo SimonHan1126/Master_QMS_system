@@ -2,8 +2,10 @@ package nz.ac.autuni.qmssystem.controller;
 
 import com.mongodb.client.result.DeleteResult;
 import nz.ac.autuni.qmssystem.constant.ErrorMessageConstant;
+import nz.ac.autuni.qmssystem.dao.FMEATableDao;
 import nz.ac.autuni.qmssystem.dao.RiskProcedureDao;
 import nz.ac.autuni.qmssystem.errorModel.NonExistentObjectQuery;
+import nz.ac.autuni.qmssystem.model.FMEATable;
 import nz.ac.autuni.qmssystem.model.RiskProcedure;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -28,6 +30,8 @@ public class RiskProcedureController {
 
     @Autowired
     private RiskProcedureDao riskProcedureService;
+    @Autowired
+    private FMEATableDao fmeaTableService;
 
     @GetMapping("/findRiskProcedureById")
     public ResponseEntity<Serializable> findRiskProcedureById(String riskProcedureId) {
@@ -53,12 +57,18 @@ public class RiskProcedureController {
             2. Verify that there are variables in the RiskProcedure that are null
          */
         riskProcedureService.saveRiskProcedure(riskProcedure);
-//        return new ResponseEntity<>(HttpStatus.OK);
+        FMEATable table = new FMEATable();
+        table.setHazardId(riskProcedure.getRiskProcedureId());
+        table.setHarm(riskProcedure.getHarm());
+        logger.info("this is saveRiskProcedure table " + table.toString());
+        logger.info("this is saveRiskProcedure riskProcedure " + riskProcedure.toString());
+        fmeaTableService.saveFMEATable(table);
         return ResponseEntity.status(HttpStatus.OK).body(riskProcedure);
     }
 
     @PostMapping("/updateRiskProcedure")
     public ResponseEntity<Void> updateRiskProcedure(@RequestBody RiskProcedure riskProcedure) {
+        logger.info("this is updateRiskProcedure riskProcedure " + riskProcedure.toString());
         riskProcedureService.updateRiskProcedure(riskProcedure);
         return new ResponseEntity<>(HttpStatus.OK);
     }

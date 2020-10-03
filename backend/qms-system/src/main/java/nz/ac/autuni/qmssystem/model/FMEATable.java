@@ -27,14 +27,14 @@ public class FMEATable implements Serializable {
     private String foreseeableSequenceOfEvents; //both normal and fault conditions
     private String hazardousSituation;
     private String harm; //result of hazardous situation
-    private int severityOfHarm; //1-7
-    private int probability; // Probability of hazardous situation occurring, Probability of hazardous situation leading to harm (1-7)
-    private int riskPriority; //Risk Priority Number (SxP)
+    private String severityOfHarm; //1-7
+    private String probability; // Probability of hazardous situation occurring, Probability of hazardous situation leading to harm (1-7)
+    private String riskPriority; //Risk Priority Number (SxP)
     private String recommendingAction; //Risk Control Method
     private String typeOfAction;
     private String actionDone;
-    private int severityOfHarm2;
-    private int probability2;
-    private int residualRisk; //(S2xP2)
+    private String severityOfHarm2;
+    private String probability2;
+    private String residualRisk; //(S2xP2)
     private boolean acceptability;
 }
