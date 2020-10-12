@@ -8,6 +8,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import javax.persistence.GeneratedValue;
 import java.io.Serializable;
+import java.util.List;
 
 import static javax.persistence.GenerationType.IDENTITY;
 
@@ -24,9 +25,27 @@ public class RiskProcedure implements Serializable {
     @Id @GeneratedValue(strategy = IDENTITY)
     private String riskProcedureId;
     private String harm;
-    private String severity;
-    private String severityDescription;
-    private String probability;
-    private String probabilityDescription;
+    private List<Item> severity;
+    private List<ItemDescription> severityDescription;
+    private List<Item> probability;
+    private List<ItemDescription> probabilityDescription;
     private boolean isApprove;
 }
+
+@AllArgsConstructor
+@NoArgsConstructor
+@Data
+class Item implements Serializable {
+    private String name;
+    private String level;
+}
+
+@AllArgsConstructor
+@NoArgsConstructor
+@Data
+class ItemDescription implements Serializable {
+    private String name;
+    private String description;
+}
+
+

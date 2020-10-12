@@ -57,12 +57,12 @@ public class RiskProcedureController {
             2. Verify that there are variables in the RiskProcedure that are null
          */
         riskProcedureService.saveRiskProcedure(riskProcedure);
-        FMEATable table = new FMEATable();
-        table.setHazardId(riskProcedure.getRiskProcedureId());
-        table.setHarm(riskProcedure.getHarm());
-        logger.info("this is saveRiskProcedure table " + table.toString());
+//        FMEATable table = new FMEATable();
+//        table.setHazardId(riskProcedure.getRiskProcedureId());
+//        table.setHarm(riskProcedure.getHarm());
+//        logger.info("this is saveRiskProcedure table " + table.toString());
         logger.info("this is saveRiskProcedure riskProcedure " + riskProcedure.toString());
-        fmeaTableService.saveFMEATable(table);
+//        fmeaTableService.saveFMEATable(table);
         return ResponseEntity.status(HttpStatus.OK).body(riskProcedure);
     }
 
