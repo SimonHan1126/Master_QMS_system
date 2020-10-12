@@ -112,6 +112,19 @@ class RiskProcedureListBloc implements Bloc {
     );
   }
 
+  void updateHarmForRiskProcedure(String riskProcedureId, String harm) {
+    for (int i = 0; i < _riskProcedureList.length; i++) {
+      if(riskProcedureId.compareTo(_riskProcedureList[i]["riskProcedureId"]) == 0) {
+
+        _riskProcedureList[i]["harm"] = harm;
+        break;
+      }
+    }
+    _riskProcedureListController.sink.add(
+        _riskProcedureList.map<RiskProcedure>((json) => RiskProcedure.fromJson(json)).toList(growable: false)
+    );
+  }
+
   @override
   void dispose() {
     _riskProcedureListController.close();

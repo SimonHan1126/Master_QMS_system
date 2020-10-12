@@ -15,10 +15,6 @@ class RiskProcedureExpansionPanelWidgetState extends State<RiskProcedureExpansio
   int _pressedPanelIndex = -1;
   bool _pressedPanelIsExpanded = false;
 
-  Map<String, TextEditingController>  _textEditingControllerMap = {};
-
-  Map<String, String> _textFieldContentMap = {};
-
   Map<String, String> _subTitleMap = {
     "harm" : "Harm",
     "severity" : "Severity",
@@ -52,37 +48,13 @@ class RiskProcedureExpansionPanelWidgetState extends State<RiskProcedureExpansio
   }
 
   _updateInputtedRiskProcedure(BuildContext context, RiskProcedure riskProcedure) async {
-
-    riskProcedure.harm = _textFieldContentMap["harm" + riskProcedure.riskProcedureId];
-    // riskProcedure.severity = _textFieldContentMap["severity" + riskProcedure.riskProcedureId];
-    // riskProcedure.severityDescription = _textFieldContentMap["severityDescription" + riskProcedure.riskProcedureId];
-    // riskProcedure.probability = _textFieldContentMap["probability" + riskProcedure.riskProcedureId];
-    // riskProcedure.probabilityDescription =  _textFieldContentMap["probabilityDescription" + riskProcedure.riskProcedureId];
-    riskProcedure.isApprove = false;
-
+    /*
+      TO_DO
+      1. check each is empty or not
+      2. showSnackbar for empty field
+     */
     _rpListBloc.saveRiskProcedure(riskProcedure);
-
-    Map<String, dynamic> mapRiskProcedure = riskProcedure.toJson();
-
-    bool isAnyFieldTEmpty = false;
-    String emptyKey = "";
-    // mapRiskProcedure.forEach((key, value) {
-    //   if (key != "riskProcedureId" && key != "isApprove") {
-    //     String sValue = value;
-    //     sValue??="";
-    //     if (sValue.length <= 0) {
-    //       emptyKey = _subTitleMap[key];
-    //       isAnyFieldTEmpty = true;
-    //     }
-    //   }
-    // });
-
-    if(!isAnyFieldTEmpty) {
-      _rpListBloc.saveRiskProcedure(riskProcedure);
-      _updateUI(context, riskProcedure);
-    } else {
-      SnackBarUtil.showSnackBar(context, emptyKey + " cannot be empty!!!");
-    }
+    _updateUI(context, riskProcedure);
   }
 
   _saveEmptyRiskProcedure(BuildContext context) async {
@@ -311,7 +283,6 @@ class RiskProcedureExpansionPanelWidgetState extends State<RiskProcedureExpansio
       mapRiskProcedure.forEach((key, value) {
         value = value ?? "";
         if (key.compareTo("riskProcedureId") != 0 && key.compareTo("isApprove") != 0) {
-          _textEditingControllerMap[key] = TextEditingController();
 
           Widget widget;
 
@@ -326,9 +297,8 @@ class RiskProcedureExpansionPanelWidgetState extends State<RiskProcedureExpansio
             );
 
             widget = new TextFormField(
-              controller: _textEditingControllerMap[key],
               onChanged: (String value) async {
-                _textFieldContentMap[key + riskProcedure.riskProcedureId] = value;
+                _rpListBloc.updateHarmForRiskProcedure(riskProcedure.riskProcedureId, value);
               },
               decoration: new InputDecoration(
                 labelText: value.toString(),
