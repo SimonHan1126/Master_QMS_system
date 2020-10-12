@@ -54,28 +54,28 @@ class RiskProcedureExpansionPanelWidgetState extends State<RiskProcedureExpansio
   _updateInputtedRiskProcedure(BuildContext context, RiskProcedure riskProcedure) async {
 
     riskProcedure.harm = _textFieldContentMap["harm" + riskProcedure.riskProcedureId];
-    riskProcedure.severity = _textFieldContentMap["severity" + riskProcedure.riskProcedureId];
-    riskProcedure.severityDescription = _textFieldContentMap["severityDescription" + riskProcedure.riskProcedureId];
-    riskProcedure.probability = _textFieldContentMap["probability" + riskProcedure.riskProcedureId];
-    riskProcedure.probabilityDescription =  _textFieldContentMap["probabilityDescription" + riskProcedure.riskProcedureId];
+    // riskProcedure.severity = _textFieldContentMap["severity" + riskProcedure.riskProcedureId];
+    // riskProcedure.severityDescription = _textFieldContentMap["severityDescription" + riskProcedure.riskProcedureId];
+    // riskProcedure.probability = _textFieldContentMap["probability" + riskProcedure.riskProcedureId];
+    // riskProcedure.probabilityDescription =  _textFieldContentMap["probabilityDescription" + riskProcedure.riskProcedureId];
     riskProcedure.isApprove = false;
 
     _rpListBloc.saveRiskProcedure(riskProcedure);
 
-    Map<String, dynamic> mapFMEATable = riskProcedure.toJson();
+    Map<String, dynamic> mapRiskProcedure = riskProcedure.toJson();
 
     bool isAnyFieldTEmpty = false;
     String emptyKey = "";
-    mapFMEATable.forEach((key, value) {
-      if (key != "riskProcedureId" && key != "isApprove") {
-        String sValue = value;
-        sValue??="";
-        if (sValue.length <= 0) {
-          emptyKey = _subTitleMap[key];
-          isAnyFieldTEmpty = true;
-        }
-      }
-    });
+    // mapRiskProcedure.forEach((key, value) {
+    //   if (key != "riskProcedureId" && key != "isApprove") {
+    //     String sValue = value;
+    //     sValue??="";
+    //     if (sValue.length <= 0) {
+    //       emptyKey = _subTitleMap[key];
+    //       isAnyFieldTEmpty = true;
+    //     }
+    //   }
+    // });
 
     if(!isAnyFieldTEmpty) {
       _rpListBloc.saveRiskProcedure(riskProcedure);
@@ -89,18 +89,17 @@ class RiskProcedureExpansionPanelWidgetState extends State<RiskProcedureExpansio
     RiskProcedure riskProcedure = RiskProcedure(
         riskProcedureId: DateTime.now().millisecondsSinceEpoch.toString(),
         harm: "",
-        severity: "",
-        severityDescription: "",
-        probability: "",
-        probabilityDescription: "",
+        severity: [RiskProcedureItem()],
+        severityDescription: [RiskProcedureItemDescription()],
+        probability: [RiskProcedureItem()],
+        probabilityDescription: [RiskProcedureItemDescription()],
         isApprove: false);
     _rpListBloc.addRiskProcedure(riskProcedure);
     _updateUI(context,riskProcedure);
   }
 
   _removeRisProcedure(BuildContext context, RiskProcedure riskProcedure) async {
-
-    _rpListBloc.deleteRiskProcedure(riskProcedure.riskProcedureId);
+    _pressedPanelIndex = -1;
     int index = -1;
     _expansionPanelContentList.asMap().forEach((listIndex, element) {
       if(riskProcedure.riskProcedureId.compareTo(element.riskProcedure.riskProcedureId) == 0) {
@@ -112,6 +111,7 @@ class RiskProcedureExpansionPanelWidgetState extends State<RiskProcedureExpansio
         _expansionPanelContentList.removeAt(index);
       }
     });
+    _rpListBloc.deleteRiskProcedure(riskProcedure.riskProcedureId);
     SnackBarUtil.showSnackBar(context, "remove Risk Procedure successfully");
   }
 
@@ -130,6 +130,180 @@ class RiskProcedureExpansionPanelWidgetState extends State<RiskProcedureExpansio
     }
   }
 
+  Widget _buildSubExpansionPanel(String riskProcedureId, String rpKey, var rpValue) {
+    
+    List<IconButton> listTitleButtons;
+
+    List<Row> rowList = [];
+
+    if (rpKey.compareTo("severity") == 0 || rpKey.compareTo("probability") == 0) {
+
+      rowList.add(
+        Row(
+          children: <Widget>[
+            Expanded(child: Text(_subTitleMap[rpKey] + " Name",style: TextStyle(fontWeight: FontWeight.w500, color: Colors.lightBlue))),
+            Expanded(child: Text(_subTitleMap[rpKey] + " Level",style: TextStyle(fontWeight: FontWeight.w500, color: Colors.lightBlue))),
+          ],
+        ),
+      );
+      
+      listTitleButtons = [
+        IconButton(icon: Icon(Icons.add, size: 25.0, color: Color(0xFF50AFC0),),
+          onPressed: () {
+            _rpListBloc.addOneItemForRiskProcedure(riskProcedureId, rpKey);
+            _rpListBloc.addOneItemDescriptionForRiskProcedure(riskProcedureId, rpKey);
+          },
+        ),
+        IconButton(icon: Icon(Icons.remove, size: 25.0, color: Color(0xFF50AFC0),),
+          onPressed: () {
+            _rpListBloc.removeOneItemForRiskProcedure(riskProcedureId, rpKey);
+            _rpListBloc.removeOneItemDescriptionForRiskProcedure(riskProcedureId, rpKey);
+          },
+        ),
+      ];
+
+      for(int i = 0; i < rpValue.length; i ++) {
+        RiskProcedureItem item = rpValue[i];
+        String name = item.name ?? "";
+        String level = item.level ?? "";
+
+        InputDecoration inputDecorationName;
+        InputDecoration inputDecorationLevel;
+        if (name.length > 0) {
+          inputDecorationName = InputDecoration(
+            labelText: name
+          );
+        } else {
+          inputDecorationName = InputDecoration(
+            hintText: "Enter a " + _subTitleMap[rpKey] + " name"
+          );
+        }
+
+        if (level.length > 0) {
+          inputDecorationLevel = InputDecoration(
+              labelText: level
+          );
+        } else {
+          inputDecorationLevel = InputDecoration(
+              hintText: "Enter a " + _subTitleMap[rpKey] + " level"
+          );
+        }
+
+        rowList.add(
+            Row(
+              children: <Widget>[
+                Expanded(
+                  child: TextFormField(
+                    onChanged: (String value) async {
+                      _rpListBloc.updateOneItemForRiskProcedure(riskProcedureId, rpKey, "name", value, i);
+                      _rpListBloc.updateOneItemForRiskProcedure(riskProcedureId, rpKey + "Description", "name", value, i);
+                    },
+                    decoration: inputDecorationName
+                  ),
+                ),
+                Expanded(
+                  child: TextFormField(
+                      onChanged: (String value) async {
+                        _rpListBloc.updateOneItemForRiskProcedure(riskProcedureId, rpKey, "level", value, i);
+                      },
+                      decoration: inputDecorationLevel
+                  ),
+                ),
+              ],
+            )
+        );
+      }
+    } else {
+      listTitleButtons = [];
+
+      rowList.add(
+        Row(
+          children: <Widget>[
+            Expanded(child: Text(_subTitleMap[rpKey].replaceFirst("Description", "") + " Name",style: TextStyle(fontWeight: FontWeight.w500, color: Colors.lightBlue))),
+            Expanded(child: Text(_subTitleMap[rpKey],style: TextStyle(fontWeight: FontWeight.w500, color: Colors.lightBlue))),
+          ],
+        ),
+      );
+
+      for(int i = 0; i < rpValue.length; i ++) {
+        RiskProcedureItemDescription itemDescription = rpValue[i];
+        String name = itemDescription.name ?? "";
+        String description = itemDescription.description ?? "";
+
+        InputDecoration inputDecorationName;
+        InputDecoration inputDecorationDescription;
+        if (name.length > 0) {
+          inputDecorationName = InputDecoration(
+              labelText: name
+          );
+        } else {
+          inputDecorationName = InputDecoration(
+              hintText: "Enter a " + _subTitleMap[rpKey].replaceFirst("Description", "") + " Name"
+          );
+        }
+
+        if (description.length > 0) {
+          inputDecorationDescription = InputDecoration(
+              labelText: description
+          );
+        } else {
+          inputDecorationDescription = InputDecoration(
+              hintText: "Enter a " + _subTitleMap[rpKey]
+          );
+        }
+
+        rowList.add(
+            Row(
+              children: <Widget>[
+                Expanded(
+                  child: TextFormField(
+                    onChanged: (String value) async {
+                      _rpListBloc.updateOneItemForRiskProcedure(riskProcedureId, rpKey, "name", value, i);
+                      _rpListBloc.updateOneItemForRiskProcedure(riskProcedureId, rpKey.replaceFirst("Description", ""), "name", value, i);
+                    },
+                    decoration: inputDecorationName
+                  ),
+                ),
+                Expanded(
+                  child: TextFormField(
+                    onChanged: (String value) async {
+                      _rpListBloc.updateOneItemForRiskProcedure(riskProcedureId, rpKey, "description", value, i);
+                    },
+                    decoration: inputDecorationDescription
+
+                  ),
+                ),
+              ],
+            )
+        );
+      }
+    }
+
+    return ExpansionPanelList(
+      expansionCallback: (int panelIndex, bool isExpanded) {},
+      children: [
+        ExpansionPanel(
+          headerBuilder: (context, isExpandEd) {
+            return ListTile(
+              title:Text(_subTitleMap[rpKey], style: TextStyle(fontWeight: FontWeight.bold)),
+              trailing: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: listTitleButtons,
+              ),
+            );
+          },
+          body: Padding(
+            padding: EdgeInsets.fromLTRB(15, 10, 15, 15),
+            child: ListBody(
+              children: rowList,
+            ),
+          ),
+          isExpanded: true
+        )
+      ],
+    );
+  }
+
   Widget _buildExpansionPanelItemList(RiskProcedure riskProcedure) {
     List<Widget> tiles = [];
     if(riskProcedure != null) {
@@ -138,26 +312,36 @@ class RiskProcedureExpansionPanelWidgetState extends State<RiskProcedureExpansio
         value = value ?? "";
         if (key.compareTo("riskProcedureId") != 0 && key.compareTo("isApprove") != 0) {
           _textEditingControllerMap[key] = TextEditingController();
-          tiles.add(
-              Container(
-                padding: EdgeInsets.all(10),
-                child:  Text(_subTitleMap[key.toString()], style: TextStyle(fontWeight: FontWeight.bold)),
-              )
-          );
+
+          Widget widget;
+
+          if (key.compareTo("harm") != 0) {
+            widget = _buildSubExpansionPanel(riskProcedure.riskProcedureId, key, value);
+          } else {
+            tiles.add(
+                Container(
+                  padding: EdgeInsets.all(10),
+                  child:  Text(_subTitleMap[key.toString()], style: TextStyle(fontWeight: FontWeight.bold)),
+                )
+            );
+
+            widget = new TextFormField(
+              controller: _textEditingControllerMap[key],
+              onChanged: (String value) async {
+                _textFieldContentMap[key + riskProcedure.riskProcedureId] = value;
+              },
+              decoration: new InputDecoration(
+                labelText: value.toString(),
+              ),
+            );
+          }
+
           tiles.add(
             Card(
               margin: EdgeInsets.fromLTRB(10, 0, 0, 10),
               child: Padding(
                 padding: EdgeInsets.all(8),
-                child: new TextFormField(
-                  controller: _textEditingControllerMap[key],
-                  onChanged: (String value) async {
-                    _textFieldContentMap[key + riskProcedure.riskProcedureId] = value;
-                  },
-                  decoration: new InputDecoration(
-                    labelText: value.toString(),
-                  ),
-                ),
+                child: widget,
               ),
             ),
           );
@@ -165,7 +349,7 @@ class RiskProcedureExpansionPanelWidgetState extends State<RiskProcedureExpansio
       });
     }
 
-    tiles.add(RiskEstimationTable());
+    tiles.add(RiskEstimationTable(riskProcedure));
 
     return ListBody(
       children: tiles,

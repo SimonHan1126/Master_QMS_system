@@ -52,6 +52,66 @@ class RiskProcedureListBloc implements Bloc {
     _riskProcedureListController.sink.add(list);
   }
 
+  void addOneItemForRiskProcedure(String riskProcedureId,String riskProcedureKey) {
+    for (int i = 0; i < _riskProcedureList.length; i++) {
+      if(riskProcedureId.compareTo(_riskProcedureList[i]["riskProcedureId"]) == 0) {
+        _riskProcedureList[i][riskProcedureKey].add(RiskProcedureItem().toJson());
+        break;
+      }
+    }
+    _riskProcedureListController.sink.add(
+        _riskProcedureList.map<RiskProcedure>((json) => RiskProcedure.fromJson(json)).toList(growable: false)
+    );
+  }
+
+  void removeOneItemForRiskProcedure(String riskProcedureId,String riskProcedureKey) {
+    for (int i = 0; i < _riskProcedureList.length; i++) {
+      if(riskProcedureId.compareTo(_riskProcedureList[i]["riskProcedureId"]) == 0) {
+        _riskProcedureList[i][riskProcedureKey].removeLast();
+        break;
+      }
+    }
+    _riskProcedureListController.sink.add(
+        _riskProcedureList.map<RiskProcedure>((json) => RiskProcedure.fromJson(json)).toList(growable: false)
+    );
+  }
+
+  void addOneItemDescriptionForRiskProcedure(String riskProcedureId,String riskProcedureKey) {
+    for (int i = 0; i < _riskProcedureList.length; i++) {
+      if(riskProcedureId.compareTo(_riskProcedureList[i]["riskProcedureId"]) == 0) {
+        _riskProcedureList[i][riskProcedureKey + "Description"].add(RiskProcedureItemDescription().toJson());
+        break;
+      }
+    }
+    _riskProcedureListController.sink.add(
+        _riskProcedureList.map<RiskProcedure>((json) => RiskProcedure.fromJson(json)).toList(growable: false)
+    );
+  }
+  void removeOneItemDescriptionForRiskProcedure(String riskProcedureId,String riskProcedureKey) {
+    for (int i = 0; i < _riskProcedureList.length; i++) {
+      if(riskProcedureId.compareTo(_riskProcedureList[i]["riskProcedureId"]) == 0) {
+        _riskProcedureList[i][riskProcedureKey + "Description"].removeLast();
+        break;
+      }
+    }
+    _riskProcedureListController.sink.add(
+        _riskProcedureList.map<RiskProcedure>((json) => RiskProcedure.fromJson(json)).toList(growable: false)
+    );
+  }
+
+  void updateOneItemForRiskProcedure(String riskProcedureId,String riskProcedureKey, String riskProcedureItemKey, String riskProcedureItemValue, int index) {
+    for (int i = 0; i < _riskProcedureList.length; i++) {
+      if(riskProcedureId.compareTo(_riskProcedureList[i]["riskProcedureId"]) == 0) {
+        Map<String, dynamic> mapRiskProcedureItem = _riskProcedureList[i][riskProcedureKey][index];
+        mapRiskProcedureItem[riskProcedureItemKey] = riskProcedureItemValue;
+        break;
+      }
+    }
+    _riskProcedureListController.sink.add(
+        _riskProcedureList.map<RiskProcedure>((json) => RiskProcedure.fromJson(json)).toList(growable: false)
+    );
+  }
+
   @override
   void dispose() {
     _riskProcedureListController.close();
