@@ -2,24 +2,41 @@ import 'package:flutter/material.dart';
 
 class DropDownMenu extends StatefulWidget {
 
+  final Map<String, MaterialColor> valueColorMapping;
+
+  final Function(String) callback;
+
+  DropDownMenu(this.valueColorMapping, this.callback);
+
   @override
   _DropDownMenuState createState() => _DropDownMenuState();
 }
 
 class _DropDownMenuState extends State<DropDownMenu> {
-  String _dropdownValue = 'LOW';
+  String _dropdownValue;
 
-  var _bgColor = Colors.green;
+  MaterialColor _bgColor;
 
-  var valueColorMapping = {
-    "LOW" : Colors.green,
-    "MEDIUM" : Colors.amber,
-    "HIGH" : Colors.red,
-  };
+  Map<String, MaterialColor> _valueColorMapping;
+
+  List<String> _listValue = [];
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _valueColorMapping = widget.valueColorMapping;
+    _valueColorMapping.forEach((key, value) {
+      _listValue.add(key);
+    });
+    if (_listValue.length > 0) {
+      _dropdownValue = _listValue[0];
+      _bgColor = _valueColorMapping[_dropdownValue];
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-
     return Container(
       color: _bgColor,
       width: MediaQuery.of(context).size.width,
@@ -42,10 +59,11 @@ class _DropDownMenuState extends State<DropDownMenu> {
               onChanged: (String newValue) {
                 setState(() {
                   _dropdownValue = newValue;
-                  _bgColor = valueColorMapping[newValue];
+                  _bgColor = _valueColorMapping[newValue];
                 });
+                widget.callback(newValue);
               },
-              items: <String>['LOW', 'MEDIUM', 'HIGH'].map<DropdownMenuItem<String>>((String value) {
+              items: _listValue.map<DropdownMenuItem<String>>((String value) {
                 return DropdownMenuItem<String>(
                   value: value,
                   child: Text(value),

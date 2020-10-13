@@ -1,7 +1,11 @@
 import 'package:QMS_system/bloc/bloc_provider.dart';
 import 'package:QMS_system/bloc/fmea_table_list_bloc.dart';
+import 'package:QMS_system/bloc/risk_procedure_list_bloc.dart';
 import 'package:QMS_system/model/fmea_table.dart';
+import 'package:QMS_system/model/risk_procedure.dart';
+import 'package:QMS_system/util/risk_procedure_data.dart';
 import 'package:QMS_system/util/snackbar_util.dart';
+import 'package:QMS_system/widget/common/drop_down_menu.dart';
 import 'package:flutter/material.dart';
 
 class FMEATableExpansionPanelWidget extends StatefulWidget {
@@ -38,16 +42,20 @@ class FMEATableExpansionPanelWidgetState extends State<FMEATableExpansionPanelWi
 
   List<Item> _expansionPanelContentList = [];
 
+  Map<String, RiskProcedure> _mapRiskProcedures = {};
+
   @override
   void initState() {
     super.initState();
     _ftListBloc.getAllFMEATable();
+    _initRiskProcedures();
   }
 
 
   @override
   void dispose() {
     super.dispose();
+    _ftListBloc.dispose();
   }
 
   void _initExpansionPanelContentList(List<FMEATable> rpList) {
@@ -74,6 +82,28 @@ class FMEATableExpansionPanelWidgetState extends State<FMEATableExpansionPanelWi
     SnackBarUtil.showSnackBar(context, "save FMEA table successfully");
   }
 
+  _saveEmptyFMEATable(BuildContext context) async {
+    FMEATable fmeaTable = FMEATable(
+      hazardId: DateTime.now().millisecondsSinceEpoch.toString(),
+      hazardClass: "",
+      sourceId: "",
+      foreseeableSequenceOfEvents: "",
+      hazardousSituation: "",
+      harm: "",
+      severityOfHarm: "",
+      probability: "",
+      riskPriority: "",
+      recommendingAction: "",
+      typeOfAction: "",
+      actionDone: "",
+      severityOfHarm2: "",
+      probability2: "",
+      residualRisk: "",
+    );
+    _ftListBloc.saveFMEATable(fmeaTable);
+    _updateUI(context, fmeaTable);
+  }
+
   _saveInputtedFMEATable(BuildContext context,FMEATable fmeaTable) async {
 
     fmeaTable.hazardClass                 = _textFieldContentMap['hazardClass' + fmeaTable.hazardId];
@@ -95,14 +125,14 @@ class FMEATableExpansionPanelWidgetState extends State<FMEATableExpansionPanelWi
 
     bool isAnyFieldTEmpty = false;
     String emptyKey = "";
-    mapFMEATable.forEach((key, value) {
-      String sValue = value;
-      sValue??="";
-      if (sValue.length <= 0 && key != "hazardId" && key != "acceptability") {
-        emptyKey = _subTitleMap[key];
-        isAnyFieldTEmpty = true;
-      }
-    });
+    // mapFMEATable.forEach((key, value) {
+    //   String sValue = value;
+    //   sValue??="";
+    //   if (sValue.length <= 0 && key != "hazardId" && key != "acceptability") {
+    //     emptyKey = _subTitleMap[key];
+    //     isAnyFieldTEmpty = true;
+    //   }
+    // });
 
     if(!isAnyFieldTEmpty) {
       _ftListBloc.saveFMEATable(fmeaTable);
@@ -129,6 +159,21 @@ class FMEATableExpansionPanelWidgetState extends State<FMEATableExpansionPanelWi
     SnackBarUtil.showSnackBar(context, "remove Risk Procedure successfully");
   }
 
+  severityOfHarmCallback(String selectedValue) {
+    print("this is fmea_table_expansion_panel severityOfHarmCallback selectedValuef " + selectedValue);
+  }
+
+  Widget _buildSeverityOfHarm() {
+    Map<String, MaterialColor> contentMap = {};
+    _mapRiskProcedures.forEach((key, value) {
+      contentMap[value.harm] = Colors.red;
+    });
+
+    return Column(
+      children: [DropDownMenu(contentMap, severityOfHarmCallback)],
+    );
+  }
+
   Widget _buildExpansionPanelItemList(FMEATable fmeaTable) {
     List<Widget> tiles = [];
     if(fmeaTable != null) {
@@ -143,8 +188,11 @@ class FMEATableExpansionPanelWidgetState extends State<FMEATableExpansionPanelWi
                 child:  Text(_subTitleMap[key.toString()], style: TextStyle(fontWeight: FontWeight.bold)),
               )
           );
-          tiles.add(
-            Card(
+          Widget widget;
+          if (key.compareTo("severityOfHarm") == 0) {
+            widget = _buildSeverityOfHarm();
+          } else {
+            widget = Card(
               margin: EdgeInsets.fromLTRB(10, 0, 0, 10),
               child: Padding(
                 padding: EdgeInsets.all(8),
@@ -158,8 +206,10 @@ class FMEATableExpansionPanelWidgetState extends State<FMEATableExpansionPanelWi
                   ),
                 ),
               ),
-            ),
-          );
+            );
+          }
+
+          tiles.add(widget);
         }
       });
     }
@@ -238,6 +288,18 @@ class FMEATableExpansionPanelWidgetState extends State<FMEATableExpansionPanelWi
     );
   }
 
+  void _initRiskProcedures() {
+    List<RiskProcedure> list = RiskProcedureData.riskProcedureList;
+    print("this is _initRiskProcedures list " + list.toString());
+    if (list!=null && list.length > 0) {
+      list.asMap().forEach((key, value) {
+        print("this is _initRiskProcedures key " + key.toString() + " harm " + value.harm);
+        RiskProcedure rp = list.elementAt(key);
+        _mapRiskProcedures[rp.riskProcedureId] = rp;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -254,6 +316,16 @@ class FMEATableExpansionPanelWidgetState extends State<FMEATableExpansionPanelWi
                 return _buildExpansionPanelList(ftList);
               },
             ),
+          ),
+          FlatButton(
+            onPressed: () {
+              _saveEmptyFMEATable(context);
+            },
+            child: Text("Add",
+                style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 20,
+                    color: Color(0xFF50AFC0))),
           )
         ],
       ),

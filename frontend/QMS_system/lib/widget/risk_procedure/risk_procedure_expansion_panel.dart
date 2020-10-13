@@ -1,6 +1,7 @@
 import 'package:QMS_system/bloc/bloc_provider.dart';
 import 'package:QMS_system/bloc/risk_procedure_list_bloc.dart';
 import 'package:QMS_system/model/risk_procedure.dart';
+import 'package:QMS_system/util/risk_procedure_data.dart';
 import 'package:QMS_system/util/snackbar_util.dart';
 import 'package:QMS_system/widget/risk_procedure/risk_estimation_table.dart';
 import 'package:flutter/material.dart';
@@ -143,7 +144,7 @@ class RiskProcedureExpansionPanelWidgetState extends State<RiskProcedureExpansio
         InputDecoration inputDecorationLevel;
         if (name.length > 0) {
           inputDecorationName = InputDecoration(
-            labelText: name
+            hintText: name
           );
         } else {
           inputDecorationName = InputDecoration(
@@ -153,7 +154,7 @@ class RiskProcedureExpansionPanelWidgetState extends State<RiskProcedureExpansio
 
         if (level.length > 0) {
           inputDecorationLevel = InputDecoration(
-              labelText: level
+              hintText: level
           );
         } else {
           inputDecorationLevel = InputDecoration(
@@ -206,7 +207,7 @@ class RiskProcedureExpansionPanelWidgetState extends State<RiskProcedureExpansio
         InputDecoration inputDecorationDescription;
         if (name.length > 0) {
           inputDecorationName = InputDecoration(
-              labelText: name
+              hintText: name
           );
         } else {
           inputDecorationName = InputDecoration(
@@ -216,7 +217,7 @@ class RiskProcedureExpansionPanelWidgetState extends State<RiskProcedureExpansio
 
         if (description.length > 0) {
           inputDecorationDescription = InputDecoration(
-              labelText: description
+              hintText: description
           );
         } else {
           inputDecorationDescription = InputDecoration(
@@ -409,7 +410,7 @@ class RiskProcedureExpansionPanelWidgetState extends State<RiskProcedureExpansio
                 stream: _rpListBloc.riskProcedureListStream,
                 builder: (context, snapshot) {
                   List<RiskProcedure> rpList = snapshot.data;
-
+                  RiskProcedureData.setRiskProcedureList(rpList);
                   return _buildExpansionPanelList(rpList);
                 }
             ),

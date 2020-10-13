@@ -14,13 +14,21 @@ class RiskEstimationTable extends StatefulWidget {
 
 class _RiskEstimationTableState extends State<RiskEstimationTable> {
 
-
+  callback(String selectedValue) {
+    print("this is risk_estimation_table selectedValue " + selectedValue);
+  }
 
   List<TableRow> _buildTableRowItemList(List<RiskProcedureItem> listSeverity, List<RiskProcedureItem> listProbability) {
     List<TableRow> tiles = [];
 
     int listSeverityLength = listSeverity.length;
     int listProbabilityLength = listProbability.length;
+
+    Map<String, MaterialColor> contentMap = {
+      "LOW" : Colors.green,
+      "MEDIUM" : Colors.amber,
+      "HIGH" : Colors.red,
+    };
 
     for (int i = 0; i < listProbabilityLength; i++) {
       List<Widget> subTiles = [];
@@ -36,7 +44,7 @@ class _RiskEstimationTableState extends State<RiskEstimationTable> {
       ));
       for (int j = 0; j < listSeverityLength; j++) {
         subTiles.add(Column(
-          children: [DropDownMenu()],
+          children: [DropDownMenu(contentMap, callback)],
         ));
       }
 
@@ -77,7 +85,6 @@ class _RiskEstimationTableState extends State<RiskEstimationTable> {
     int listSeverityLength = listSeverity.length;
     if (listSeverity.length > 0) {
       double widthInPercent = 1 / (listSeverityLength + 1);
-      print("this is risk_estimation_table widthInPercent " + widthInPercent.toString());
       for (int i = 0; i < listSeverity.length; i++) {
         mapFractionColumnWidth[i] = FractionColumnWidth(widthInPercent);
       }
