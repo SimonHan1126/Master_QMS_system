@@ -2,7 +2,7 @@ package nz.ac.autuni.qmssystem.controller;
 
 import com.mongodb.client.result.DeleteResult;
 import nz.ac.autuni.qmssystem.constant.ErrorMessageConstant;
-import nz.ac.autuni.qmssystem.errorModel.NonExistentObjectQuery;
+import nz.ac.autuni.qmssystem.errorModel.ErrorMessageObject;
 import nz.ac.autuni.qmssystem.model.FMEATable;
 import nz.ac.autuni.qmssystem.dao.FMEATableDao;
 import org.apache.logging.log4j.LogManager;
@@ -33,7 +33,7 @@ public class FMEATableController {
     public ResponseEntity<Serializable> findFMEATableById(String fmeaTableId) {
         FMEATable fmeaTable = fmeaTableService.findFMEATableById(fmeaTableId);
         if(fmeaTable == null) {
-            return ResponseEntity.status(HttpStatus.OK).body(new NonExistentObjectQuery(ErrorMessageConstant.NON_EXISTENT_OBJECT));
+            return ResponseEntity.status(HttpStatus.OK).body(new ErrorMessageObject(ErrorMessageConstant.NON_EXISTENT_OBJECT));
         } else {
             return ResponseEntity.status(HttpStatus.OK).body(fmeaTable);
         }

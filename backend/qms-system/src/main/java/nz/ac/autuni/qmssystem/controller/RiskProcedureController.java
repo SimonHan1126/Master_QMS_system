@@ -4,8 +4,7 @@ import com.mongodb.client.result.DeleteResult;
 import nz.ac.autuni.qmssystem.constant.ErrorMessageConstant;
 import nz.ac.autuni.qmssystem.dao.FMEATableDao;
 import nz.ac.autuni.qmssystem.dao.RiskProcedureDao;
-import nz.ac.autuni.qmssystem.errorModel.NonExistentObjectQuery;
-import nz.ac.autuni.qmssystem.model.FMEATable;
+import nz.ac.autuni.qmssystem.errorModel.ErrorMessageObject;
 import nz.ac.autuni.qmssystem.model.RiskProcedure;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -37,7 +36,7 @@ public class RiskProcedureController {
     public ResponseEntity<Serializable> findRiskProcedureById(String riskProcedureId) {
         RiskProcedure riskProcedure = riskProcedureService.findRiskProcedureById(riskProcedureId);
         if(riskProcedure == null) {
-            return ResponseEntity.status(HttpStatus.OK).body(new NonExistentObjectQuery(ErrorMessageConstant.NON_EXISTENT_OBJECT));
+            return ResponseEntity.status(HttpStatus.OK).body(new ErrorMessageObject(ErrorMessageConstant.NON_EXISTENT_OBJECT));
         } else {
             return ResponseEntity.status(HttpStatus.OK).body(riskProcedure);
         }

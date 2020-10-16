@@ -10,7 +10,7 @@ import java.io.Serializable;
  */
 @RequiredArgsConstructor
 @NoArgsConstructor
-public class NonExistentObjectQuery implements Serializable {
+public class ErrorMessageObject implements Serializable {
     @Setter @Getter @NonNull
     private String message;
     @Getter
