@@ -398,7 +398,6 @@ class RiskProcedureExpansionPanelWidgetState extends State<RiskProcedureExpansio
 
   @override
   Widget build(BuildContext context) {
-
     return SingleChildScrollView(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,

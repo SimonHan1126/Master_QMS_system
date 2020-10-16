@@ -1,6 +1,7 @@
 import 'package:QMS_system/bloc/bloc_provider.dart';
 import 'package:QMS_system/bloc/fmea_table_list_bloc.dart';
-import 'package:QMS_system/bloc/risk_procedure_list_bloc.dart';
+import 'package:QMS_system/constant/strings.dart';
+import 'package:QMS_system/model/dropdown_severity_item.dart';
 import 'package:QMS_system/model/fmea_table.dart';
 import 'package:QMS_system/model/risk_procedure.dart';
 import 'package:QMS_system/util/risk_procedure_data.dart';
@@ -41,6 +42,8 @@ class FMEATableExpansionPanelWidgetState extends State<FMEATableExpansionPanelWi
   };
 
   List<Item> _expansionPanelContentList = [];
+
+  List<DropdownSeverityItem> _dropdownSeverityItemList = [];
 
   Map<String, RiskProcedure> _mapRiskProcedures = {};
 
@@ -121,7 +124,7 @@ class FMEATableExpansionPanelWidgetState extends State<FMEATableExpansionPanelWi
     fmeaTable.probability2                = _textFieldContentMap['probability2' + fmeaTable.hazardId];
     fmeaTable.residualRisk                = _textFieldContentMap['residualRisk' + fmeaTable.hazardId];
 
-    Map<String, dynamic> mapFMEATable = fmeaTable.toJson();
+    // Map<String, dynamic> mapFMEATable = fmeaTable.toJson();
 
     bool isAnyFieldTEmpty = false;
     String emptyKey = "";
@@ -160,17 +163,32 @@ class FMEATableExpansionPanelWidgetState extends State<FMEATableExpansionPanelWi
   }
 
   severityOfHarmCallback(String selectedValue) {
-    print("this is fmea_table_expansion_panel severityOfHarmCallback selectedValuef " + selectedValue);
+    print("this is fmea_table_expansion_panel severityOfHarmCallback selectedValue " + selectedValue);
   }
 
   Widget _buildSeverityOfHarm() {
     Map<String, MaterialColor> contentMap = {};
+    print("this is _buildSeverityOfHarm _mapRiskProcedures " + _mapRiskProcedures.toString());
     _mapRiskProcedures.forEach((key, value) {
-      contentMap[value.harm] = Colors.red;
+      RiskProcedure riskProcedure = value;
+      List<RiskProcedureItem> rpSeverityList = riskProcedure.severity;
+      List<RiskProcedureItemDescription> rpSeverityDescriptionList = riskProcedure.severityDescription;
+      for (int i = 0; i < rpSeverityList.length; i++) {
+        RiskProcedureItem severityItem = rpSeverityList[i];
+        RiskProcedureItemDescription severityDescriptionItem = rpSeverityDescriptionList[i];
+        contentMap[severityItem.name] = Colors.blueGrey;
+        _dropdownSeverityItemList.add(DropdownSeverityItem(
+          riskProcedureId: riskProcedure.riskProcedureId,
+          index: i,
+          severityName: severityItem.name,
+          severityLevel: severityItem.level,
+          severityDescription: severityDescriptionItem.description
+        ));
+      }
     });
 
     return Column(
-      children: [DropDownMenu(contentMap, severityOfHarmCallback)],
+      children: [DropDownMenu(Strings.dropdown_severity_tag_fmea_table, _dropdownSeverityItemList,contentMap, severityOfHarmCallback)],
     );
   }
 
@@ -185,7 +203,7 @@ class FMEATableExpansionPanelWidgetState extends State<FMEATableExpansionPanelWi
           tiles.add(
               Container(
                 padding: EdgeInsets.all(10),
-                child:  Text(_subTitleMap[key.toString()], style: TextStyle(fontWeight: FontWeight.bold)),
+                child:  Text(_subTitleMap[key], style: TextStyle(fontWeight: FontWeight.bold)),
               )
           );
           Widget widget;
@@ -202,7 +220,7 @@ class FMEATableExpansionPanelWidgetState extends State<FMEATableExpansionPanelWi
                     _textFieldContentMap[key + fmeaTable.hazardId] = value;
                   },
                   decoration: new InputDecoration(
-                    labelText: value.toString(),
+                    hintText: "Enter " + _subTitleMap[key],
                   ),
                 ),
               ),
@@ -334,13 +352,12 @@ class FMEATableExpansionPanelWidgetState extends State<FMEATableExpansionPanelWi
 }
 
 class Item {
-  Item({
-    this.fmeaTable,
-    this.index,
-    this.isExpanded = false,
-  });
+  Item({this.fmeaTable, this.index, this.isExpanded = false,});
 
   FMEATable fmeaTable;
   int index;
   bool isExpanded;
 }
+
+
+

@@ -1,5 +1,6 @@
 import 'package:QMS_system/constant/strings.dart';
 import 'package:QMS_system/constant/text_styles.dart';
+import 'package:QMS_system/pages/admin.dart';
 import 'package:QMS_system/pages/fmea_table_page.dart';
 import 'package:QMS_system/pages/report_page.dart';
 import 'package:QMS_system/pages/risk_procedure_page.dart';
@@ -53,7 +54,8 @@ class HomePageState extends State<HomePage> {
       case 1:
         return FMEATablePage();
       case 2:
-        return ReportPage();
+        return AdminPage();
+        // return ReportPage();
     }
   }
 

@@ -1,3 +1,4 @@
+import 'package:QMS_system/constant/strings.dart';
 import 'package:QMS_system/model/risk_procedure.dart';
 import 'package:QMS_system/widget/common/drop_down_menu.dart';
 import 'package:flutter/material.dart';
@@ -44,7 +45,7 @@ class _RiskEstimationTableState extends State<RiskEstimationTable> {
       ));
       for (int j = 0; j < listSeverityLength; j++) {
         subTiles.add(Column(
-          children: [DropDownMenu(contentMap, callback)],
+          children: [DropDownMenu(Strings.dropdown_tag_risk_procedure, [],contentMap, callback)],
         ));
       }
 
