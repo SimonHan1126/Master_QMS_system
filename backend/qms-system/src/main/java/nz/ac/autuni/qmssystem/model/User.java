@@ -18,11 +18,11 @@ import static javax.persistence.GenerationType.IDENTITY;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-@Document(collection = "user")
+@Document(collection = "User")
 public class User implements Serializable {
     @Id @GeneratedValue(strategy = IDENTITY)
-    String userId;
-    String userName;
-    String password;
-    int userPermission;
+    private String userId;
+    private String userName;
+    private String password;
+    private int userPermission;
 }

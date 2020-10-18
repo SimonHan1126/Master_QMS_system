@@ -37,6 +37,21 @@ class UserListBloc implements Bloc {
     );
   }
 
+  void saveUser(User user) async {
+    final response = await _helper.post("user/saveUser", user);
+    User responsedUser= User.fromJson(response);
+    List<User> list = [];
+    _userList.asMap().forEach((key, value) {
+      User itemUser = User.fromJson(value);
+      if (itemUser.userId.compareTo(responsedUser.userId) == 0) {
+        list.add(responsedUser);
+      } else {
+        list.add(itemUser);
+      }
+    });
+    _userListController.sink.add(list);
+  }
+
   @override
   void dispose() {
     _userListController.close();

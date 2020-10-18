@@ -1,15 +1,21 @@
 import 'package:QMS_system/bloc/bloc_provider.dart';
 import 'package:QMS_system/bloc/fmea_table_list_bloc.dart';
-import 'package:QMS_system/constant/strings.dart';
+import 'package:QMS_system/constant/constants.dart';
 import 'package:QMS_system/model/dropdown_severity_item.dart';
 import 'package:QMS_system/model/fmea_table.dart';
 import 'package:QMS_system/model/risk_procedure.dart';
+import 'package:QMS_system/model/user.dart';
 import 'package:QMS_system/util/risk_procedure_data.dart';
 import 'package:QMS_system/util/snackbar_util.dart';
 import 'package:QMS_system/widget/common/drop_down_menu.dart';
 import 'package:flutter/material.dart';
 
 class FMEATableExpansionPanelWidget extends StatefulWidget {
+
+  final User _user;
+
+  FMEATableExpansionPanelWidget(this._user);
+
   FMEATableExpansionPanelWidgetState createState() =>  FMEATableExpansionPanelWidgetState();
 }
 
@@ -145,7 +151,7 @@ class FMEATableExpansionPanelWidgetState extends State<FMEATableExpansionPanelWi
     }
   }
 
-  _removeRisProcedure(BuildContext context, FMEATable fmeaTable) async {
+  _removeFMEATable(BuildContext context, FMEATable fmeaTable) async {
 
     _ftListBloc.deleteFMEATable(fmeaTable.hazardId);
     int index = -1;
@@ -159,11 +165,11 @@ class FMEATableExpansionPanelWidgetState extends State<FMEATableExpansionPanelWi
         _expansionPanelContentList.removeAt(index);
       }
     });
-    SnackBarUtil.showSnackBar(context, "remove Risk Procedure successfully");
+    SnackBarUtil.showSnackBar(context, "remove FMEA Table successfully");
   }
 
-  severityOfHarmCallback(String selectedValue) {
-    print("this is fmea_table_expansion_panel severityOfHarmCallback selectedValue " + selectedValue);
+  severityOfHarmCallback(Map<String, dynamic> selectedValue) {
+    print("this is fmea_table_expansion_panel severityOfHarmCallback selectedValue " + selectedValue.toString());
   }
 
   Widget _buildSeverityOfHarm() {
@@ -188,7 +194,7 @@ class FMEATableExpansionPanelWidgetState extends State<FMEATableExpansionPanelWi
     });
 
     return Column(
-      children: [DropDownMenu(Strings.dropdown_severity_tag_fmea_table, _dropdownSeverityItemList,contentMap, severityOfHarmCallback)],
+      children: [DropDownMenu(Constants.dropdown_severity_tag_fmea_table, "", "", Colors.red, _dropdownSeverityItemList,contentMap, severityOfHarmCallback)],
     );
   }
 
@@ -237,6 +243,19 @@ class FMEATableExpansionPanelWidgetState extends State<FMEATableExpansionPanelWi
     );
   }
 
+  List<IconButton> _buildItemExpansionPanelButtons(BuildContext context, FMEATable fmeaTable) {
+    List<IconButton> list = [];
+    list.add(IconButton(icon: Icon(Icons.save, size: 25.0, color: Color(0xFF50AFC0),), onPressed: () {_saveInputtedFMEATable(context, fmeaTable);},));
+    list.add(IconButton(icon: Icon(Icons.delete, size: 25.0, color: Color(0xFF50AFC0),), onPressed: () {_removeFMEATable(context, fmeaTable);},));
+    if (widget._user.userPermission == Constants.user_permission_qa) {
+      list.add(IconButton(icon: Icon(Icons.done_outline_rounded, size: 25.0, color: Color(0xFF50AFC0),), onPressed: () {
+        print("approve");
+      },));
+    }
+    return list;
+  }
+
+
   Widget _buildExpansionPanelList(List<FMEATable> ftList) {
     if (ftList == null || ftList.length <= 0) {
       return SizedBox.shrink();
@@ -272,28 +291,7 @@ class FMEATableExpansionPanelWidgetState extends State<FMEATableExpansionPanelWi
               ),
               trailing: Row(
                 mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  IconButton(
-                    icon: Icon(
-                      Icons.save,
-                      size: 25.0,
-                      color: Color(0xFF50AFC0),
-                    ),
-                    onPressed: () {
-                      _saveInputtedFMEATable(context, element);
-                    },
-                  ),
-                  IconButton(
-                    icon: Icon(
-                      Icons.delete,
-                      size: 25.0,
-                      color: Color(0xFF50AFC0),
-                    ),
-                    onPressed: () {
-                      _removeRisProcedure(context, element);
-                    },
-                  ),
-                ],
+                children: _buildItemExpansionPanelButtons(context, element)
               ),
             );
           },

@@ -33,9 +33,8 @@ public class LoginController {
     public ResponseEntity<Serializable> login(@RequestBody User loginUser) {
 
         logger.info("LoginController login AAAAA loginUser " + loginUser.toString());
-
         User user = userService.findUserByName(loginUser.getUserName());
-        if (user == null) {
+        if (user == null || !user.getPassword().equals(loginUser.getPassword())) {
             logger.info("LoginController login BBBBBB 11");
             return ResponseEntity.status(HttpStatus.OK).body(new ErrorMessageObject(ErrorMessageConstant.USER_NOT_EXIST));
         } else {

@@ -1,4 +1,4 @@
-import 'package:QMS_system/constant/strings.dart';
+import 'package:QMS_system/constant/constants.dart';
 import 'package:QMS_system/model/risk_procedure.dart';
 import 'package:QMS_system/widget/common/drop_down_menu.dart';
 import 'package:flutter/material.dart';
@@ -15,8 +15,8 @@ class RiskEstimationTable extends StatefulWidget {
 
 class _RiskEstimationTableState extends State<RiskEstimationTable> {
 
-  callback(String selectedValue) {
-    print("this is risk_estimation_table selectedValue " + selectedValue);
+  callback(Map<String, dynamic> selectedValue) {
+    print("this is risk_estimation_table selectedValue " + selectedValue.toString());
   }
 
   List<TableRow> _buildTableRowItemList(List<RiskProcedureItem> listSeverity, List<RiskProcedureItem> listProbability) {
@@ -45,7 +45,7 @@ class _RiskEstimationTableState extends State<RiskEstimationTable> {
       ));
       for (int j = 0; j < listSeverityLength; j++) {
         subTiles.add(Column(
-          children: [DropDownMenu(Strings.dropdown_tag_risk_procedure, [],contentMap, callback)],
+          children: [DropDownMenu(Constants.dropdown_tag_risk_procedure, widget.riskProcedure.riskProcedureId, "LOW", Colors.green, ["LOW","MEDIUM","HIGH"],contentMap, callback)],
         ));
       }
 

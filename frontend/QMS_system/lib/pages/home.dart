@@ -1,7 +1,9 @@
-import 'package:QMS_system/constant/strings.dart';
+import 'package:QMS_system/constant/constants.dart';
 import 'package:QMS_system/constant/text_styles.dart';
+import 'package:QMS_system/model/user.dart';
 import 'package:QMS_system/pages/admin.dart';
 import 'package:QMS_system/pages/fmea_table_page.dart';
+import 'package:QMS_system/pages/login_page.dart';
 import 'package:QMS_system/pages/report_page.dart';
 import 'package:QMS_system/pages/risk_procedure_page.dart';
 import 'package:QMS_system/util/screen_util.dart';
@@ -11,6 +13,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatefulWidget {
+
+  final User _user;
+
+  HomePage(this._user);
+
   @override
   State<StatefulWidget> createState() {
     return HomePageState();
@@ -50,12 +57,14 @@ class HomePageState extends State<HomePage> {
   _getDrawerItemWidget(int pos) {
     switch (pos) {
       case 0:
-        return RiskProcedurePage();
+        return RiskProcedurePage(widget._user);
       case 1:
-        return FMEATablePage();
+        return FMEATablePage(widget._user);
       case 2:
         return AdminPage();
         // return ReportPage();
+      case 3:
+        return Container();
     }
   }
 
@@ -70,11 +79,11 @@ class HomePageState extends State<HomePage> {
         ),
         children: <TextSpan>[
           TextSpan(
-            text: Strings.portfoli,
+            text: Constants.portfoli,
             style: TextStyles.logo,
           ),
           TextSpan(
-            text: Strings.o,
+            text: Constants.o,
             style: TextStyles.logo.copyWith(
               color: Color(0xFF50AFC0),
             ),
@@ -84,51 +93,45 @@ class HomePageState extends State<HomePage> {
     );
   }
 
+  _onMaterialButtonClick(BuildContext context, int pos) {
+    setState(() {
+      _selectedDrawerIndex = pos;
+    });
+    if (ResponsiveWidget.isSmallScreen(context)) Navigator.pop(context);
+
+    switch (pos) {
+      case 3:
+        Navigator.of(context).pushAndRemoveUntil( MaterialPageRoute(
+            builder: (context){return LoginPage();}
+        ), (Route<dynamic> route) => false);
+        return;
+    }
+  }
+
+  Widget _buildItemMaterialButton(BuildContext context, String text, int selectIndex) {
+    return MaterialButton(
+      child: Text(
+        text,
+        style: TextStyles.menu_item.copyWith(
+          color: Color(0xFF50AFC0),
+        ),
+      ),
+      onPressed: () {
+        _onMaterialButtonClick(context, selectIndex);
+      },
+    );
+  }
+
   List<Widget> _buildActions(BuildContext context) {
-    return <Widget>[
-      MaterialButton(
-        child: Text(
-          Strings.menu_procedure,
-          style: TextStyles.menu_item.copyWith(
-            color: Color(0xFF50AFC0),
-          ),
-        ),
-        onPressed: () {
-          setState(() {
-            _selectedDrawerIndex = 0;
-          });
-          if (ResponsiveWidget.isSmallScreen(context)) Navigator.pop(context);
-        },
-      ),
-      MaterialButton(
-        child: Text(
-          Strings.menu_fmea,
-          style: TextStyles.menu_item.copyWith(
-            color: Color(0xFF50AFC0),
-          ),
-        ),
-        onPressed: () {
-          setState(() {
-            _selectedDrawerIndex = 1;
-          });
-          if (ResponsiveWidget.isSmallScreen(context)) Navigator.pop(context);
-        },
-      ),
-      MaterialButton(
-        child: Text(
-          Strings.menu_report,
-          style: TextStyles.menu_item.copyWith(
-            color: Color(0xFF50AFC0),
-          ),
-        ),
-        onPressed: () {
-          setState(() {
-            _selectedDrawerIndex = 2;
-          });
-          if (ResponsiveWidget.isSmallScreen(context)) Navigator.pop(context);
-        },
-      ),
-    ];
+
+    List<MaterialButton> buttonList = [];
+    buttonList.add(_buildItemMaterialButton(context, Constants.menu_procedure, 0));
+    buttonList.add(_buildItemMaterialButton(context, Constants.menu_fmea, 1));
+    if (widget._user.userPermission == Constants.user_permission_admin) {
+      buttonList.add(_buildItemMaterialButton(context, Constants.menu_admin, 2));
+    }
+    buttonList.add(_buildItemMaterialButton(context, Constants.menu_logout, 3));
+    return buttonList;
   }
 
   Widget _buildAppBar(BuildContext context) {

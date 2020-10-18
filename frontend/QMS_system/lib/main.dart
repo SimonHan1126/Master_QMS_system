@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:QMS_system/pages/home.dart';
 import 'package:QMS_system/pages/login_page.dart';
 import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/foundation.dart';
@@ -28,10 +27,9 @@ class MyApp extends StatelessWidget {
             primarySwatch: Colors.green,
           ),
           navigatorObservers: [BotToastNavigatorObserver()],//2.registered route observer
-          // home: HomePage(),
           home: LoginPage(),
           routes: <String, WidgetBuilder>{
-            '/homePage': (BuildContext context) => HomePage(),
+            '/login': (BuildContext context) => LoginPage(),
           },
         )
     );

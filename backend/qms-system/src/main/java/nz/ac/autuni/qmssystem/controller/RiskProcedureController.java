@@ -55,6 +55,7 @@ public class RiskProcedureController {
             1. Verify that the user is logged in
             2. Verify that there are variables in the RiskProcedure that are null
          */
+        logger.info("RiskProcedureController saveRiskProcedure " + riskProcedure.toString());
         riskProcedureService.saveRiskProcedure(riskProcedure);
 //        FMEATable table = new FMEATable();
 //        table.setHazardId(riskProcedure.getRiskProcedureId());

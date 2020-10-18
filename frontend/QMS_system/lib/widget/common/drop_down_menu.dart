@@ -1,3 +1,4 @@
+import 'package:QMS_system/constant/constants.dart';
 import 'package:QMS_system/model/dropdown_severity_item.dart';
 import 'package:flutter/material.dart';
 
@@ -5,19 +6,26 @@ class DropDownMenu extends StatefulWidget {
 
   final String _tag;
 
+  final String _id;
+
+  final String _defaultDropdownValue;
+
+  final MaterialColor _defaultBgColor;
+
   final Map<String, MaterialColor> _valueColorMapping;
 
   final List<dynamic> _valueDataList;
 
-  final Function(String) _callback;
+  final Function(Map<String, dynamic>) _callback;
 
-  DropDownMenu(this._tag, this._valueDataList, this._valueColorMapping, this._callback);
+  DropDownMenu(this._tag, this._id, this._defaultDropdownValue, this._defaultBgColor, this._valueDataList, this._valueColorMapping, this._callback);
 
   @override
   _DropDownMenuState createState() => _DropDownMenuState();
 }
 
 class _DropDownMenuState extends State<DropDownMenu> {
+
   String _dropdownValue;
 
   MaterialColor _bgColor;
@@ -30,12 +38,14 @@ class _DropDownMenuState extends State<DropDownMenu> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    _dropdownValue = widget._defaultDropdownValue;
+    print("drop_down_menu _buildDropdownButton _dropdownValue " + _dropdownValue);
+    _bgColor = widget._defaultBgColor;
     _valueColorMapping = widget._valueColorMapping;
     _valueColorMapping.forEach((key, value) {
       _listValue.add(key);
     });
     if (_listValue.length > 0) {
-      _dropdownValue = _listValue[0];
       _bgColor = _valueColorMapping[_dropdownValue];
     }
   }
@@ -49,6 +59,20 @@ class _DropDownMenuState extends State<DropDownMenu> {
       ));
     }
     return list;
+  }
+
+  void _dropdownOnChange(String value) {
+    int currentIndex = _listValue.indexOf(value);
+    if (widget._tag.compareTo(Constants.dropdown_severity_tag_fmea_table) == 0) {
+      DropdownSeverityItem dropdownSeverityItem = widget._valueDataList.elementAt(currentIndex);
+      widget._callback({"value" : value});
+    } else if (widget._tag.compareTo(Constants.dropdown_probability_tag_fmea_table) == 0) {
+
+    } else if (widget._tag.compareTo(Constants.dropdown_admin_user_permission) == 0) {
+      widget._callback({"userId" : widget._id, "userPermission" : Constants.map_permission[value]});
+    } else if (widget._tag.compareTo(Constants.dropdown_tag_risk_procedure) == 0) {
+
+    }
   }
 
   DropdownButton _buildDropdownButton() {
@@ -67,11 +91,7 @@ class _DropDownMenuState extends State<DropDownMenu> {
           _dropdownValue = newValue;
           _bgColor = _valueColorMapping[newValue];
         });
-        int currentIndex = _listValue.indexOf(newValue);
-        print("##################### this is DropdownButton index " + currentIndex.toString());
-        DropdownSeverityItem dropdownSeverityItem = widget._valueDataList.elementAt(currentIndex);
-        print("##################### this is DropdownButton " + dropdownSeverityItem.toJson().toString());
-        widget._callback(newValue);
+        _dropdownOnChange(newValue);
       },
       items: _buildDropdownMenuItems()
     );

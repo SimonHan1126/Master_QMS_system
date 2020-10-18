@@ -1,12 +1,19 @@
 import 'package:QMS_system/bloc/bloc_provider.dart';
 import 'package:QMS_system/bloc/risk_procedure_list_bloc.dart';
+import 'package:QMS_system/constant/constants.dart';
 import 'package:QMS_system/model/risk_procedure.dart';
+import 'package:QMS_system/model/user.dart';
 import 'package:QMS_system/util/risk_procedure_data.dart';
 import 'package:QMS_system/util/snackbar_util.dart';
 import 'package:QMS_system/widget/risk_procedure/risk_estimation_table.dart';
 import 'package:flutter/material.dart';
 
 class RiskProcedureExpansionPanelWidget extends StatefulWidget {
+
+  final User _user;
+
+  RiskProcedureExpansionPanelWidget(this._user);
+
   RiskProcedureExpansionPanelWidgetState createState() =>  RiskProcedureExpansionPanelWidgetState();
 }
 
@@ -327,6 +334,18 @@ class RiskProcedureExpansionPanelWidgetState extends State<RiskProcedureExpansio
     );
   }
 
+  List<IconButton> _buildItemExpansionPanelButtons(BuildContext context, RiskProcedure riskProcedure) {
+    List<IconButton> list = [];
+    list.add(IconButton(icon: Icon(Icons.save, size: 25.0, color: Color(0xFF50AFC0),), onPressed: () {_updateInputtedRiskProcedure(context, riskProcedure);},));
+    list.add(IconButton(icon: Icon(Icons.delete, size: 25.0, color: Color(0xFF50AFC0),), onPressed: () {_removeRisProcedure(context, riskProcedure);},));
+    if (widget._user.userPermission == Constants.user_permission_qa) {
+      list.add(IconButton(icon: Icon(Icons.done_outline_rounded, size: 25.0, color: Color(0xFF50AFC0),), onPressed: () {
+        print("approve");
+      },));
+    }
+    return list;
+  }
+
   Widget _buildExpansionPanelList(List<RiskProcedure> rpList) {
     if (rpList == null || rpList.length <= 0) {
       return SizedBox.shrink();
@@ -362,28 +381,7 @@ class RiskProcedureExpansionPanelWidgetState extends State<RiskProcedureExpansio
               ),
               trailing: Row(
                 mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  IconButton(
-                    icon: Icon(
-                      Icons.save,
-                      size: 25.0,
-                      color: Color(0xFF50AFC0),
-                    ),
-                    onPressed: () {
-                      _updateInputtedRiskProcedure(context, element);
-                    },
-                  ),
-                  IconButton(
-                    icon: Icon(
-                      Icons.delete,
-                      size: 25.0,
-                      color: Color(0xFF50AFC0),
-                    ),
-                    onPressed: () {
-                      _removeRisProcedure(context, element);
-                    },
-                  ),
-                ],
+                children: _buildItemExpansionPanelButtons(context, element)
               ),
             );
           },

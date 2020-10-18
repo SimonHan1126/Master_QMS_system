@@ -42,11 +42,11 @@ class RiskProcedureListBloc implements Bloc {
     RiskProcedure responsedRP= RiskProcedure.fromJson(response);
     List<RiskProcedure> list = [];
     _riskProcedureList.asMap().forEach((key, value) {
-      RiskProcedure riskProcedure = RiskProcedure.fromJson(value);
-      if (riskProcedure.riskProcedureId == responsedRP.riskProcedureId) {
+      RiskProcedure itemRP = RiskProcedure.fromJson(value);
+      if (itemRP.riskProcedureId == responsedRP.riskProcedureId) {
         list.add(responsedRP);
       } else {
-        list.add(riskProcedure);
+        list.add(itemRP);
       }
     });
     _riskProcedureListController.sink.add(list);
