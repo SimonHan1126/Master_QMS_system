@@ -40,11 +40,17 @@ class _DropDownMenuState extends State<DropDownMenu> {
     // TODO: implement initState
     super.initState();
     _dropdownValue = widget._defaultDropdownValue;
+
     _bgColor = widget._defaultBgColor;
     _valueColorMapping = widget._valueColorMapping;
     _valueColorMapping.forEach((key, value) {
       _listValue.add(key);
     });
+
+    // TODO: need to remove this if statement (Simon)
+    if(_dropdownValue.length == 0) {
+      _dropdownValue = _listValue[0];
+    }
 
     if (_listValue.length > 0) {
       _bgColor = _valueColorMapping[_dropdownValue];
@@ -82,7 +88,6 @@ class _DropDownMenuState extends State<DropDownMenu> {
           break;
         }
       }
-
       widget._callback(targetItem.toJson());
     } else if (widget._tag.compareTo(Constants.dropdown_admin_user_permission) == 0) {
       widget._callback({"userId" : widget._id, "userPermission" : Constants.map_permission[value]});

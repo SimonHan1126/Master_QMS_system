@@ -120,7 +120,6 @@ class FMEATableExpansionPanelWidgetState extends State<FMEATableExpansionPanelWi
   }
 
   _saveInputtedFMEATable(BuildContext context,FMEATable fmeaTable) async {
-
     fmeaTable.hazardClass                 = _textFieldContentMap['hazardClass' + fmeaTable.hazardId];
     fmeaTable.sourceId                    = _textFieldContentMap['sourceId' + fmeaTable.hazardId];
     fmeaTable.foreseeableSequenceOfEvents = _textFieldContentMap['foreseeableSequenceOfEvents' + fmeaTable.hazardId];
@@ -209,7 +208,7 @@ class FMEATableExpansionPanelWidgetState extends State<FMEATableExpansionPanelWi
 
     severityName = severityName??dropdownSeverityItemList[0].severityName;
     severityLevel = severityLevel??dropdownSeverityItemList[0].severityLevel;
-    _textFieldContentMap[fmeaTableKey + fmeaTable.hazardId] = severityName;
+    // _textFieldContentMap[fmeaTableKey + fmeaTable.hazardId] = severityName;
     _severityLevelMap[fmeaTableKey + fmeaTable.hazardId] = severityLevel;
     return Column(
       children: [DropDownMenu(
@@ -259,7 +258,7 @@ class FMEATableExpansionPanelWidgetState extends State<FMEATableExpansionPanelWi
 
     probabilityName = probabilityName??dropdownProbabilityItemList[0].probabilityName;
     probabilityLevel = probabilityLevel??dropdownProbabilityItemList[0].probabilityLevel;
-    _textFieldContentMap[fmeaTableKey + fmeaTable.hazardId] = probabilityName;
+    // _textFieldContentMap[fmeaTableKey + fmeaTable.hazardId] = probabilityName;
     _probabilityLevelMap[fmeaTableKey + fmeaTable.hazardId] = probabilityLevel;
    
     return Column(
@@ -293,6 +292,7 @@ class FMEATableExpansionPanelWidgetState extends State<FMEATableExpansionPanelWi
       };
       typeOfActionList.add(itemMap);
     }
+    typeOfAction = typeOfAction??typeOfActionList[0];
     _textFieldContentMap[key + fmeaTable.hazardId] = typeOfAction;
     return Column(
       children: [
