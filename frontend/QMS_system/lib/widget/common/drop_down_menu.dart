@@ -45,6 +45,7 @@ class _DropDownMenuState extends State<DropDownMenu> {
     _valueColorMapping.forEach((key, value) {
       _listValue.add(key);
     });
+
     if (_listValue.length > 0) {
       _bgColor = _valueColorMapping[_dropdownValue];
     }
@@ -62,23 +63,33 @@ class _DropDownMenuState extends State<DropDownMenu> {
   }
 
   void _dropdownOnChange(String value) {
-    print("drop down menu dropdownSeverityItem " + widget._tag + " _dropdownOnChange _listValue " + _listValue.toString());
-    int currentIndex = _listValue.indexOf(value);
     if (widget._tag.compareTo(Constants.dropdown_severity_tag_fmea_table) == 0) {
-      DropdownSeverityItem dropdownSeverityItem = widget._valueDataList.elementAt(currentIndex);
-      print("drop down menu dropdownSeverityItem " + widget._tag + " _dropdownOnChange " + dropdownSeverityItem.toJson().toString());
-      print("drop down menu dropdownSeverityItem " + widget._tag + " _dropdownOnChange currentIndex " + currentIndex.toString() + " selectedValue " + value);
-      widget._callback(dropdownSeverityItem.toJson());
+      DropdownSeverityItem targetItem;
+      for ( int i = 0; i <  widget._valueDataList.length; i++) {
+        DropdownSeverityItem dropdownSeverityItem = widget._valueDataList.elementAt(i);
+        if (dropdownSeverityItem.fmeaTableKey.compareTo(widget._id) == 0 && dropdownSeverityItem.severityName.compareTo(value)  == 0) {
+          targetItem = dropdownSeverityItem;
+          break;
+        }
+      }
+      widget._callback(targetItem.toJson());
     } else if (widget._tag.compareTo(Constants.dropdown_probability_tag_fmea_table) == 0) {
-      DropdownProbabilityItem dropdownProbabilityItem = widget._valueDataList.elementAt(currentIndex);
-      print("drop down menu dropdownProbabilityItem " + widget._tag + " _dropdownOnChange " + dropdownProbabilityItem.toJson().toString());
-      print("drop down menu dropdownProbabilityItem " + widget._tag + " _dropdownOnChange currentIndex " + currentIndex.toString() + " selectedValue " + value);
-      widget._callback(dropdownProbabilityItem.toJson());
+      DropdownProbabilityItem targetItem;
+      for ( int i = 0; i <  widget._valueDataList.length; i++) {
+        DropdownProbabilityItem dropdownProbabilityItem = widget._valueDataList.elementAt(i);
+        if (dropdownProbabilityItem.fmeaTableKey.compareTo(widget._id) == 0 && dropdownProbabilityItem.probabilityName.compareTo(value)  == 0) {
+          targetItem = dropdownProbabilityItem;
+          break;
+        }
+      }
+
+      widget._callback(targetItem.toJson());
     } else if (widget._tag.compareTo(Constants.dropdown_admin_user_permission) == 0) {
       widget._callback({"userId" : widget._id, "userPermission" : Constants.map_permission[value]});
     } else if (widget._tag.compareTo(Constants.dropdown_tag_risk_procedure) == 0) {
 
     } else if (widget._tag.compareTo(Constants.dropdown_fmea_type_of_action) == 0) {
+      int currentIndex = _listValue.indexOf(value);
       Map<String, dynamic> typeOfActionMap = widget._valueDataList.elementAt(currentIndex);
       widget._callback(typeOfActionMap);
     }

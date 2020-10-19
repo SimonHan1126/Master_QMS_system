@@ -50,10 +50,6 @@ class FMEATableExpansionPanelWidgetState extends State<FMEATableExpansionPanelWi
 
   List<Item> _expansionPanelContentList = [];
 
-  List<DropdownSeverityItem> _dropdownSeverityItemList = [];
-
-  List<DropdownProbabilityItem> _dropdownProbabilityItemList = [];
-
   //key: riskProcedureId
   Map<String, RiskProcedure> _mapRiskProcedures = {};
 
@@ -62,9 +58,6 @@ class FMEATableExpansionPanelWidgetState extends State<FMEATableExpansionPanelWi
 
   //key: fmeaKey + fmeaTableId, value: probability level
   Map<String, String> _probabilityLevelMap = {};
-
-  int _riskPriority;
-  int _residualRisk;
 
   @override
   void initState() {
@@ -182,32 +175,28 @@ class FMEATableExpansionPanelWidgetState extends State<FMEATableExpansionPanelWi
   }
 
   severityOfHarmCallback(Map<String, dynamic> selectedValue) {
-    print("this is fmea_table_expansion_panel severityOfHarmCallback selectedValue " + selectedValue.toString());
-    print("this is fmea_table_expansion_panel severityOfHarmCallback selectedValue riskProcedureId " + selectedValue["riskProcedureId"]);
-    print("this is fmea_table_expansion_panel severityOfHarmCallback selectedValue index " + selectedValue["index"].toString());
-    print("this is fmea_table_expansion_panel probabilityCallback selectedValue fmeaTableKey " + selectedValue["fmeaTableKey"]);
     _textFieldContentMap[selectedValue["fmeaTableKey"] + selectedValue["fmeaTableId"]] = selectedValue["severityName"];
+    setState(() {
+      _severityLevelMap[selectedValue["fmeaTableKey"] + selectedValue["fmeaTableId"]] = selectedValue["severityLevel"];
+    });
   }
 
   Widget _buildSeverityOfHarm(FMEATable fmeaTable, String fmeaTableKey) {
     Map<String, MaterialColor> contentMap = {};
-    print("this is _buildSeverityOfHarm _mapRiskProcedures " + _mapRiskProcedures.toString() + " fmeaTableKey " + fmeaTableKey);
     Map<String, dynamic> fmeaTableMap = fmeaTable.toJson();
     String severityName = fmeaTableMap[fmeaTableKey];
     String severityLevel;
+    List<DropdownSeverityItem> dropdownSeverityItemList = [];
     _mapRiskProcedures.forEach((key, value) {
       RiskProcedure riskProcedure = value;
       List<RiskProcedureItem> rpSeverityList = riskProcedure.severity;
       for (int i = 0; i < rpSeverityList.length; i++) {
         RiskProcedureItem severityItem = rpSeverityList[i];
-        // test start
-        // severityItem.name = severityItem.name + " " + fmeaTableKey;
-        // test end
         contentMap[severityItem.name] = Colors.blueGrey;
         if (severityItem.name.compareTo(severityItem.name) == 0) {
           severityLevel = severityItem.level;
         }
-        _dropdownSeverityItemList.add(DropdownSeverityItem(
+        dropdownSeverityItemList.add(DropdownSeverityItem(
           fmeaTableId: fmeaTable.hazardId,
           riskProcedureId: riskProcedure.riskProcedureId,
           fmeaTableKey: fmeaTableKey,
@@ -217,17 +206,18 @@ class FMEATableExpansionPanelWidgetState extends State<FMEATableExpansionPanelWi
         ));
       }
     });
-    severityName = severityName??_dropdownSeverityItemList[0].severityName;
-    severityLevel = severityLevel??_dropdownSeverityItemList[0].severityLevel;
+
+    severityName = severityName??dropdownSeverityItemList[0].severityName;
+    severityLevel = severityLevel??dropdownSeverityItemList[0].severityLevel;
     _textFieldContentMap[fmeaTableKey + fmeaTable.hazardId] = severityName;
     _severityLevelMap[fmeaTableKey + fmeaTable.hazardId] = severityLevel;
     return Column(
       children: [DropDownMenu(
           Constants.dropdown_severity_tag_fmea_table,
-          fmeaTable.hazardId,
+          fmeaTableKey,
           severityName,
           Colors.red,
-          _dropdownSeverityItemList,
+          dropdownSeverityItemList,
           contentMap,
           severityOfHarmCallback)
       ],
@@ -235,19 +225,18 @@ class FMEATableExpansionPanelWidgetState extends State<FMEATableExpansionPanelWi
   }
 
   probabilityCallback(Map<String, dynamic> selectedValue) {
-    print("this is fmea_table_expansion_panel probabilityCallback selectedValue " + selectedValue.toString());
-    print("this is fmea_table_expansion_panel probabilityCallback selectedValue riskProcedureId " + selectedValue["riskProcedureId"]);
-    print("this is fmea_table_expansion_panel probabilityCallback selectedValue index " + selectedValue["index"].toString());
-    print("this is fmea_table_expansion_panel probabilityCallback selectedValue fmeaTableKey " + selectedValue["fmeaTableKey"]);
     _textFieldContentMap[selectedValue["fmeaTableKey"] + selectedValue["fmeaTableId"]] = selectedValue["probabilityName"];
+    setState(() {
+      _probabilityLevelMap[selectedValue["fmeaTableKey"] + selectedValue["fmeaTableId"]] = selectedValue["probabilityLevel"];
+    });
   }
 
   Widget _buildProbability(FMEATable fmeaTable, String fmeaTableKey) {
     Map<String, MaterialColor> contentMap = {};
-    print("this is _buildProbability _mapRiskProcedures " + _mapRiskProcedures.toString() + " fmeaTableKey " + fmeaTableKey);
     Map<String, dynamic> fmeaTableMap = fmeaTable.toJson();
     String probabilityName = fmeaTableMap[fmeaTableKey];
     String probabilityLevel;
+    List<DropdownProbabilityItem> dropdownProbabilityItemList = [];
     _mapRiskProcedures.forEach((key, value) {
       RiskProcedure riskProcedure = value;
       List<RiskProcedureItem> rpProbabilityList = riskProcedure.probability;
@@ -257,7 +246,7 @@ class FMEATableExpansionPanelWidgetState extends State<FMEATableExpansionPanelWi
         if (probabilityItem.name.compareTo(probabilityName) == 0) {
           probabilityLevel = probabilityItem.level;
         }
-        _dropdownProbabilityItemList.add(DropdownProbabilityItem(
+        dropdownProbabilityItemList.add(DropdownProbabilityItem(
           fmeaTableId: fmeaTable.hazardId,
           riskProcedureId: riskProcedure.riskProcedureId,
           fmeaTableKey: fmeaTableKey,
@@ -267,8 +256,9 @@ class FMEATableExpansionPanelWidgetState extends State<FMEATableExpansionPanelWi
         ));
       }
     });
-    probabilityName = probabilityName??_dropdownProbabilityItemList[0].probabilityName;
-    probabilityLevel = probabilityLevel??_dropdownProbabilityItemList[0].probabilityLevel;
+
+    probabilityName = probabilityName??dropdownProbabilityItemList[0].probabilityName;
+    probabilityLevel = probabilityLevel??dropdownProbabilityItemList[0].probabilityLevel;
     _textFieldContentMap[fmeaTableKey + fmeaTable.hazardId] = probabilityName;
     _probabilityLevelMap[fmeaTableKey + fmeaTable.hazardId] = probabilityLevel;
    
@@ -276,10 +266,10 @@ class FMEATableExpansionPanelWidgetState extends State<FMEATableExpansionPanelWi
       children: [
         DropDownMenu(
             Constants.dropdown_probability_tag_fmea_table,
-            fmeaTable.hazardId,
+            fmeaTableKey,
             probabilityName,
             Colors.red,
-            _dropdownProbabilityItemList,
+            dropdownProbabilityItemList,
             contentMap,
             probabilityCallback)
       ],
@@ -287,7 +277,6 @@ class FMEATableExpansionPanelWidgetState extends State<FMEATableExpansionPanelWi
   }
 
   typeOfActionCallback(Map<String, dynamic> selectedValue) {
-    print("this is fmea_table_expansion_panel probabilityCallback selectedValue " + selectedValue.toString());
     _textFieldContentMap[selectedValue["fmeaTableKey"] + selectedValue["fmeaTableId"]] = selectedValue["typeOfActionValue"];
   }
 
@@ -320,6 +309,10 @@ class FMEATableExpansionPanelWidgetState extends State<FMEATableExpansionPanelWi
   }
 
   Widget _buildExpansionPanelItemList(FMEATable fmeaTable) {
+    String severityLevel = _severityLevelMap["severityOfHarm" + fmeaTable.hazardId]??"1";
+    String probabilityLevel = _probabilityLevelMap["probability" + fmeaTable.hazardId]??"1";
+    String severity2Level = _severityLevelMap["severityOfHarm2" + fmeaTable.hazardId]??"1";
+    String probability2Level = _probabilityLevelMap["probability2" + fmeaTable.hazardId]??"1";
     List<Widget> tiles = [];
     if(fmeaTable != null) {
       Map<String, dynamic> mapFMEATable = fmeaTable.toJson();
@@ -334,7 +327,6 @@ class FMEATableExpansionPanelWidgetState extends State<FMEATableExpansionPanelWi
               )
           );
           Widget expansionItemWidget;
-
           if (key.compareTo("severityOfHarm") == 0 || key.compareTo("severityOfHarm2") == 0 ) {
             expansionItemWidget = _buildSeverityOfHarm(fmeaTable, key);
           } else if (key.compareTo("probability") == 0 || key.compareTo("probability2") == 0) {
@@ -343,20 +335,12 @@ class FMEATableExpansionPanelWidgetState extends State<FMEATableExpansionPanelWi
             expansionItemWidget = _buildTypeOfAction(fmeaTable, key);
           } else {
             Widget childWidget;
-            String severityLevel;
-            String probabilityLevel;
             if (key.compareTo("riskPriority") == 0) {
-              severityLevel = _severityLevelMap["severityOfHarm" + fmeaTable.hazardId]??"1";
-              probabilityLevel = _probabilityLevelMap["probability" + fmeaTable.hazardId]??"1";
-              print("(key.compareTo(riskPriority) severityLevel " + severityLevel + " probabilityLevel " + probabilityLevel);
-              _riskPriority = int.parse(severityLevel) * int.parse(probabilityLevel);
-              childWidget = Text(_riskPriority.toString());
+              int riskPriority = int.parse(severityLevel) * int.parse(probabilityLevel);
+              childWidget = Text(riskPriority.toString());
             } else if (key.compareTo("residualRisk") == 0) {
-              severityLevel = _severityLevelMap["severityOfHarm2" + fmeaTable.hazardId]??"1";
-              probabilityLevel = _probabilityLevelMap["probability2" + fmeaTable.hazardId]??"1";
-              print("(key.compareTo(residualRisk) severityLevel " + severityLevel + " probabilityLevel " + probabilityLevel);
-              _residualRisk = int.parse(severityLevel) * int.parse(probabilityLevel);
-              childWidget = Text(_riskPriority.toString());
+              int residualRisk = int.parse(severity2Level) * int.parse(probability2Level);
+              childWidget = Text(residualRisk.toString());
             } else {
               childWidget = TextFormField(
                 controller: _textEditingControllerMap[key],
@@ -451,10 +435,8 @@ class FMEATableExpansionPanelWidgetState extends State<FMEATableExpansionPanelWi
 
   void _initRiskProcedures() {
     List<RiskProcedure> list = RiskProcedureData.riskProcedureList;
-    print("this is _initRiskProcedures list " + list.toString());
     if (list!=null && list.length > 0) {
       list.asMap().forEach((key, value) {
-        print("this is _initRiskProcedures key " + key.toString() + " harm " + value.harm);
         RiskProcedure rp = list.elementAt(key);
         _mapRiskProcedures[rp.riskProcedureId] = rp;
       });
@@ -501,6 +483,3 @@ class Item {
   int index;
   bool isExpanded;
 }
-
-
-
