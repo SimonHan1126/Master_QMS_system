@@ -1,19 +1,21 @@
 class DropdownProbabilityItem {
 
-  DropdownProbabilityItem({this.riskProcedureId, this.index, this.probabilityName, this.probabilityLevel, this.probabilityDescription});
+  DropdownProbabilityItem({this.fmeaTableId, this.riskProcedureId, this.index, this.probabilityName, this.probabilityLevel, this.fmeaTableKey});
 
+  String fmeaTableId;
   String riskProcedureId;
   int index;
   String probabilityName;
   String probabilityLevel;
-  String probabilityDescription;
+  String fmeaTableKey;
 
   Map<String, dynamic> toJson() =>
       {
+        'fmeaTableId' : fmeaTableId,
         'riskProcedureId': riskProcedureId,
         'index': index,
         'probabilityName': probabilityName,
         'probabilityLevel': probabilityLevel,
-        'probabilityDescription': probabilityDescription,
+        'fmeaTableKey': fmeaTableKey,
       };
 }

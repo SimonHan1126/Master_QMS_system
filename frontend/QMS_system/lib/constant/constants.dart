@@ -18,6 +18,7 @@ class Constants {
   static const String dropdown_severity_tag_fmea_table = "severity_fmea_table";
   static const String dropdown_probability_tag_fmea_table = "probability_fmea_table";
   static const String dropdown_admin_user_permission = "admin_user_permission";
+  static const String dropdown_fmea_type_of_action = "fmea_type_of_action";
 
   // user_permission
   static const int user_permission_team_member = 0;
@@ -58,5 +59,17 @@ class Constants {
     1 : Colors.cyan,
     2 : Colors.indigo,
     100 :  Colors.red
+  };
+
+  static const List<String> fmea_type_of_action_list = [
+    "Design",
+    "Prevention",
+    "Information",
+  ];
+
+  static const Map<String, MaterialColor> map_fmea_type_of_action_color = {
+    "Design" : Colors.amber,
+    "Prevention" : Colors.cyan,
+    "Information" : Colors.indigo,
   };
 }
