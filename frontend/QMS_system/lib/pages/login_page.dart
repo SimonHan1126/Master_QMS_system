@@ -1,6 +1,5 @@
 import 'package:QMS_system/constant/constants.dart';
 import 'package:QMS_system/constant/text_styles.dart';
-import 'package:QMS_system/model/risk_procedure.dart';
 import 'package:QMS_system/model/user.dart';
 import 'package:QMS_system/pages/home.dart';
 import 'package:QMS_system/util/api_base_helper.dart';
@@ -126,7 +125,7 @@ class LoginPageState extends State<LoginPage> {
                       fontWeight: FontWeight.bold,
                       color: Colors.white,
                       fontSize: 20)),
-            )
+            ),
           ],
         ),
       ),

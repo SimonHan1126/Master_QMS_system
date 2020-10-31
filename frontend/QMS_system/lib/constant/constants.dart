@@ -72,4 +72,12 @@ class Constants {
     "Prevention" : Colors.cyan,
     "Information" : Colors.indigo,
   };
+
+  static const Map<String, String> map_risk_procedure_sub_title = {
+    "harm" : "Harm",
+    "severity" : "Severity",
+    "severityDescription" : "Severity Description",
+    "probability" : "Probability",
+    "probabilityDescription" :  "Probability Description"
+  };
 }

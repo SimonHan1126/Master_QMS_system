@@ -6,6 +6,7 @@ import 'package:QMS_system/model/user.dart';
 import 'package:QMS_system/util/risk_procedure_data.dart';
 import 'package:QMS_system/util/snackbar_util.dart';
 import 'package:QMS_system/widget/risk_procedure/risk_estimation_table.dart';
+import 'package:QMS_system/widget/risk_procedure/risk_procedure_edit_dialog.dart';
 import 'package:flutter/material.dart';
 
 class RiskProcedureExpansionPanelWidget extends StatefulWidget {
@@ -22,14 +23,6 @@ class RiskProcedureExpansionPanelWidgetState extends State<RiskProcedureExpansio
 
   int _pressedPanelIndex = -1;
   bool _pressedPanelIsExpanded = false;
-
-  Map<String, String> _subTitleMap = {
-    "harm" : "Harm",
-    "severity" : "Severity",
-    "severityDescription" : "Severity Description",
-    "probability" : "Probability",
-    "probabilityDescription" :  "Probability Description"
-  };
 
   List<Item> _expansionPanelContentList = [];
 
@@ -110,9 +103,9 @@ class RiskProcedureExpansionPanelWidgetState extends State<RiskProcedureExpansio
     }
   }
 
-  Widget _buildSubExpansionPanel(String riskProcedureId, String rpKey, var rpValue) {
-    
-    List<IconButton> listTitleButtons;
+  Widget _buildProcedureDisplayUI(String riskProcedureId, String rpKey, var rpValue) {
+
+    List<IconButton> listTitleButtons = [];
 
     List<Row> rowList = [];
 
@@ -121,86 +114,37 @@ class RiskProcedureExpansionPanelWidgetState extends State<RiskProcedureExpansio
       rowList.add(
         Row(
           children: <Widget>[
-            Expanded(child: Text(_subTitleMap[rpKey] + " Name",style: TextStyle(fontWeight: FontWeight.w500, color: Colors.lightBlue))),
-            Expanded(child: Text(_subTitleMap[rpKey] + " Level",style: TextStyle(fontWeight: FontWeight.w500, color: Colors.lightBlue))),
+            Expanded(child: Text(Constants.map_risk_procedure_sub_title[rpKey] + " Name",style: TextStyle(fontWeight: FontWeight.w500, color: Colors.lightBlue))),
+            Expanded(child: Text(Constants.map_risk_procedure_sub_title[rpKey] + " Level",style: TextStyle(fontWeight: FontWeight.w500, color: Colors.lightBlue))),
           ],
         ),
       );
-      
-      listTitleButtons = [
-        IconButton(icon: Icon(Icons.add, size: 25.0, color: Color(0xFF50AFC0),),
-          onPressed: () {
-            _rpListBloc.addOneItemForRiskProcedure(riskProcedureId, rpKey);
-            _rpListBloc.addOneItemDescriptionForRiskProcedure(riskProcedureId, rpKey);
-          },
-        ),
-        IconButton(icon: Icon(Icons.remove, size: 25.0, color: Color(0xFF50AFC0),),
-          onPressed: () {
-            _rpListBloc.removeOneItemForRiskProcedure(riskProcedureId, rpKey);
-            _rpListBloc.removeOneItemDescriptionForRiskProcedure(riskProcedureId, rpKey);
-          },
-        ),
-      ];
 
       for(int i = 0; i < rpValue.length; i ++) {
         RiskProcedureItem item = rpValue[i];
         String name = item.name ?? "";
         String level = item.level ?? "";
 
-        InputDecoration inputDecorationName;
-        InputDecoration inputDecorationLevel;
-        if (name.length > 0) {
-          inputDecorationName = InputDecoration(
-            hintText: name
-          );
-        } else {
-          inputDecorationName = InputDecoration(
-            hintText: "Enter a " + _subTitleMap[rpKey] + " name"
-          );
-        }
-
-        if (level.length > 0) {
-          inputDecorationLevel = InputDecoration(
-              hintText: level
-          );
-        } else {
-          inputDecorationLevel = InputDecoration(
-              hintText: "Enter a " + _subTitleMap[rpKey] + " level"
-          );
-        }
-
         rowList.add(
             Row(
               children: <Widget>[
                 Expanded(
-                  child: TextFormField(
-                    onChanged: (String value) async {
-                      _rpListBloc.updateOneItemForRiskProcedure(riskProcedureId, rpKey, "name", value, i);
-                      _rpListBloc.updateOneItemForRiskProcedure(riskProcedureId, rpKey + "Description", "name", value, i);
-                    },
-                    decoration: inputDecorationName
-                  ),
+                  child: Text(name),
                 ),
                 Expanded(
-                  child: TextFormField(
-                      onChanged: (String value) async {
-                        _rpListBloc.updateOneItemForRiskProcedure(riskProcedureId, rpKey, "level", value, i);
-                      },
-                      decoration: inputDecorationLevel
-                  ),
+                  child: Text(level)
                 ),
               ],
             )
         );
       }
     } else {
-      listTitleButtons = [];
 
       rowList.add(
         Row(
           children: <Widget>[
-            Expanded(child: Text(_subTitleMap[rpKey].replaceFirst("Description", "") + " Name",style: TextStyle(fontWeight: FontWeight.w500, color: Colors.lightBlue))),
-            Expanded(child: Text(_subTitleMap[rpKey],style: TextStyle(fontWeight: FontWeight.w500, color: Colors.lightBlue))),
+            Expanded(child: Text(Constants.map_risk_procedure_sub_title[rpKey].replaceFirst("Description", "") + " Name",style: TextStyle(fontWeight: FontWeight.w500, color: Colors.lightBlue))),
+            Expanded(child: Text(Constants.map_risk_procedure_sub_title[rpKey],style: TextStyle(fontWeight: FontWeight.w500, color: Colors.lightBlue))),
           ],
         ),
       );
@@ -210,48 +154,14 @@ class RiskProcedureExpansionPanelWidgetState extends State<RiskProcedureExpansio
         String name = itemDescription.name ?? "";
         String description = itemDescription.description ?? "";
 
-        InputDecoration inputDecorationName;
-        InputDecoration inputDecorationDescription;
-        if (name.length > 0) {
-          inputDecorationName = InputDecoration(
-              hintText: name
-          );
-        } else {
-          inputDecorationName = InputDecoration(
-              hintText: "Enter a " + _subTitleMap[rpKey].replaceFirst("Description", "") + " Name"
-          );
-        }
-
-        if (description.length > 0) {
-          inputDecorationDescription = InputDecoration(
-              hintText: description
-          );
-        } else {
-          inputDecorationDescription = InputDecoration(
-              hintText: "Enter a " + _subTitleMap[rpKey]
-          );
-        }
-
         rowList.add(
             Row(
               children: <Widget>[
                 Expanded(
-                  child: TextFormField(
-                    onChanged: (String value) async {
-                      _rpListBloc.updateOneItemForRiskProcedure(riskProcedureId, rpKey, "name", value, i);
-                      _rpListBloc.updateOneItemForRiskProcedure(riskProcedureId, rpKey.replaceFirst("Description", ""), "name", value, i);
-                    },
-                    decoration: inputDecorationName
-                  ),
+                  child: Text(name)
                 ),
                 Expanded(
-                  child: TextFormField(
-                    onChanged: (String value) async {
-                      _rpListBloc.updateOneItemForRiskProcedure(riskProcedureId, rpKey, "description", value, i);
-                    },
-                    decoration: inputDecorationDescription
-
-                  ),
+                  child: Text(description)
                 ),
               ],
             )
@@ -265,7 +175,7 @@ class RiskProcedureExpansionPanelWidgetState extends State<RiskProcedureExpansio
         ExpansionPanel(
           headerBuilder: (context, isExpandEd) {
             return ListTile(
-              title:Text(_subTitleMap[rpKey], style: TextStyle(fontWeight: FontWeight.bold)),
+              title:Text(Constants.map_risk_procedure_sub_title[rpKey], style: TextStyle(fontWeight: FontWeight.bold)),
               trailing: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: listTitleButtons,
@@ -278,7 +188,8 @@ class RiskProcedureExpansionPanelWidgetState extends State<RiskProcedureExpansio
               children: rowList,
             ),
           ),
-          isExpanded: true
+          isExpanded: true,
+
         )
       ],
     );
@@ -295,23 +206,16 @@ class RiskProcedureExpansionPanelWidgetState extends State<RiskProcedureExpansio
           Widget widget;
 
           if (key.compareTo("harm") != 0) {
-            widget = _buildSubExpansionPanel(riskProcedure.riskProcedureId, key, value);
+            widget = _buildProcedureDisplayUI(riskProcedure.riskProcedureId, key, value);
           } else {
             tiles.add(
                 Container(
                   padding: EdgeInsets.all(10),
-                  child:  Text(_subTitleMap[key.toString()], style: TextStyle(fontWeight: FontWeight.bold)),
+                  child:  Text(Constants.map_risk_procedure_sub_title[key.toString()], style: TextStyle(fontWeight: FontWeight.bold)),
                 )
             );
 
-            widget = new TextFormField(
-              onChanged: (String value) async {
-                _rpListBloc.updateHarmForRiskProcedure(riskProcedure.riskProcedureId, value);
-              },
-              decoration: new InputDecoration(
-                labelText: value.toString(),
-              ),
-            );
+            widget = Text(value.toString());
           }
 
           tiles.add(
@@ -334,10 +238,23 @@ class RiskProcedureExpansionPanelWidgetState extends State<RiskProcedureExpansio
     );
   }
 
+  _showDialog(RiskProcedure riskProcedure) {
+    Navigator.of(context).push(new MaterialPageRoute(
+      builder: (BuildContext context) {
+        return Container(
+          child: RiskProcedureEditDialog(riskProcedure),
+        );
+      },
+      fullscreenDialog: true,
+    ));
+  }
+
   List<IconButton> _buildItemExpansionPanelButtons(BuildContext context, RiskProcedure riskProcedure) {
     List<IconButton> list = [];
     list.add(IconButton(icon: Icon(Icons.save, size: 25.0, color: Color(0xFF50AFC0),), onPressed: () {_updateInputtedRiskProcedure(context, riskProcedure);},));
     list.add(IconButton(icon: Icon(Icons.delete, size: 25.0, color: Color(0xFF50AFC0),), onPressed: () {_removeRisProcedure(context, riskProcedure);},));
+    list.add(IconButton(icon: Icon(Icons.edit, size: 25.0, color: Color(0xFF50AFC0),), onPressed: () { _showDialog(riskProcedure); },));
+
     if (widget._user.userPermission == Constants.user_permission_qa) {
       list.add(IconButton(icon: Icon(Icons.done_outline_rounded, size: 25.0, color: Color(0xFF50AFC0),), onPressed: () {
         print("approve");
