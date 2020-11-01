@@ -174,9 +174,10 @@ class FMEATableExpansionPanelWidgetState extends State<FMEATableExpansionPanelWi
   }
 
   severityOfHarmCallback(Map<String, dynamic> selectedValue) {
-    _textFieldContentMap[selectedValue["fmeaTableKey"] + selectedValue["fmeaTableId"]] = selectedValue["severityName"];
+    String key = selectedValue["fmeaTableKey"] + selectedValue["fmeaTableId"];
+    _textFieldContentMap[key] = selectedValue["severityName"];
     setState(() {
-      _severityLevelMap[selectedValue["fmeaTableKey"] + selectedValue["fmeaTableId"]] = selectedValue["severityLevel"];
+      _severityLevelMap[key] = selectedValue["severityLevel"];
     });
   }
 

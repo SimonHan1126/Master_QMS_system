@@ -1,3 +1,5 @@
+import 'package:QMS_system/bloc/bloc_provider.dart';
+import 'package:QMS_system/bloc/risk_procedure_bloc.dart';
 import 'package:QMS_system/constant/constants.dart';
 import 'package:QMS_system/model/risk_procedure.dart';
 import 'package:QMS_system/widget/risk_procedure/risk_estimation_table.dart';
@@ -7,13 +9,30 @@ class RiskProcedureEditDialog extends StatefulWidget {
 
   final RiskProcedure _riskProcedure;
 
-  const RiskProcedureEditDialog(this._riskProcedure);
+  final Function(Map<String, dynamic>) _callback;
+
+  const RiskProcedureEditDialog(this._riskProcedure, this._callback);
 
   @override
   RiskProcedureEditDialogState createState() => new RiskProcedureEditDialogState();
 }
 
 class RiskProcedureEditDialogState extends State<RiskProcedureEditDialog> {
+
+  final RiskProcedureBloc _riskProcedureBloc = RiskProcedureBloc();
+
+
+  @override
+  void initState() {
+    super.initState();
+    _riskProcedureBloc.initRiskProcedure(widget._riskProcedure);
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _riskProcedureBloc.dispose();
+  }
 
   Widget _buildSubExpansionPanel(String riskProcedureId, String rpKey, var rpValue) {
 
@@ -35,20 +54,20 @@ class RiskProcedureEditDialogState extends State<RiskProcedureEditDialog> {
       listTitleButtons = [
         IconButton(icon: Icon(Icons.add, size: 25.0, color: Color(0xFF50AFC0),),
           onPressed: () {
-            // _rpListBloc.addOneItemForRiskProcedure(riskProcedureId, rpKey);
-            // _rpListBloc.addOneItemDescriptionForRiskProcedure(riskProcedureId, rpKey);
+            _riskProcedureBloc.addOneItemForRiskProcedure(riskProcedureId, rpKey);
+            _riskProcedureBloc.addOneItemDescriptionForRiskProcedure(riskProcedureId, rpKey);
           },
         ),
         IconButton(icon: Icon(Icons.remove, size: 25.0, color: Color(0xFF50AFC0),),
           onPressed: () {
-            // _rpListBloc.removeOneItemForRiskProcedure(riskProcedureId, rpKey);
-            // _rpListBloc.removeOneItemDescriptionForRiskProcedure(riskProcedureId, rpKey);
+            _riskProcedureBloc.removeOneItemForRiskProcedure(riskProcedureId, rpKey);
+            _riskProcedureBloc.removeOneItemDescriptionForRiskProcedure(riskProcedureId, rpKey);
           },
         ),
       ];
 
       for(int i = 0; i < rpValue.length; i ++) {
-        RiskProcedureItem item = rpValue[i];
+        RiskProcedureItem item = RiskProcedureItem.fromJson(rpValue[i]);
         String name = item.name ?? "";
         String level = item.level ?? "";
 
@@ -80,8 +99,8 @@ class RiskProcedureEditDialogState extends State<RiskProcedureEditDialog> {
                 Expanded(
                   child: TextFormField(
                       onChanged: (String value) async {
-                        // _rpListBloc.updateOneItemForRiskProcedure(riskProcedureId, rpKey, "name", value, i);
-                        // _rpListBloc.updateOneItemForRiskProcedure(riskProcedureId, rpKey + "Description", "name", value, i);
+                        _riskProcedureBloc.updateOneItemForRiskProcedure(riskProcedureId, rpKey, "name", value, i);
+                        _riskProcedureBloc.updateOneItemForRiskProcedure(riskProcedureId, rpKey + "Description", "name", value, i);
                       },
                       decoration: inputDecorationName
                   ),
@@ -89,7 +108,7 @@ class RiskProcedureEditDialogState extends State<RiskProcedureEditDialog> {
                 Expanded(
                   child: TextFormField(
                       onChanged: (String value) async {
-                        // _rpListBloc.updateOneItemForRiskProcedure(riskProcedureId, rpKey, "level", value, i);
+                        _riskProcedureBloc.updateOneItemForRiskProcedure(riskProcedureId, rpKey, "level", value, i);
                       },
                       decoration: inputDecorationLevel
                   ),
@@ -111,7 +130,7 @@ class RiskProcedureEditDialogState extends State<RiskProcedureEditDialog> {
       );
 
       for(int i = 0; i < rpValue.length; i ++) {
-        RiskProcedureItemDescription itemDescription = rpValue[i];
+        RiskProcedureItemDescription itemDescription = RiskProcedureItemDescription.fromJson(rpValue[i]);
         String name = itemDescription.name ?? "";
         String description = itemDescription.description ?? "";
 
@@ -143,8 +162,8 @@ class RiskProcedureEditDialogState extends State<RiskProcedureEditDialog> {
                 Expanded(
                   child: TextFormField(
                       onChanged: (String value) async {
-                        // _rpListBloc.updateOneItemForRiskProcedure(riskProcedureId, rpKey, "name", value, i);
-                        // _rpListBloc.updateOneItemForRiskProcedure(riskProcedureId, rpKey.replaceFirst("Description", ""), "name", value, i);
+                        _riskProcedureBloc.updateOneItemForRiskProcedure(riskProcedureId, rpKey, "name", value, i);
+                        _riskProcedureBloc.updateOneItemForRiskProcedure(riskProcedureId, rpKey.replaceFirst("Description", ""), "name", value, i);
                       },
                       decoration: inputDecorationName
                   ),
@@ -152,7 +171,7 @@ class RiskProcedureEditDialogState extends State<RiskProcedureEditDialog> {
                 Expanded(
                   child: TextFormField(
                       onChanged: (String value) async {
-                        // _rpListBloc.updateOneItemForRiskProcedure(riskProcedureId, rpKey, "description", value, i);
+                        _riskProcedureBloc.updateOneItemForRiskProcedure(riskProcedureId, rpKey, "description", value, i);
                       },
                       decoration: inputDecorationDescription
 
@@ -196,7 +215,7 @@ class RiskProcedureEditDialogState extends State<RiskProcedureEditDialog> {
       Map<String, dynamic> mapRiskProcedure = riskProcedure.toJson();
       mapRiskProcedure.forEach((key, value) {
         value = value ?? "";
-        if (key.compareTo("riskProcedureId") != 0 && key.compareTo("isApprove") != 0) {
+        if (key.compareTo("riskProcedureId") != 0 && key.compareTo("isApprove") != 0 && key.compareTo("mapRiskEstimation") != 0) {
 
           Widget itemWidget;
 
@@ -212,7 +231,7 @@ class RiskProcedureEditDialogState extends State<RiskProcedureEditDialog> {
 
             itemWidget = new TextFormField(
               onChanged: (String value) async {
-                // _rpListBloc.updateHarmForRiskProcedure(riskProcedure.riskProcedureId, value);
+                _riskProcedureBloc.updateHarmForRiskProcedure(riskProcedure.riskProcedureId, value);
               },
               decoration: new InputDecoration(
                 labelText: value.toString(),
@@ -233,29 +252,50 @@ class RiskProcedureEditDialogState extends State<RiskProcedureEditDialog> {
       });
     }
 
-    tiles.add(RiskEstimationTable(riskProcedure));
+    tiles.add(RiskEstimationTable(riskProcedure, callback, true));
 
     return ListBody(
       children: tiles,
     );
   }
 
+  callback(Map<String, dynamic> selectedValue) {
+    print("this is risk_estimation_edit_dialog selectedValue " + selectedValue.toString());
+  }
+
   @override
   Widget build(BuildContext context) {
+
     return new Scaffold(
       appBar: new AppBar(
         title: const Text('Edit Risk Procedure'),
         actions: [
           new FlatButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: new Text('SAVE'),
+            onPressed: () {
+              _riskProcedureBloc.saveRiskProcedure();
+              widget._callback({"" : ""});
+              Navigator.of(context).pop();
+            },
+            child: new Text('SAVE'),
           )
         ],
       ),
       body: SingleChildScrollView(
-        child: _buildRiskProcedureEditDialog(widget._riskProcedure),
+        child: BlocProvider<RiskProcedureBloc>(
+          bloc: _riskProcedureBloc,
+          child: StreamBuilder(
+            stream: _riskProcedureBloc.riskProcedureStream,
+            builder: (context, snapshot) {
+              Map<String,dynamic> mapRiskProcedure = snapshot.data;
+              print("StreamBuilder mapRiskProcedure " + mapRiskProcedure.toString() + " _riskProcedure " + widget._riskProcedure.toJson().toString());
+              if (mapRiskProcedure == null) {
+                return SizedBox.shrink();
+              } else {
+                return _buildRiskProcedureEditDialog(RiskProcedure.fromJson(mapRiskProcedure));
+              }
+            }
+          ),
+        ),
       ),
     );
   }

@@ -92,7 +92,7 @@ class _DropDownMenuState extends State<DropDownMenu> {
     } else if (widget._tag.compareTo(Constants.dropdown_admin_user_permission) == 0) {
       widget._callback({"userId" : widget._id, "userPermission" : Constants.map_permission[value]});
     } else if (widget._tag.compareTo(Constants.dropdown_tag_risk_procedure) == 0) {
-
+      widget._callback({"selectedValue" : value, "list" : widget._valueDataList});
     } else if (widget._tag.compareTo(Constants.dropdown_fmea_type_of_action) == 0) {
       int currentIndex = _listValue.indexOf(value);
       Map<String, dynamic> typeOfActionMap = widget._valueDataList.elementAt(currentIndex);

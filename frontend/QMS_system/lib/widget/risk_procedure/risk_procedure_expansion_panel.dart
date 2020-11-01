@@ -48,25 +48,35 @@ class RiskProcedureExpansionPanelWidgetState extends State<RiskProcedureExpansio
     SnackBarUtil.showSnackBar(context, "save Risk Procedure successfully");
   }
 
-  _updateInputtedRiskProcedure(BuildContext context, RiskProcedure riskProcedure) async {
-    /*
-      TO_DO
-      1. check each is empty or not
-      2. showSnackbar for empty field
-     */
-    _rpListBloc.saveRiskProcedure(riskProcedure);
-    _updateUI(context, riskProcedure);
-  }
+  // _updateInputtedRiskProcedure(BuildContext context, RiskProcedure riskProcedure) async {
+  //   /*
+  //     TO_DO
+  //     1. check each is empty or not
+  //     2. showSnackbar for empty field
+  //    */
+  //   _rpListBloc.saveRiskProcedure(riskProcedure);
+  //   _updateUI(context, riskProcedure);
+  // }
 
   _saveEmptyRiskProcedure(BuildContext context) async {
     RiskProcedure riskProcedure = RiskProcedure(
-        riskProcedureId: DateTime.now().millisecondsSinceEpoch.toString(),
-        harm: "",
-        severity: [RiskProcedureItem()],
-        severityDescription: [RiskProcedureItemDescription()],
-        probability: [RiskProcedureItem()],
-        probabilityDescription: [RiskProcedureItemDescription()],
-        isApprove: false);
+      riskProcedureId: DateTime.now().millisecondsSinceEpoch.toString(),
+      harm: "",
+      severity: [RiskProcedureItem(
+        id: DateTime.now().millisecondsSinceEpoch.toString(), level: "", name: "",
+        tag: Constants.map_severity_probability_tag["severity"])],
+      severityDescription: [RiskProcedureItemDescription(
+        itemId: DateTime.now().millisecondsSinceEpoch.toString(), description: "", name: "",
+        tag: Constants.map_severity_probability_tag["severityDescription"])],
+      probability: [RiskProcedureItem(
+        id: DateTime.now().millisecondsSinceEpoch.toString(), level: "", name: "",
+        tag: Constants.map_severity_probability_tag["probability"])],
+      probabilityDescription: [RiskProcedureItemDescription(
+        itemId: DateTime.now().millisecondsSinceEpoch.toString(), description: "", name: "",
+        tag: Constants.map_severity_probability_tag["probabilityDescription"])],
+      mapRiskEstimation: {},
+      isApprove: false);
+    print("_saveEmptyRiskProcedure riskProcedure " + riskProcedure.toJson().toString());
     _rpListBloc.addRiskProcedure(riskProcedure);
     _updateUI(context,riskProcedure);
   }
@@ -121,7 +131,7 @@ class RiskProcedureExpansionPanelWidgetState extends State<RiskProcedureExpansio
       );
 
       for(int i = 0; i < rpValue.length; i ++) {
-        RiskProcedureItem item = rpValue[i];
+        RiskProcedureItem item = RiskProcedureItem.fromJson(rpValue[i]);
         String name = item.name ?? "";
         String level = item.level ?? "";
 
@@ -139,7 +149,6 @@ class RiskProcedureExpansionPanelWidgetState extends State<RiskProcedureExpansio
         );
       }
     } else {
-
       rowList.add(
         Row(
           children: <Widget>[
@@ -150,7 +159,7 @@ class RiskProcedureExpansionPanelWidgetState extends State<RiskProcedureExpansio
       );
 
       for(int i = 0; i < rpValue.length; i ++) {
-        RiskProcedureItemDescription itemDescription = rpValue[i];
+        RiskProcedureItemDescription itemDescription = RiskProcedureItemDescription.fromJson(rpValue[i]);
         String name = itemDescription.name ?? "";
         String description = itemDescription.description ?? "";
 
@@ -201,7 +210,7 @@ class RiskProcedureExpansionPanelWidgetState extends State<RiskProcedureExpansio
       Map<String, dynamic> mapRiskProcedure = riskProcedure.toJson();
       mapRiskProcedure.forEach((key, value) {
         value = value ?? "";
-        if (key.compareTo("riskProcedureId") != 0 && key.compareTo("isApprove") != 0) {
+        if (key.compareTo("riskProcedureId") != 0 && key.compareTo("isApprove") != 0 && key.compareTo("mapRiskEstimation") != 0) {
 
           Widget widget;
 
@@ -231,18 +240,24 @@ class RiskProcedureExpansionPanelWidgetState extends State<RiskProcedureExpansio
       });
     }
 
-    tiles.add(RiskEstimationTable(riskProcedure));
+    tiles.add(RiskEstimationTable(riskProcedure, callback, false));
 
     return ListBody(
       children: tiles,
     );
   }
 
+  callback(Map<String, dynamic> selectedValue) {
+    print("this is risk_procedure_expansion_panel selectedValue " + selectedValue.toString());
+    // _updateInputtedRiskProcedure(context, riskProcedure);
+    _rpListBloc.getAllRiskProcedure();
+  }
+
   _showDialog(RiskProcedure riskProcedure) {
     Navigator.of(context).push(new MaterialPageRoute(
       builder: (BuildContext context) {
         return Container(
-          child: RiskProcedureEditDialog(riskProcedure),
+          child: RiskProcedureEditDialog(riskProcedure, callback),
         );
       },
       fullscreenDialog: true,
@@ -251,7 +266,7 @@ class RiskProcedureExpansionPanelWidgetState extends State<RiskProcedureExpansio
 
   List<IconButton> _buildItemExpansionPanelButtons(BuildContext context, RiskProcedure riskProcedure) {
     List<IconButton> list = [];
-    list.add(IconButton(icon: Icon(Icons.save, size: 25.0, color: Color(0xFF50AFC0),), onPressed: () {_updateInputtedRiskProcedure(context, riskProcedure);},));
+    // list.add(IconButton(icon: Icon(Icons.save, size: 25.0, color: Color(0xFF50AFC0),), onPressed: () {_updateInputtedRiskProcedure(context, riskProcedure);},));
     list.add(IconButton(icon: Icon(Icons.delete, size: 25.0, color: Color(0xFF50AFC0),), onPressed: () {_removeRisProcedure(context, riskProcedure);},));
     list.add(IconButton(icon: Icon(Icons.edit, size: 25.0, color: Color(0xFF50AFC0),), onPressed: () { _showDialog(riskProcedure); },));
 

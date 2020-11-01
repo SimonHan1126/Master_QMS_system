@@ -1,4 +1,3 @@
-
 class RiskProcedure{
   String riskProcedureId;
   String harm;
@@ -6,9 +5,10 @@ class RiskProcedure{
   List<RiskProcedureItemDescription> severityDescription;
   List<RiskProcedureItem> probability;
   List<RiskProcedureItemDescription> probabilityDescription;
+  Map<String,dynamic> mapRiskEstimation;
   bool isApprove;
 
-  RiskProcedure({this.riskProcedureId, this.severity, this.severityDescription, this.probability, this.probabilityDescription, this.isApprove, this.harm});
+  RiskProcedure({this.riskProcedureId, this.severity, this.severityDescription, this.probability, this.probabilityDescription, this.isApprove, this.harm, this.mapRiskEstimation});
 
   RiskProcedure.fromJson(Map<String, dynamic> json)
       : riskProcedureId = json['riskProcedureId'],
@@ -17,48 +17,62 @@ class RiskProcedure{
         severityDescription = json['severityDescription'].map<RiskProcedureItemDescription>((json) => RiskProcedureItemDescription.fromJson(json)).toList(growable: false),
         probability = json['probability'].map<RiskProcedureItem>((json) => RiskProcedureItem.fromJson(json)).toList(growable: false),
         probabilityDescription = json['probabilityDescription'].map<RiskProcedureItemDescription>((json) => RiskProcedureItemDescription.fromJson(json)).toList(growable: false),
-        isApprove = json['isApprove'];
+        isApprove = json['isApprove'],
+        mapRiskEstimation = json['mapRiskEstimation'];
 
   Map<String, dynamic> toJson() =>
       {
         'riskProcedureId': riskProcedureId,
         'harm': harm,
-        'severity': severity,
-        'severityDescription': severityDescription,
-        'probability': probability,
-        'probabilityDescription': probabilityDescription,
+        'severity': severity.map<Map<String,dynamic>>((item) => item.toJson()).toList(growable: false),
+        'severityDescription': severityDescription.map<Map<String,dynamic>>((item) => item.toJson()).toList(growable: false),
+        'probability': probability.map<Map<String,dynamic>>((item) => item.toJson()).toList(growable: false),
+        'probabilityDescription': probabilityDescription.map<Map<String,dynamic>>((item) => item.toJson()).toList(growable: false),
         'isApprove': isApprove,
+        'mapRiskEstimation': mapRiskEstimation,
       };
 }
 
 class RiskProcedureItem {
+  String id;
   String level;
   String name;
+  String tag;
 
-  RiskProcedureItem({this.level, this.name});
+  RiskProcedureItem({this.id, this.level, this.name, this.tag});
 
   RiskProcedureItem.fromJson(Map<String, dynamic> json)
     : level = json['level'],
-      name = json['name'];
+      name = json['name'],
+      id = json["id"],
+      tag = json["tag"];
 
   Map<String, dynamic> toJson() => {
     'level' : level,
-    'name' : name
+    'name' : name,
+    'id' : id,
+    'tag' : tag
   };
 }
 
 class RiskProcedureItemDescription {
+  String itemId;
   String name;
   String description;
+  String tag;
 
-  RiskProcedureItemDescription({this.description, this.name});
+  RiskProcedureItemDescription({this.itemId, this.description, this.name, this.tag});
 
   RiskProcedureItemDescription.fromJson(Map<String, dynamic> json)
       : description = json['description'],
-        name = json['name'];
+        name = json['name'],
+        itemId = json["itemId"],
+        tag = json["tag"];
 
   Map<String, dynamic> toJson() => {
     'description' : description,
-    'name' : name
+    'name' : name,
+    'itemId' : itemId,
+    'tag' : tag
   };
 }

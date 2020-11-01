@@ -80,4 +80,19 @@ class Constants {
     "probability" : "Probability",
     "probabilityDescription" :  "Probability Description"
   };
+
+  static const Map<String, MaterialColor> map_severity_probability_level_to_color = {
+    "LOW" : Colors.green,
+    "MEDIUM" : Colors.amber,
+    "HIGH" : Colors.red,
+  };
+
+  static const List<String> list_severity_probability_level = ["LOW","MEDIUM","HIGH"];
+
+  static const Map<String, String> map_severity_probability_tag = {
+    "severity" : "0",
+    "probability" : "1",
+    "severityDescription" : "2",
+    "probabilityDescription" : "3"
+  };
 }

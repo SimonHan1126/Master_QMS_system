@@ -7,7 +7,11 @@ class RiskEstimationTable extends StatefulWidget {
 
   final RiskProcedure riskProcedure;
 
-  RiskEstimationTable(this.riskProcedure);
+  final Function(Map<String, dynamic>) _callback;
+
+  final bool _isShowDropdownMenu;
+
+  RiskEstimationTable(this.riskProcedure, this._callback, this._isShowDropdownMenu);
 
   @override
   _RiskEstimationTableState createState() => _RiskEstimationTableState();
@@ -17,6 +21,7 @@ class _RiskEstimationTableState extends State<RiskEstimationTable> {
 
   callback(Map<String, dynamic> selectedValue) {
     print("this is risk_estimation_table selectedValue " + selectedValue.toString());
+    widget._callback(selectedValue);
   }
 
   List<TableRow> _buildTableRowItemList(List<RiskProcedureItem> listSeverity, List<RiskProcedureItem> listProbability) {
@@ -25,15 +30,10 @@ class _RiskEstimationTableState extends State<RiskEstimationTable> {
     int listSeverityLength = listSeverity.length;
     int listProbabilityLength = listProbability.length;
 
-    Map<String, MaterialColor> contentMap = {
-      "LOW" : Colors.green,
-      "MEDIUM" : Colors.amber,
-      "HIGH" : Colors.red,
-    };
-
     for (int i = 0; i < listProbabilityLength; i++) {
       List<Widget> subTiles = [];
       RiskProcedureItem probabilityItem = listProbability.elementAt(i);
+      print("############## PROBABILITY_ITEM " + probabilityItem.toJson().toString());
       String probabilityName = probabilityItem.name ?? "";
       subTiles.add(Container(
         padding: EdgeInsets.fromLTRB(15, 15, 15, 15),
@@ -44,8 +44,26 @@ class _RiskEstimationTableState extends State<RiskEstimationTable> {
         ),
       ));
       for (int j = 0; j < listSeverityLength; j++) {
+        RiskProcedureItem severityItem = listSeverity.elementAt(j);
+        print("############## SEVERITY_ITEM " + severityItem.toJson().toString());
+
+        Widget itemWidget;
+        if (widget._isShowDropdownMenu) {
+          itemWidget =  DropDownMenu(
+              Constants.dropdown_tag_risk_procedure,
+              widget.riskProcedure.riskProcedureId,
+              Constants.list_severity_probability_level[0],
+              Colors.green,
+              Constants.list_severity_probability_level,
+              Constants.map_severity_probability_level_to_color,
+              callback);
+        } else {
+          String riskLevel = Constants.list_severity_probability_level[0];
+          itemWidget = Text(riskLevel, style: TextStyle(backgroundColor: Constants.map_severity_probability_level_to_color[riskLevel]));
+        }
+
         subTiles.add(Column(
-          children: [DropDownMenu(Constants.dropdown_tag_risk_procedure, widget.riskProcedure.riskProcedureId, "LOW", Colors.green, ["LOW","MEDIUM","HIGH"],contentMap, callback)],
+          children: [itemWidget],
         ));
       }
 
@@ -99,5 +117,11 @@ class _RiskEstimationTableState extends State<RiskEstimationTable> {
         children: _buildTableRowItemList(listSeverity, listProbability),
       ),
     );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> RISK_ESTIMATION_TABLE " + widget.riskProcedure.riskProcedureId);
   }
 }
