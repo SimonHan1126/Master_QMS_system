@@ -2,6 +2,7 @@ import 'package:QMS_system/constant/constants.dart';
 import 'package:QMS_system/bloc/bloc_provider.dart';
 import 'package:QMS_system/bloc/user_list_bloc.dart';
 import 'package:QMS_system/model/user.dart';
+import 'package:QMS_system/util/base_util.dart';
 import 'package:QMS_system/util/screen_util.dart';
 import 'package:QMS_system/util/size_util.dart';
 import 'package:QMS_system/widget/common/drop_down_menu.dart';
@@ -129,7 +130,7 @@ class AdminPageState extends State<AdminPage> {
       ));
     }
     list.add(FlatButton(onPressed: (){
-      _userListBloc.addUser(User(DateTime.now().millisecondsSinceEpoch.toString(), "", "",0));
+      _userListBloc.addUser(User(BaseUtil.getCurrentTimestamp(), "", "",0));
     }, child: Text("Add User", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20, color: Color(0xFF50AFC0)))));
     return ListBody(
       children: list,

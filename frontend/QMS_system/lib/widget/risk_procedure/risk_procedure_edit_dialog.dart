@@ -231,7 +231,7 @@ class RiskProcedureEditDialogState extends State<RiskProcedureEditDialog> {
 
             itemWidget = new TextFormField(
               onChanged: (String value) async {
-                _riskProcedureBloc.updateHarmForRiskProcedure(riskProcedure.riskProcedureId, value);
+                _riskProcedureBloc.updateHarmForRiskProcedure(value);
               },
               decoration: new InputDecoration(
                 labelText: value.toString(),
@@ -261,6 +261,10 @@ class RiskProcedureEditDialogState extends State<RiskProcedureEditDialog> {
 
   callback(Map<String, dynamic> selectedValue) {
     print("this is risk_estimation_edit_dialog selectedValue " + selectedValue.toString());
+    String riskLevel = selectedValue["riskLevel"];
+    String probabilityId = selectedValue["probabilityId"];
+    String severityId = selectedValue["severityId"];
+    _riskProcedureBloc.updateRiskEstimation(severityId, probabilityId, riskLevel);
   }
 
   @override
@@ -287,7 +291,6 @@ class RiskProcedureEditDialogState extends State<RiskProcedureEditDialog> {
             stream: _riskProcedureBloc.riskProcedureStream,
             builder: (context, snapshot) {
               Map<String,dynamic> mapRiskProcedure = snapshot.data;
-              print("StreamBuilder mapRiskProcedure " + mapRiskProcedure.toString() + " _riskProcedure " + widget._riskProcedure.toJson().toString());
               if (mapRiskProcedure == null) {
                 return SizedBox.shrink();
               } else {

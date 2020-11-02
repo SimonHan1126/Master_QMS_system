@@ -1,17 +1,18 @@
 import 'package:QMS_system/constant/constants.dart';
 import 'package:QMS_system/model/risk_procedure.dart';
+import 'package:QMS_system/util/base_util.dart';
 import 'package:QMS_system/widget/common/drop_down_menu.dart';
 import 'package:flutter/material.dart';
 
 class RiskEstimationTable extends StatefulWidget {
 
-  final RiskProcedure riskProcedure;
+  final RiskProcedure _riskProcedure;
 
   final Function(Map<String, dynamic>) _callback;
 
   final bool _isShowDropdownMenu;
 
-  RiskEstimationTable(this.riskProcedure, this._callback, this._isShowDropdownMenu);
+  RiskEstimationTable(this._riskProcedure, this._callback, this._isShowDropdownMenu);
 
   @override
   _RiskEstimationTableState createState() => _RiskEstimationTableState();
@@ -20,7 +21,6 @@ class RiskEstimationTable extends StatefulWidget {
 class _RiskEstimationTableState extends State<RiskEstimationTable> {
 
   callback(Map<String, dynamic> selectedValue) {
-    print("this is risk_estimation_table selectedValue " + selectedValue.toString());
     widget._callback(selectedValue);
   }
 
@@ -33,7 +33,6 @@ class _RiskEstimationTableState extends State<RiskEstimationTable> {
     for (int i = 0; i < listProbabilityLength; i++) {
       List<Widget> subTiles = [];
       RiskProcedureItem probabilityItem = listProbability.elementAt(i);
-      print("############## PROBABILITY_ITEM " + probabilityItem.toJson().toString());
       String probabilityName = probabilityItem.name ?? "";
       subTiles.add(Container(
         padding: EdgeInsets.fromLTRB(15, 15, 15, 15),
@@ -45,20 +44,23 @@ class _RiskEstimationTableState extends State<RiskEstimationTable> {
       ));
       for (int j = 0; j < listSeverityLength; j++) {
         RiskProcedureItem severityItem = listSeverity.elementAt(j);
-        print("############## SEVERITY_ITEM " + severityItem.toJson().toString());
-
+        List<Map<String,dynamic>> rpiList = [];
+        rpiList.add(probabilityItem.toJson());
+        rpiList.add(severityItem.toJson());
         Widget itemWidget;
+        Map<String, dynamic> mapRiskEstimation = widget._riskProcedure.mapRiskEstimation;
+        String riskLevelKey = BaseUtil.getRiskEstimationKey(probabilityItem.id, severityItem.id);
+        String riskLevel = mapRiskEstimation[riskLevelKey]??Constants.list_severity_probability_level[0];
         if (widget._isShowDropdownMenu) {
           itemWidget =  DropDownMenu(
               Constants.dropdown_tag_risk_procedure,
-              widget.riskProcedure.riskProcedureId,
-              Constants.list_severity_probability_level[0],
+              widget._riskProcedure.riskProcedureId,
+              riskLevel,
               Colors.green,
-              Constants.list_severity_probability_level,
+              rpiList,
               Constants.map_severity_probability_level_to_color,
               callback);
         } else {
-          String riskLevel = Constants.list_severity_probability_level[0];
           itemWidget = Text(riskLevel, style: TextStyle(backgroundColor: Constants.map_severity_probability_level_to_color[riskLevel]));
         }
 
@@ -97,8 +99,8 @@ class _RiskEstimationTableState extends State<RiskEstimationTable> {
 
   @override
   Widget build(BuildContext context) {
-    List<RiskProcedureItem> listSeverity = widget.riskProcedure.severity;
-    List<RiskProcedureItem> listProbability = widget.riskProcedure.probability;
+    List<RiskProcedureItem> listSeverity = widget._riskProcedure.severity;
+    List<RiskProcedureItem> listProbability = widget._riskProcedure.probability;
 
     Map<int, FractionColumnWidth> mapFractionColumnWidth = {};
     int listSeverityLength = listSeverity.length;
@@ -122,6 +124,5 @@ class _RiskEstimationTableState extends State<RiskEstimationTable> {
   @override
   void initState() {
     super.initState();
-    print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> RISK_ESTIMATION_TABLE " + widget.riskProcedure.riskProcedureId);
   }
 }

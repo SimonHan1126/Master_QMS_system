@@ -3,6 +3,7 @@ import 'package:QMS_system/bloc/risk_procedure_list_bloc.dart';
 import 'package:QMS_system/constant/constants.dart';
 import 'package:QMS_system/model/risk_procedure.dart';
 import 'package:QMS_system/model/user.dart';
+import 'package:QMS_system/util/base_util.dart';
 import 'package:QMS_system/util/risk_procedure_data.dart';
 import 'package:QMS_system/util/snackbar_util.dart';
 import 'package:QMS_system/widget/risk_procedure/risk_estimation_table.dart';
@@ -60,19 +61,19 @@ class RiskProcedureExpansionPanelWidgetState extends State<RiskProcedureExpansio
 
   _saveEmptyRiskProcedure(BuildContext context) async {
     RiskProcedure riskProcedure = RiskProcedure(
-      riskProcedureId: DateTime.now().millisecondsSinceEpoch.toString(),
+      riskProcedureId: BaseUtil.getCurrentTimestamp(),
       harm: "",
       severity: [RiskProcedureItem(
-        id: DateTime.now().millisecondsSinceEpoch.toString(), level: "", name: "",
+        id: BaseUtil.getCurrentTimestamp(), level: "", name: "",
         tag: Constants.map_severity_probability_tag["severity"])],
       severityDescription: [RiskProcedureItemDescription(
-        itemId: DateTime.now().millisecondsSinceEpoch.toString(), description: "", name: "",
+        itemId: BaseUtil.getCurrentTimestamp(), description: "", name: "",
         tag: Constants.map_severity_probability_tag["severityDescription"])],
       probability: [RiskProcedureItem(
-        id: DateTime.now().millisecondsSinceEpoch.toString(), level: "", name: "",
+        id: BaseUtil.getCurrentTimestamp(), level: "", name: "",
         tag: Constants.map_severity_probability_tag["probability"])],
       probabilityDescription: [RiskProcedureItemDescription(
-        itemId: DateTime.now().millisecondsSinceEpoch.toString(), description: "", name: "",
+        itemId: BaseUtil.getCurrentTimestamp(), description: "", name: "",
         tag: Constants.map_severity_probability_tag["probabilityDescription"])],
       mapRiskEstimation: {},
       isApprove: false);

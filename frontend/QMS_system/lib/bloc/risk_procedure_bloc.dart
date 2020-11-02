@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:QMS_system/constant/constants.dart';
 import 'package:QMS_system/model/risk_procedure.dart';
 import 'package:QMS_system/util/api_base_helper.dart';
+import 'package:QMS_system/util/base_util.dart';
 
 import 'bloc.dart';
 
@@ -18,12 +19,10 @@ class RiskProcedureBloc implements Bloc {
 
   void initRiskProcedure(RiskProcedure riskProcedure) {
     _riskProcedure = riskProcedure.toJson();
-    print("initRiskProcedure _riskProcedure " + _riskProcedure.toString());
     _riskProcedureController.sink.add(_riskProcedure);
   }
 
   void saveRiskProcedure() async {
-    print("saveRiskProcedure _riskProcedure " + _riskProcedure.toString());
     await _helper.post("risk_procedure/saveRiskProcedure", _riskProcedure);
   }
 
@@ -34,7 +33,7 @@ class RiskProcedureBloc implements Bloc {
       targetList.add(listRPI.elementAt(i));
     }
     targetList.add(RiskProcedureItem(
-        id: DateTime.now().millisecondsSinceEpoch.toString(), level: "", name: "",
+        id: BaseUtil.getCurrentTimestamp(), level: "", name: "",
         tag: Constants.map_severity_probability_tag[riskProcedureKey]).toJson());
     _riskProcedure[riskProcedureKey] = targetList;
     _riskProcedureController.sink.add(_riskProcedure);
@@ -55,7 +54,7 @@ class RiskProcedureBloc implements Bloc {
       targetList.add(listRPI.elementAt(i));
     }
     targetList.add(RiskProcedureItemDescription(
-        itemId: DateTime.now().millisecondsSinceEpoch.toString(), description: "", name: "",
+        itemId: BaseUtil.getCurrentTimestamp(), description: "", name: "",
         tag: Constants.map_severity_probability_tag[riskProcedureKey]).toJson());
     _riskProcedure[descriptionKey] = targetList;
     _riskProcedureController.sink.add(_riskProcedure);
@@ -75,8 +74,16 @@ class RiskProcedureBloc implements Bloc {
     _riskProcedureController.sink.add(_riskProcedure);
   }
 
-  void updateHarmForRiskProcedure(String riskProcedureId, String harm) {
+  void updateHarmForRiskProcedure(String harm) {
     _riskProcedure["harm"] = harm;
+    _riskProcedureController.sink.add(_riskProcedure);
+  }
+
+  void updateRiskEstimation(String severityId, String probabilityId, String riskLevel) {
+    Map<String,dynamic> mapRiskEstimation = _riskProcedure["mapRiskEstimation"] ?? {};
+    String key = BaseUtil.getRiskEstimationKey(probabilityId, severityId);
+    mapRiskEstimation[key] = riskLevel;
+    _riskProcedure["mapRiskEstimation"] = mapRiskEstimation;
     _riskProcedureController.sink.add(_riskProcedure);
   }
 

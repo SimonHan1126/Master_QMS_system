@@ -92,7 +92,18 @@ class _DropDownMenuState extends State<DropDownMenu> {
     } else if (widget._tag.compareTo(Constants.dropdown_admin_user_permission) == 0) {
       widget._callback({"userId" : widget._id, "userPermission" : Constants.map_permission[value]});
     } else if (widget._tag.compareTo(Constants.dropdown_tag_risk_procedure) == 0) {
-      widget._callback({"selectedValue" : value, "list" : widget._valueDataList});
+      List<Map<String, dynamic>> list = widget._valueDataList??[];
+      String probabilityId = "";
+      String severityId = "";
+      for (int i = 0; i < list.length; i++) {
+        Map<String, dynamic> itemMap = list[i];
+        if (itemMap["tag"].compareTo(Constants.map_severity_probability_tag["severity"]) == 0) {
+          severityId = itemMap["id"];
+        } else if (itemMap["tag"].compareTo(Constants.map_severity_probability_tag["probability"]) == 0) {
+          probabilityId = itemMap["id"];
+        }
+      }
+      widget._callback({"riskLevel" : value, "probabilityId" : probabilityId, "severityId" : severityId});
     } else if (widget._tag.compareTo(Constants.dropdown_fmea_type_of_action) == 0) {
       int currentIndex = _listValue.indexOf(value);
       Map<String, dynamic> typeOfActionMap = widget._valueDataList.elementAt(currentIndex);

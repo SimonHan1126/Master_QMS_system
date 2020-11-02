@@ -6,6 +6,7 @@ import 'package:QMS_system/model/dropdwon_probability_item.dart';
 import 'package:QMS_system/model/fmea_table.dart';
 import 'package:QMS_system/model/risk_procedure.dart';
 import 'package:QMS_system/model/user.dart';
+import 'package:QMS_system/util/base_util.dart';
 import 'package:QMS_system/util/risk_procedure_data.dart';
 import 'package:QMS_system/util/snackbar_util.dart';
 import 'package:QMS_system/widget/common/drop_down_menu.dart';
@@ -99,7 +100,7 @@ class FMEATableExpansionPanelWidgetState extends State<FMEATableExpansionPanelWi
 
   _saveEmptyFMEATable(BuildContext context) async {
     FMEATable fmeaTable = FMEATable(
-      hazardId: DateTime.now().millisecondsSinceEpoch.toString(),
+      hazardId: BaseUtil.getCurrentTimestamp(),
       hazardClass: "",
       sourceId: "",
       foreseeableSequenceOfEvents: "",
