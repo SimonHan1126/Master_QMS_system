@@ -1,6 +1,6 @@
 import 'package:QMS_system/model/user.dart';
 import 'package:QMS_system/widget/common/sub_page_title.dart';
-import 'package:QMS_system/widget/fmea_table/fmea_table_expansion_panel.dart';
+import 'package:QMS_system/widget/fmea_table/fmea_spreadsheet_table.dart';
 import 'package:flutter/material.dart';
 
 class FMEATablePage extends StatefulWidget {
@@ -29,7 +29,8 @@ class _FMEATablePageState extends State<FMEATablePage> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             SubPageTitle(title: "FMEA Table Management"),
-            FMEATableExpansionPanelWidget(widget._user)
+            // FMEATableExpansionPanelWidget(widget._user)
+            FMEASpreadsheetTable()
           ],
         ),
       ),

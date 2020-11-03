@@ -49,16 +49,6 @@ class RiskProcedureExpansionPanelWidgetState extends State<RiskProcedureExpansio
     SnackBarUtil.showSnackBar(context, "save Risk Procedure successfully");
   }
 
-  // _updateInputtedRiskProcedure(BuildContext context, RiskProcedure riskProcedure) async {
-  //   /*
-  //     TO_DO
-  //     1. check each is empty or not
-  //     2. showSnackbar for empty field
-  //    */
-  //   _rpListBloc.saveRiskProcedure(riskProcedure);
-  //   _updateUI(context, riskProcedure);
-  // }
-
   _saveEmptyRiskProcedure(BuildContext context) async {
     RiskProcedure riskProcedure = RiskProcedure(
       riskProcedureId: BaseUtil.getCurrentTimestamp(),
@@ -77,7 +67,6 @@ class RiskProcedureExpansionPanelWidgetState extends State<RiskProcedureExpansio
         tag: Constants.map_severity_probability_tag["probabilityDescription"])],
       mapRiskEstimation: {},
       isApprove: false);
-    print("_saveEmptyRiskProcedure riskProcedure " + riskProcedure.toJson().toString());
     _rpListBloc.addRiskProcedure(riskProcedure);
     _updateUI(context,riskProcedure);
   }
@@ -249,8 +238,6 @@ class RiskProcedureExpansionPanelWidgetState extends State<RiskProcedureExpansio
   }
 
   callback(Map<String, dynamic> selectedValue) {
-    print("this is risk_procedure_expansion_panel selectedValue " + selectedValue.toString());
-    // _updateInputtedRiskProcedure(context, riskProcedure);
     _rpListBloc.getAllRiskProcedure();
   }
 
@@ -267,7 +254,6 @@ class RiskProcedureExpansionPanelWidgetState extends State<RiskProcedureExpansio
 
   List<IconButton> _buildItemExpansionPanelButtons(BuildContext context, RiskProcedure riskProcedure) {
     List<IconButton> list = [];
-    // list.add(IconButton(icon: Icon(Icons.save, size: 25.0, color: Color(0xFF50AFC0),), onPressed: () {_updateInputtedRiskProcedure(context, riskProcedure);},));
     list.add(IconButton(icon: Icon(Icons.delete, size: 25.0, color: Color(0xFF50AFC0),), onPressed: () {_removeRisProcedure(context, riskProcedure);},));
     list.add(IconButton(icon: Icon(Icons.edit, size: 25.0, color: Color(0xFF50AFC0),), onPressed: () { _showDialog(riskProcedure); },));
 
@@ -297,12 +283,13 @@ class RiskProcedureExpansionPanelWidgetState extends State<RiskProcedureExpansio
         final RiskProcedure element = item.riskProcedure;
         element.isApprove??=false;
         final isApproveText = element.isApprove ? "Approved" : "Unapproved";
+        String harm = element.harm.length > 0 ? element.harm : "New Risk Procedure";
         return ExpansionPanel(
           headerBuilder: (context, isExpandEd) {
             return ListTile(
               title: RichText(
                 text: TextSpan(
-                  text: "Risk Procedure " + element.riskProcedureId ,
+                  text: harm ,
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20, color: Colors.black),
                   children: <TextSpan>[
                     TextSpan(

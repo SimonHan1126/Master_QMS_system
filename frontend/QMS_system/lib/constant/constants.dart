@@ -81,6 +81,23 @@ class Constants {
     "probabilityDescription" :  "Probability Description"
   };
 
+  static const Map<String, String> map_fmea_table_sub_title = {
+    "hazardClass"                 : "Hazard Class",
+    "sourceId"                    : "Source Id",
+    "foreseeableSequenceOfEvents" : "Foreseeable Sequence of Events",
+    "hazardousSituation"          : "Hazardous Situation",
+    "harm"                        : "Harm",
+    "severityOfHarm"              : "Severity of Harm",
+    "probability"                 : "Probability",
+    "riskPriority"                : "Risk Priority",
+    "recommendingAction"          : "Recommending Action",
+    "typeOfAction"                : "Type of Action",
+    "actionDone"                  : "Action Done",
+    "severityOfHarm2"             : "Severity Of Harm 2",
+    "probability2"                : "Probability 2",
+    "residualRisk"                : "Residual Risk",
+  };
+
   static const Map<String, MaterialColor> map_severity_probability_level_to_color = {
     "LOW" : Colors.green,
     "MEDIUM" : Colors.amber,

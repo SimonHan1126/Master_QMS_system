@@ -2,6 +2,8 @@ import 'package:QMS_system/constant/constants.dart';
 import 'package:QMS_system/constant/text_styles.dart';
 import 'package:QMS_system/model/user.dart';
 import 'package:QMS_system/pages/admin.dart';
+import 'package:QMS_system/pages/example_page.dart';
+import 'package:QMS_system/widget/fmea_table/fmea_spreadsheet_table.dart';
 import 'package:QMS_system/pages/fmea_table_page.dart';
 import 'package:QMS_system/pages/login_page.dart';
 import 'package:QMS_system/pages/report_page.dart';
@@ -61,7 +63,8 @@ class HomePageState extends State<HomePage> {
       case 1:
         return FMEATablePage(widget._user);
       case 2:
-        return AdminPage();
+        return ExamplePage();
+        // return AdminPage();
         // return ReportPage();
       case 3:
         return Container();

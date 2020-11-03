@@ -32,23 +32,6 @@ class FMEATableExpansionPanelWidgetState extends State<FMEATableExpansionPanelWi
 
   Map<String, String> _textFieldContentMap = {};
 
-  Map<String, String> _subTitleMap = {
-    "hazardClass"                 : "Hazard Class",
-    "sourceId"                    : "Source Id",
-    "foreseeableSequenceOfEvents" : "Foreseeable Sequence of Events",
-    "hazardousSituation"          : "Hazardous Situation",
-    "harm"                        : "Harm",
-    "severityOfHarm"              : "Severity of Harm",
-    "probability"                 : "Probability",
-    "riskPriority"                : "Risk Priority",
-    "recommendingAction"          : "Recommending Action",
-    "typeOfAction"                : "Type of Action",
-    "actionDone"                  : "Action Done",
-    "severityOfHarm2"             : "Severity Of Harm 2",
-    "probability2"                : "Probability 2",
-    "residualRisk"                : "Residual Risk",
-  };
-
   List<Item> _expansionPanelContentList = [];
 
   //key: riskProcedureId
@@ -210,7 +193,6 @@ class FMEATableExpansionPanelWidgetState extends State<FMEATableExpansionPanelWi
 
     severityName = severityName??dropdownSeverityItemList[0].severityName;
     severityLevel = severityLevel??dropdownSeverityItemList[0].severityLevel;
-    // _textFieldContentMap[fmeaTableKey + fmeaTable.hazardId] = severityName;
     _severityLevelMap[fmeaTableKey + fmeaTable.hazardId] = severityLevel;
     return Column(
       children: [DropDownMenu(
@@ -260,7 +242,6 @@ class FMEATableExpansionPanelWidgetState extends State<FMEATableExpansionPanelWi
 
     probabilityName = probabilityName??dropdownProbabilityItemList[0].probabilityName;
     probabilityLevel = probabilityLevel??dropdownProbabilityItemList[0].probabilityLevel;
-    // _textFieldContentMap[fmeaTableKey + fmeaTable.hazardId] = probabilityName;
     _probabilityLevelMap[fmeaTableKey + fmeaTable.hazardId] = probabilityLevel;
    
     return Column(
@@ -311,10 +292,14 @@ class FMEATableExpansionPanelWidgetState extends State<FMEATableExpansionPanelWi
   }
 
   Widget _buildExpansionPanelItemList(FMEATable fmeaTable) {
-    String severityLevel = _severityLevelMap["severityOfHarm" + fmeaTable.hazardId]??"1";
-    String probabilityLevel = _probabilityLevelMap["probability" + fmeaTable.hazardId]??"1";
-    String severity2Level = _severityLevelMap["severityOfHarm2" + fmeaTable.hazardId]??"1";
-    String probability2Level = _probabilityLevelMap["probability2" + fmeaTable.hazardId]??"1";
+    _severityLevelMap["severityOfHarm" + fmeaTable.hazardId] = _severityLevelMap["severityOfHarm" + fmeaTable.hazardId]??"1";
+    _probabilityLevelMap["probability" + fmeaTable.hazardId] = _probabilityLevelMap["probability" + fmeaTable.hazardId]??"1";
+    _severityLevelMap["severityOfHarm2" + fmeaTable.hazardId] = _severityLevelMap["severityOfHarm2" + fmeaTable.hazardId]??"1";
+    _probabilityLevelMap["probability2" + fmeaTable.hazardId] = _probabilityLevelMap["probability2" + fmeaTable.hazardId]??"1";
+    String severityLevel = _severityLevelMap["severityOfHarm" + fmeaTable.hazardId].length > 0 ? _severityLevelMap["severityOfHarm" + fmeaTable.hazardId] : "1";
+    String probabilityLevel = _probabilityLevelMap["probability" + fmeaTable.hazardId].length > 0 ? _probabilityLevelMap["probability" + fmeaTable.hazardId] : "1";
+    String severity2Level = _severityLevelMap["severityOfHarm2" + fmeaTable.hazardId].length > 0 ? _severityLevelMap["severityOfHarm2" + fmeaTable.hazardId] : "1";
+    String probability2Level = _probabilityLevelMap["probability2" + fmeaTable.hazardId].length > 0 ? _probabilityLevelMap["probability2" + fmeaTable.hazardId] : "1";
     List<Widget> tiles = [];
     if(fmeaTable != null) {
       Map<String, dynamic> mapFMEATable = fmeaTable.toJson();
@@ -325,7 +310,7 @@ class FMEATableExpansionPanelWidgetState extends State<FMEATableExpansionPanelWi
           tiles.add(
               Container(
                 padding: EdgeInsets.all(10),
-                child:  Text(_subTitleMap[key], style: TextStyle(fontWeight: FontWeight.bold)),
+                child:  Text(Constants.map_fmea_table_sub_title[key], style: TextStyle(fontWeight: FontWeight.bold)),
               )
           );
           Widget expansionItemWidget;
@@ -350,7 +335,7 @@ class FMEATableExpansionPanelWidgetState extends State<FMEATableExpansionPanelWi
                   _textFieldContentMap[key + fmeaTable.hazardId] = value;
                 },
                 decoration: InputDecoration(
-                  hintText: "Enter " + _subTitleMap[key],
+                  hintText: "Enter " + Constants.map_fmea_table_sub_title[key],
                 ),
               );
             }
@@ -386,14 +371,11 @@ class FMEATableExpansionPanelWidgetState extends State<FMEATableExpansionPanelWi
     return list;
   }
 
-
   Widget _buildExpansionPanelList(List<FMEATable> ftList) {
     if (ftList == null || ftList.length <= 0) {
       return SizedBox.shrink();
     }
-
     _initExpansionPanelContentList(ftList);
-
     return ExpansionPanelList(
       expansionCallback: (int panelIndex, bool isExpanded) {
         setState(() {
