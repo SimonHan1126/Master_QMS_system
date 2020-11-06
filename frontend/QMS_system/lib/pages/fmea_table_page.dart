@@ -30,7 +30,7 @@ class _FMEATablePageState extends State<FMEATablePage> {
           children: [
             SubPageTitle(title: "FMEA Table Management"),
             // FMEATableExpansionPanelWidget(widget._user)
-            FMEASpreadsheetTable()
+            FMEASpreadsheetTable(widget._user)
           ],
         ),
       ),

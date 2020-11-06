@@ -25,13 +25,13 @@ class _RiskEstimationTableState extends State<RiskEstimationTable> {
   }
 
   List<TableRow> _buildTableRowItemList(List<RiskProcedureItem> listSeverity, List<RiskProcedureItem> listProbability) {
-    List<TableRow> tiles = [];
+    List<TableRow> tiles = List();
 
     int listSeverityLength = listSeverity.length;
     int listProbabilityLength = listProbability.length;
 
     for (int i = 0; i < listProbabilityLength; i++) {
-      List<Widget> subTiles = [];
+      List<Widget> subTiles = List();
       RiskProcedureItem probabilityItem = listProbability.elementAt(i);
       String probabilityName = probabilityItem.name ?? "";
       subTiles.add(Container(
@@ -44,7 +44,7 @@ class _RiskEstimationTableState extends State<RiskEstimationTable> {
       ));
       for (int j = 0; j < listSeverityLength; j++) {
         RiskProcedureItem severityItem = listSeverity.elementAt(j);
-        List<Map<String,dynamic>> rpiList = [];
+        List<Map<String,dynamic>> rpiList = List();
         rpiList.add(probabilityItem.toJson());
         rpiList.add(severityItem.toJson());
         Widget itemWidget;
@@ -72,7 +72,7 @@ class _RiskEstimationTableState extends State<RiskEstimationTable> {
       tiles.add(TableRow(children: subTiles));
     }
 
-    List<Widget> lastRow = [];
+    List<Widget> lastRow = List();
     lastRow.add(Container(// add empty item
       padding: EdgeInsets.fromLTRB(15, 15, 15, 15),
       child: Text(

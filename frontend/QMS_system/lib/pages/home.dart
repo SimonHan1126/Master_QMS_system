@@ -63,8 +63,7 @@ class HomePageState extends State<HomePage> {
       case 1:
         return FMEATablePage(widget._user);
       case 2:
-        return ExamplePage();
-        // return AdminPage();
+        return AdminPage();
         // return ReportPage();
       case 3:
         return Container();
@@ -127,7 +126,7 @@ class HomePageState extends State<HomePage> {
 
   List<Widget> _buildActions(BuildContext context) {
 
-    List<MaterialButton> buttonList = [];
+    List<MaterialButton> buttonList = List();
     buttonList.add(_buildItemMaterialButton(context, Constants.menu_procedure, 0));
     buttonList.add(_buildItemMaterialButton(context, Constants.menu_fmea, 1));
     if (widget._user.userPermission == Constants.user_permission_admin) {

@@ -67,7 +67,7 @@ class AdminPageState extends State<AdminPage> {
   }
 
   Widget _buildUserEditBoxes(List<User> userList) {
-    List<Widget> list = [];
+    List<Widget> list = List();
     list.add(SubPageTitle(title: "Admin Page"));
     for (int i = 0; i < userList.length; i++) {
       User user = userList.elementAt(i);
@@ -148,7 +148,7 @@ class AdminPageState extends State<AdminPage> {
               child: StreamBuilder(
                 stream: _userListBloc.userListStream,
                 builder: (context, snapshot) {
-                  List<User> list = snapshot.data??[];
+                  List<User> list = snapshot.data??List();
                   return _buildUserEditBoxes(list);
                 },
               ),

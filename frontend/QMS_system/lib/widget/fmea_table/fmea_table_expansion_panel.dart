@@ -32,7 +32,7 @@ class FMEATableExpansionPanelWidgetState extends State<FMEATableExpansionPanelWi
 
   Map<String, String> _textFieldContentMap = {};
 
-  List<Item> _expansionPanelContentList = [];
+  List<Item> _expansionPanelContentList = List();
 
   //key: riskProcedureId
   Map<String, RiskProcedure> _mapRiskProcedures = {};
@@ -58,7 +58,7 @@ class FMEATableExpansionPanelWidgetState extends State<FMEATableExpansionPanelWi
   }
 
   void _initExpansionPanelContentList(List<FMEATable> rpList) {
-    _expansionPanelContentList = [];
+    _expansionPanelContentList = List();
     rpList.asMap().forEach((index, element) {
       Item item = Item(fmeaTable: element, index: index);
       if (_expansionPanelContentList.asMap().containsKey(index)) {
@@ -170,7 +170,7 @@ class FMEATableExpansionPanelWidgetState extends State<FMEATableExpansionPanelWi
     Map<String, dynamic> fmeaTableMap = fmeaTable.toJson();
     String severityName = fmeaTableMap[fmeaTableKey];
     String severityLevel;
-    List<DropdownSeverityItem> dropdownSeverityItemList = [];
+    List<DropdownSeverityItem> dropdownSeverityItemList = List();
     _mapRiskProcedures.forEach((key, value) {
       RiskProcedure riskProcedure = value;
       List<RiskProcedureItem> rpSeverityList = riskProcedure.severity;
@@ -219,7 +219,7 @@ class FMEATableExpansionPanelWidgetState extends State<FMEATableExpansionPanelWi
     Map<String, dynamic> fmeaTableMap = fmeaTable.toJson();
     String probabilityName = fmeaTableMap[fmeaTableKey];
     String probabilityLevel;
-    List<DropdownProbabilityItem> dropdownProbabilityItemList = [];
+    List<DropdownProbabilityItem> dropdownProbabilityItemList = List();
     _mapRiskProcedures.forEach((key, value) {
       RiskProcedure riskProcedure = value;
       List<RiskProcedureItem> rpProbabilityList = riskProcedure.probability;
@@ -266,7 +266,7 @@ class FMEATableExpansionPanelWidgetState extends State<FMEATableExpansionPanelWi
     String typeOfAction = fmeaTable.typeOfAction??Constants.fmea_type_of_action_list[0];
     MaterialColor defaultColor = Constants.map_fmea_type_of_action_color[typeOfAction];
 
-    List<Map<String, dynamic>> typeOfActionList = [];
+    List<Map<String, dynamic>> typeOfActionList = List();
     for (int i = 0; i < Constants.fmea_type_of_action_list.length; i++) {
       Map<String, dynamic> itemMap = {
         "fmeaTableId" : fmeaTable.hazardId,
@@ -300,7 +300,7 @@ class FMEATableExpansionPanelWidgetState extends State<FMEATableExpansionPanelWi
     String probabilityLevel = _probabilityLevelMap["probability" + fmeaTable.hazardId].length > 0 ? _probabilityLevelMap["probability" + fmeaTable.hazardId] : "1";
     String severity2Level = _severityLevelMap["severityOfHarm2" + fmeaTable.hazardId].length > 0 ? _severityLevelMap["severityOfHarm2" + fmeaTable.hazardId] : "1";
     String probability2Level = _probabilityLevelMap["probability2" + fmeaTable.hazardId].length > 0 ? _probabilityLevelMap["probability2" + fmeaTable.hazardId] : "1";
-    List<Widget> tiles = [];
+    List<Widget> tiles = List();
     if(fmeaTable != null) {
       Map<String, dynamic> mapFMEATable = fmeaTable.toJson();
       mapFMEATable.forEach((key, value) {
@@ -360,7 +360,7 @@ class FMEATableExpansionPanelWidgetState extends State<FMEATableExpansionPanelWi
   }
 
   List<IconButton> _buildItemExpansionPanelButtons(BuildContext context, FMEATable fmeaTable) {
-    List<IconButton> list = [];
+    List<IconButton> list = List();
     list.add(IconButton(icon: Icon(Icons.save, size: 25.0, color: Color(0xFF50AFC0),), onPressed: () {_saveInputtedFMEATable(context, fmeaTable);},));
     list.add(IconButton(icon: Icon(Icons.delete, size: 25.0, color: Color(0xFF50AFC0),), onPressed: () {_removeFMEATable(context, fmeaTable);},));
     if (widget._user.userPermission == Constants.user_permission_qa) {

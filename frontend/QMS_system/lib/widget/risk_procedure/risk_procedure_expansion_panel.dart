@@ -25,7 +25,7 @@ class RiskProcedureExpansionPanelWidgetState extends State<RiskProcedureExpansio
   int _pressedPanelIndex = -1;
   bool _pressedPanelIsExpanded = false;
 
-  List<Item> _expansionPanelContentList = [];
+  List<Item> _expansionPanelContentList = List();
 
   @override
   void initState() {
@@ -89,7 +89,7 @@ class RiskProcedureExpansionPanelWidgetState extends State<RiskProcedureExpansio
   }
 
   void _initExpansionPanelContentList(List<RiskProcedure> rpList) {
-    _expansionPanelContentList = [];
+    _expansionPanelContentList = List();
     rpList.asMap().forEach((index, element) {
       Item item = Item(riskProcedure: element, index: index);
       if (_expansionPanelContentList.asMap().containsKey(index)) {
@@ -105,9 +105,9 @@ class RiskProcedureExpansionPanelWidgetState extends State<RiskProcedureExpansio
 
   Widget _buildProcedureDisplayUI(String riskProcedureId, String rpKey, var rpValue) {
 
-    List<IconButton> listTitleButtons = [];
+    List<IconButton> listTitleButtons = List();
 
-    List<Row> rowList = [];
+    List<Row> rowList = List();
 
     if (rpKey.compareTo("severity") == 0 || rpKey.compareTo("probability") == 0) {
 
@@ -195,7 +195,7 @@ class RiskProcedureExpansionPanelWidgetState extends State<RiskProcedureExpansio
   }
 
   Widget _buildExpansionPanelItemList(RiskProcedure riskProcedure) {
-    List<Widget> tiles = [];
+    List<Widget> tiles = List();
     if(riskProcedure != null) {
       Map<String, dynamic> mapRiskProcedure = riskProcedure.toJson();
       mapRiskProcedure.forEach((key, value) {
@@ -253,7 +253,7 @@ class RiskProcedureExpansionPanelWidgetState extends State<RiskProcedureExpansio
   }
 
   List<IconButton> _buildItemExpansionPanelButtons(BuildContext context, RiskProcedure riskProcedure) {
-    List<IconButton> list = [];
+    List<IconButton> list = List();
     list.add(IconButton(icon: Icon(Icons.delete, size: 25.0, color: Color(0xFF50AFC0),), onPressed: () {_removeRisProcedure(context, riskProcedure);},));
     list.add(IconButton(icon: Icon(Icons.edit, size: 25.0, color: Color(0xFF50AFC0),), onPressed: () { _showDialog(riskProcedure); },));
 

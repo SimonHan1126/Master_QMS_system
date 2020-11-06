@@ -7,7 +7,7 @@ import 'bloc.dart';
 
 class FMEATableListBloc implements Bloc {
 
-  var _fmeaTableList = [];
+  var _fmeaTableList = List();
   // 1
   final _fmeaTableListController = StreamController<List<FMEATable>>();
   final ApiBaseHelper _helper = ApiBaseHelper();
@@ -29,20 +29,24 @@ class FMEATableListBloc implements Bloc {
     );
   }
 
-  void saveFMEATable(fmeaTable) async {
-    final response = await _helper.post("fmea/saveFMEATable", fmeaTable);
-
-    FMEATable responseTable = FMEATable.fromJson(response);
-    List<FMEATable> list = [];
+  void updateFMEATable(FMEATable newTable) {
+    List<FMEATable> list = List();
     _fmeaTableList.asMap().forEach((key, value) {
       FMEATable table = FMEATable.fromJson(value);
-      if (table.hazardId == responseTable.hazardId) {
-        list.add(responseTable);
+      if (table.hazardId == newTable.hazardId) {
+        list.add(newTable);
       } else {
         list.add(table);
       }
     });
     _fmeaTableListController.sink.add(list);
+  }
+
+  void saveFMEATable(fmeaTable) async {
+    final response = await _helper.post("fmea/saveFMEATable", fmeaTable);
+
+    FMEATable responseTable = FMEATable.fromJson(response);
+    updateFMEATable(responseTable);
   }
 
   @override

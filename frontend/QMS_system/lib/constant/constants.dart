@@ -19,6 +19,7 @@ class Constants {
   static const String dropdown_probability_tag_fmea_table = "probability_fmea_table";
   static const String dropdown_admin_user_permission = "admin_user_permission";
   static const String dropdown_fmea_type_of_action = "fmea_type_of_action";
+  static const String dropdown_select_a_risk_procedure = "select_a_risk_procedure";
 
   // user_permission
   static const int user_permission_team_member = 0;
@@ -82,6 +83,7 @@ class Constants {
   };
 
   static const Map<String, String> map_fmea_table_sub_title = {
+    "selectARiskProcedure"        : "Select a Risk Procedure",
     "hazardClass"                 : "Hazard Class",
     "sourceId"                    : "Source Id",
     "foreseeableSequenceOfEvents" : "Foreseeable Sequence of Events",

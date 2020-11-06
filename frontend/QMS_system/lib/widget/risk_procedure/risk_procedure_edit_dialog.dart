@@ -38,7 +38,7 @@ class RiskProcedureEditDialogState extends State<RiskProcedureEditDialog> {
 
     List<IconButton> listTitleButtons;
 
-    List<Row> rowList = [];
+    List<Row> rowList = List();
 
     if (rpKey.compareTo("severity") == 0 || rpKey.compareTo("probability") == 0) {
 
@@ -118,7 +118,7 @@ class RiskProcedureEditDialogState extends State<RiskProcedureEditDialog> {
         );
       }
     } else {
-      listTitleButtons = [];
+      listTitleButtons = List();
 
       rowList.add(
         Row(
@@ -210,7 +210,7 @@ class RiskProcedureEditDialogState extends State<RiskProcedureEditDialog> {
   }
 
   Widget _buildRiskProcedureEditDialog(RiskProcedure riskProcedure) {
-    List<Widget> tiles = [];
+    List<Widget> tiles = List();
     if(riskProcedure != null) {
       Map<String, dynamic> mapRiskProcedure = riskProcedure.toJson();
       mapRiskProcedure.forEach((key, value) {

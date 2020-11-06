@@ -7,7 +7,7 @@ import 'bloc.dart';
 
 class RiskProcedureListBloc implements Bloc {
 
-  var _riskProcedureList = [];
+  var _riskProcedureList = List();
   // 1
   final _riskProcedureListController = StreamController<List<RiskProcedure>>();
   final ApiBaseHelper _helper = ApiBaseHelper();
@@ -40,7 +40,7 @@ class RiskProcedureListBloc implements Bloc {
   void saveRiskProcedure(RiskProcedure riskProcedure) async {
     final response = await _helper.post("risk_procedure/saveRiskProcedure", riskProcedure);
     RiskProcedure responsedRP= RiskProcedure.fromJson(response);
-    List<RiskProcedure> list = [];
+    List<RiskProcedure> list = List();
     _riskProcedureList.asMap().forEach((key, value) {
       RiskProcedure itemRP = RiskProcedure.fromJson(value);
       if (itemRP.riskProcedureId == responsedRP.riskProcedureId) {

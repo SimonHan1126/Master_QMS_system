@@ -7,7 +7,7 @@ import 'bloc.dart';
 
 class UserListBloc implements Bloc {
 
-  var _userList = [];
+  var _userList = List();
   // 1
   final _userListController = StreamController<List<User>>();
   final ApiBaseHelper _helper = ApiBaseHelper();
@@ -40,7 +40,7 @@ class UserListBloc implements Bloc {
   void saveUser(User user) async {
     final response = await _helper.post("user/saveUser", user);
     User responsedUser= User.fromJson(response);
-    List<User> list = [];
+    List<User> list = List();
     _userList.asMap().forEach((key, value) {
       User itemUser = User.fromJson(value);
       if (itemUser.userId.compareTo(responsedUser.userId) == 0) {

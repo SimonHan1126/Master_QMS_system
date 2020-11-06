@@ -27,8 +27,8 @@ class RiskProcedureBloc implements Bloc {
   }
 
   void addOneItemForRiskProcedure(String riskProcedureId,String riskProcedureKey) {
-    List<Map<String, dynamic>> targetList = [];
-    List<Map<String, dynamic>> listRPI = _riskProcedure[riskProcedureKey] ?? [];
+    List<Map<String, dynamic>> targetList = List();
+    List<Map<String, dynamic>> listRPI = _riskProcedure[riskProcedureKey] ?? List();
     for (int i = 0; i < listRPI.length; i++) {
       targetList.add(listRPI.elementAt(i));
     }
@@ -40,7 +40,7 @@ class RiskProcedureBloc implements Bloc {
   }
 
   void removeOneItemForRiskProcedure(String riskProcedureId,String riskProcedureKey) {
-    _riskProcedure[riskProcedureKey] = _riskProcedure[riskProcedureKey] ?? [];
+    _riskProcedure[riskProcedureKey] = _riskProcedure[riskProcedureKey] ?? List();
     _riskProcedure[riskProcedureKey].removeLast();
     _riskProcedureController.sink.add(_riskProcedure);
   }
@@ -48,8 +48,8 @@ class RiskProcedureBloc implements Bloc {
   void addOneItemDescriptionForRiskProcedure(String riskProcedureId,String riskProcedureKey) {
     String descriptionKey = riskProcedureKey + "Description";
 
-    List<Map<String, dynamic>> targetList = [];
-    List<Map<String, dynamic>> listRPI = _riskProcedure[descriptionKey] ?? [];
+    List<Map<String, dynamic>> targetList = List();
+    List<Map<String, dynamic>> listRPI = _riskProcedure[descriptionKey] ?? List();
     for (int i = 0; i < listRPI.length; i++) {
       targetList.add(listRPI.elementAt(i));
     }
@@ -62,13 +62,13 @@ class RiskProcedureBloc implements Bloc {
 
   void removeOneItemDescriptionForRiskProcedure(String riskProcedureId,String riskProcedureKey) {
     String descriptionKey = riskProcedureKey + "Description";
-    _riskProcedure[descriptionKey] = _riskProcedure[descriptionKey] ?? [];
+    _riskProcedure[descriptionKey] = _riskProcedure[descriptionKey] ?? List();
     _riskProcedure[descriptionKey].removeLast();
     _riskProcedureController.sink.add(_riskProcedure);
   }
 
   void updateOneItemForRiskProcedure(String riskProcedureId,String riskProcedureKey, String riskProcedureItemKey, String riskProcedureItemValue, int index) {
-    _riskProcedure[riskProcedureKey] = _riskProcedure[riskProcedureKey] ?? [];
+    _riskProcedure[riskProcedureKey] = _riskProcedure[riskProcedureKey] ?? List();
     Map<String, dynamic> mapRiskProcedureItem = _riskProcedure[riskProcedureKey][index];
     mapRiskProcedureItem[riskProcedureItemKey] = riskProcedureItemValue;
     _riskProcedureController.sink.add(_riskProcedure);
