@@ -36,5 +36,6 @@ public class FMEATable implements Serializable {
     private String severityOfHarm2;
     private String probability2;
     private String residualRisk; //(S2xP2)
+    private String selectedRPId;
     private boolean acceptability;
 }
