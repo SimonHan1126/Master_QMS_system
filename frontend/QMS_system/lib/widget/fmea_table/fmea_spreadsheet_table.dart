@@ -10,6 +10,7 @@ import 'package:QMS_system/util/base_util.dart';
 import 'package:QMS_system/util/risk_procedure_data.dart';
 import 'package:QMS_system/widget/common/drop_down_menu.dart';
 import 'package:flutter/material.dart';
+import 'dart:html' as html;
 
 class FMEASpreadsheetTable extends StatefulWidget {
 
@@ -566,7 +567,7 @@ class FMEASpreadsheetTableState extends State<FMEASpreadsheetTable> {
 
   Widget _buildAddButton(BuildContext context) {
     return  Padding(
-      padding: EdgeInsets.fromLTRB(0, 0, 5, 0),
+      padding: EdgeInsets.fromLTRB(0, 0, 5, 10),
       child: RaisedButton(
         onPressed: () {
           _addAnEmptyFMEATable();
@@ -579,10 +580,13 @@ class FMEASpreadsheetTableState extends State<FMEASpreadsheetTable> {
 
   Widget _buildDownloadReportButton() {
     return  Padding(
-      padding: EdgeInsets.fromLTRB(5, 0, 0, 0),
+      padding: EdgeInsets.fromLTRB(5, 0, 0, 10),
       child: RaisedButton(
         onPressed: () {
-          // _login();
+          String url = Constants.download_report_url;
+          html.AnchorElement anchorElement =  new html.AnchorElement(href: url);
+          anchorElement.download = url;
+          anchorElement.click();
         },
         color:  Color(0xFF50AFC0),
         child: Text("Download Report", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: 20)),

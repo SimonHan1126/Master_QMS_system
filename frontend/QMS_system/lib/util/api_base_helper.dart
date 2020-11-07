@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:QMS_system/constant/constants.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'dart:async';
@@ -6,13 +7,12 @@ import 'dart:async';
 import 'app_exceptions.dart';
 
 class ApiBaseHelper {
-  final String _baseUrl = "http://45.77.234.245:8080/qms/api/v1/";
 
   Future<dynamic> get(String url) async {
     print('Api Get, url $url');
     var responseJson;
     try {
-      final response = await http.get(_baseUrl + url);
+      final response = await http.get(Constants.base_url + url);
       responseJson = _returnResponse(response);
     } on SocketException {
       print('No net');
@@ -28,12 +28,13 @@ class ApiBaseHelper {
     Map<String, String> headers = {
       'Content-type': 'application/json',
       'Accept': 'application/json',
+      'Access-Control-Allow-Origin' : '*'
     };
 
     var encodeBody = JsonEncoder().convert(body);
     var responseJson;
     try {
-      final response = await http.post(_baseUrl + url, headers: headers, body: encodeBody);
+      final response = await http.post(Constants.base_url + url, headers: headers, body: encodeBody);
       responseJson = _returnResponse(response);
     } on SocketException {
       print('No net');
@@ -47,7 +48,7 @@ class ApiBaseHelper {
     print('Api Put, url $url');
     var responseJson;
     try {
-      final response = await http.put(_baseUrl + url, body: body);
+      final response = await http.put(Constants.base_url + url, body: body);
       responseJson = _returnResponse(response);
     } on SocketException {
       print('No net');
@@ -62,7 +63,7 @@ class ApiBaseHelper {
     print('Api delete, url $url');
     var apiResponse;
     try {
-      final response = await http.delete(_baseUrl + url);
+      final response = await http.delete(Constants.base_url + url);
       apiResponse = _returnResponse(response);
     } on SocketException {
       print('No net');

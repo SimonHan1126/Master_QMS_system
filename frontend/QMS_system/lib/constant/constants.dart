@@ -6,6 +6,12 @@ class Constants {
   static const String portfoli = ' QMS.';
   static const String o = 'AC.NZ';
 
+  static const prefix_url = "http://45.77.234.245:8080/qms";
+  // static const prefix_url = "http://127.0.0.1:8081";
+
+  static const String base_url = prefix_url + "/api/v1/";
+  static const String download_report_url = prefix_url + "/api/v1/fmea/downloadReport";
+
   // menu items
   static const String menu_procedure = 'Procedure';
   static const String menu_fmea = 'FMEA';
