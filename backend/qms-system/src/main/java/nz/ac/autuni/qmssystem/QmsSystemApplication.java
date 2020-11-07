@@ -17,9 +17,13 @@ public class QmsSystemApplication extends SpringBootServletInitializer {
 	protected SpringApplicationBuilder configure(SpringApplicationBuilder builder) {
 		return builder.sources(QmsSystemApplication.class);
 	}
+}
 
+//@SpringBootApplication(exclude = {DataSourceAutoConfiguration.class })
+//public class QmsSystemApplication {
+//
 //	public static void main(String[] args) {
 //		SpringApplication.run(QmsSystemApplication.class, args);
 //	}
-
-}
+//
+//}

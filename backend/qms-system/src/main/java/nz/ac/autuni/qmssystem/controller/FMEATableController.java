@@ -3,16 +3,22 @@ package nz.ac.autuni.qmssystem.controller;
 import com.mongodb.client.result.DeleteResult;
 import nz.ac.autuni.qmssystem.constant.ErrorMessageConstant;
 import nz.ac.autuni.qmssystem.errorModel.ErrorMessageObject;
+import nz.ac.autuni.qmssystem.excel.ExcelGenerator;
 import nz.ac.autuni.qmssystem.model.FMEATable;
 import nz.ac.autuni.qmssystem.dao.FMEATableDao;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.List;
 
@@ -69,5 +75,21 @@ public class FMEATableController {
         List<FMEATable> list = fmeaTableService.getAllFMEATable();
         logger.info("this is removeFMEATable " + list.toString());
         return ResponseEntity.status(HttpStatus.OK).body(list);
+    }
+
+    @GetMapping(value ="/downloadReport")
+    public ResponseEntity<InputStreamResource> excelCustomersReport() throws IOException {
+        List<FMEATable> tables = fmeaTableService.getAllFMEATable();
+
+        ByteArrayInputStream in = ExcelGenerator.customersToExcel(tables);
+
+        String excelFileName = "report" + System.currentTimeMillis() + ".xlsx";
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Disposition", "attachment; filename=" + excelFileName);
+
+        return ResponseEntity
+                .ok()
+                .headers(headers)
+                .body(new InputStreamResource(in));
     }
  }
