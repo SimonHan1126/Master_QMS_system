@@ -10,6 +10,7 @@ import 'package:QMS_system/util/base_util.dart';
 import 'package:QMS_system/util/risk_procedure_data.dart';
 import 'package:QMS_system/widget/common/drop_down_menu.dart';
 import 'package:flutter/material.dart';
+// ignore: avoid_web_libraries_in_flutter
 import 'dart:html' as html;
 
 class FMEASpreadsheetTable extends StatefulWidget {
@@ -65,6 +66,9 @@ class FMEASpreadsheetTableState extends State<FMEASpreadsheetTable> {
         _mapRiskProcedures[rp.riskProcedureId] = rp;
       });
     }
+    if (_listRiskProcedures.length <= 0) {
+      _listRiskProcedures.add(RiskProcedure());
+    }
   }
 
   @override
@@ -92,8 +96,8 @@ class FMEASpreadsheetTableState extends State<FMEASpreadsheetTable> {
       residualRisk: "",
       selectedRPId: "",
     );
-    _fmeaTableListBloc.saveFMEATable(fmeaTable);
-    _fmeaTableListBloc.getAllFMEATable();
+    _fmeaTableListBloc.addAFMEATable(fmeaTable);
+    // _fmeaTableListBloc.getAllFMEATable();
   }
 
   _saveInputtedFMEATable(BuildContext context,FMEATable fmeaTable) async {
@@ -157,7 +161,7 @@ class FMEASpreadsheetTableState extends State<FMEASpreadsheetTable> {
         if (fmeaTableId.compareTo(itemTable.hazardId) == 0) {
           Map<String,dynamic> map = itemTable.toJson();
           map[fmeaTableKey] = fmeaTableValue;
-          _fmeaTableListBloc.updateFMEATable(FMEATable.fromJson(map));
+          _fmeaTableListBloc.updateFMEATable(map);
           break;
         }
     }
@@ -330,13 +334,13 @@ class FMEASpreadsheetTableState extends State<FMEASpreadsheetTable> {
     return Column(
       children: [
         DropDownMenu(
-            Constants.dropdown_fmea_type_of_action,
-            "fmeaTable.hazardId", // TO_DO: give a rational variable
-            typeOfAction,
-            defaultColor,
-            typeOfActionList,
-            Constants.map_fmea_type_of_action_color,
-            typeOfActionCallback)
+          Constants.dropdown_fmea_type_of_action,
+          "fmeaTable.hazardId", // TO_DO: give a rational variable
+          typeOfAction,
+          defaultColor,
+          typeOfActionList,
+          Constants.map_fmea_type_of_action_color,
+          typeOfActionCallback)
       ],
     );
   }
@@ -350,7 +354,7 @@ class FMEASpreadsheetTableState extends State<FMEASpreadsheetTable> {
       FMEATable newTable = _listFMEATables[i];
       if (fmeaTableId.compareTo(newTable.hazardId) == 0) {
         newTable.selectedRPId = _selectedRP.riskProcedureId;
-        _fmeaTableListBloc.updateFMEATable(newTable);
+        _fmeaTableListBloc.updateFMEATable(newTable.toJson());
         break;
       }
     }
@@ -368,10 +372,9 @@ class FMEASpreadsheetTableState extends State<FMEASpreadsheetTable> {
       RiskProcedure riskProcedure = value;
       String harm = riskProcedure.harm??"";
       riskProcedure.harm = harm.length > 0 ? harm : "New Risk Procedure";
-      mapHarmToColor[riskProcedure.harm] = listColors.removeAt(loopCount % 2);
+      mapHarmToColor[riskProcedure.harm] = listColors.elementAt(loopCount % 2);
       loopCount++;
     });
-
     return Column(
       children: [
         DropDownMenu(
@@ -387,6 +390,40 @@ class FMEASpreadsheetTableState extends State<FMEASpreadsheetTable> {
     );
   }
 
+  Widget _buildRiskPriorityOrResidualRisk(Map<String,dynamic> mapRiskEstimation, String fmeaTableId, String fmeakey, String severityPreKey, String probabilityPreKey) {
+    String severityKey = severityPreKey + fmeaTableId;
+    String probabilityKey = probabilityPreKey + fmeaTableId;
+    String severityOfHarm = _severityLevelMap[severityKey] ?? "";
+    String probability = _probabilityLevelMap[probabilityKey] ?? "";
+    String severityId = _severityIdMap[severityKey]??"";
+    String probabilityId = _probabilityIdMap[probabilityKey]??"";
+    severityOfHarm = severityOfHarm.isEmpty ? "1" : severityOfHarm;
+    probability = probability.isEmpty ? "1" : probability;
+    int riskPriority = int.parse(severityOfHarm) * int.parse(probability);
+    String mapRiskEstimationKey = BaseUtil.getRiskEstimationKey(probabilityId, severityId);
+    String riskLevel = mapRiskEstimation[mapRiskEstimationKey]??Constants.list_severity_probability_level[0];
+    _textFieldContentMap[fmeakey + fmeaTableId] = riskPriority.toString();
+    return Container(
+        width: 146.25,
+        height: 60.0,
+        color: Constants.map_severity_probability_level_to_color[riskLevel],
+        child: Center(
+          child: Text(riskPriority.toString(), style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),),
+        )
+    );
+  }
+
+  Widget _buildTextFields(String fmeaTableId, String fmeakey, String fmeaValue) {
+    _textFieldContentMap[fmeakey + fmeaTableId] = fmeaValue;
+    return TextFormField(
+      onChanged: (String value) async {
+        _textFieldContentMap[fmeakey + fmeaTableId] = value;
+      },
+      decoration: InputDecoration(
+        hintText: fmeaValue,
+      ),
+    );
+  }
 
   Widget _buildSpreadsheetItemWidget(RiskProcedure riskProcedure, String fmeaTableId, String fmeakey, String fmeaValue) {
     Widget spreadSheetItemWidget;
@@ -401,62 +438,23 @@ class FMEASpreadsheetTableState extends State<FMEASpreadsheetTable> {
       } else if (fmeakey.compareTo("selectARiskProcedure") == 0) {
         spreadSheetItemWidget = _buildSelectARiskProcedure(fmeaTableId);
       } else {
-        Widget childWidget;
         if (fmeakey.compareTo("riskPriority") == 0) {
-          String severityKey = "severityOfHarm" + fmeaTableId;
-          String probabilityKey = "probability" + fmeaTableId;
-          String severityOfHarm = _severityLevelMap[severityKey] ?? "";
-          String probability = _probabilityLevelMap[probabilityKey] ?? "";
-          String severityId = _severityIdMap[severityKey]??"";
-          String probabilityId = _probabilityIdMap[probabilityKey]??"";
-          severityOfHarm = severityOfHarm.isEmpty ? "0" : severityOfHarm;
-          probability = probability.isEmpty ? "0" : probability;
-          int riskPriority = int.parse(severityOfHarm) * int.parse(probability);
-          String riskLevel = mapRiskEstimation[BaseUtil.getRiskEstimationKey(probabilityId, severityId)];
-          childWidget = Container(
-            width: 146.25,
-            height: 60.0,
-            color: Constants.map_severity_probability_level_to_color[riskLevel],
-            child: Center(
-              child: Text(riskPriority.toString(), style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),),
-            )
-          );
-          _textFieldContentMap[fmeakey + fmeaTableId] = riskPriority.toString();
+          spreadSheetItemWidget = _buildRiskPriorityOrResidualRisk(mapRiskEstimation, fmeaTableId, fmeakey, "severityOfHarm", "probability");
         } else if (fmeakey.compareTo("residualRisk") == 0) {
-          String severity2Key = "severityOfHarm2" + fmeaTableId;
-          String probability2Key = "probability2" + fmeaTableId;
-          String severityOfHarm2 = _severityLevelMap[severity2Key] ?? "";
-          String probability2 = _probabilityLevelMap[probability2Key] ?? "";
-          String severityId = _severityIdMap[severity2Key]??"";
-          String probabilityId = _probabilityIdMap[probability2Key]??"";
-          severityOfHarm2 = severityOfHarm2.isEmpty ? "0" : severityOfHarm2;
-          probability2 = probability2.isEmpty ? "0" : probability2;
-          int residualRisk = int.parse(severityOfHarm2) * int.parse(probability2);
-          String riskLevel = mapRiskEstimation[BaseUtil.getRiskEstimationKey(probabilityId, severityId)];
-          childWidget = Container(
-              width: 146.25,
-              height: 60.0,
-              color: Constants.map_severity_probability_level_to_color[riskLevel],
-              child: Center(
-                child: Text(residualRisk.toString(), style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),),
-              )
-          );
-          _textFieldContentMap[fmeakey + fmeaTableId] = residualRisk.toString();
+          spreadSheetItemWidget = _buildRiskPriorityOrResidualRisk(mapRiskEstimation, fmeaTableId, fmeakey, "severityOfHarm2", "probability2");
         } else {
-          _textFieldContentMap[fmeakey + fmeaTableId] = fmeaValue;
-          childWidget = TextFormField(
-            onChanged: (String value) async {
-              _textFieldContentMap[fmeakey + fmeaTableId] = value;
-            },
-            decoration: InputDecoration(
-              hintText: fmeaValue,
-            ),
-          );
+          spreadSheetItemWidget = _buildTextFields(fmeaTableId, fmeakey, fmeaValue);
         }
-        spreadSheetItemWidget = childWidget;
       }
     }
     return spreadSheetItemWidget;
+  }
+
+  void _approveFMEATable(FMEATable table) {
+    if (!table.acceptability) {
+      table.acceptability = true;
+      _fmeaTableListBloc.saveFMEATable(table);
+    }
   }
 
   List<Widget> _buildTableCells(BuildContext context, int passedIndex, List<FMEATable> ftList) {
@@ -465,9 +463,9 @@ class FMEASpreadsheetTableState extends State<FMEASpreadsheetTable> {
     List<double> listContentWidth = List();
     Constants.map_fmea_table_sub_title.forEach((key, value) {
       listSubTitleKeys.add(key);
-      double textContentWidth = value.length * 15.0 * 0.75;
-      if (textContentWidth < 100) {
-        textContentWidth = 100;
+      double textContentWidth = value.length * 15.0 * 0.85;
+      if (textContentWidth < 180) {
+        textContentWidth = 180;
       }
       listContentWidth.add(textContentWidth);
     });
@@ -538,7 +536,10 @@ class FMEASpreadsheetTableState extends State<FMEASpreadsheetTable> {
           textFontWeight = FontWeight.bold;
           itemWidget = Text("APPROVE", style: TextStyle(color: Colors.red, fontWeight: textFontWeight));
         } else {
-          itemWidget = IconButton(icon: Icon(Icons.done_outline_rounded, size: 25.0, color: Color(0xFF50AFC0),), onPressed: () {});
+          var buttonColor = fmeaTable.acceptability ? Color(0xFF50AFC0) : Colors.red;
+          itemWidget = IconButton(icon: Icon(Icons.done_outline_rounded, size: 25.0, color: buttonColor,), onPressed: () {
+            _approveFMEATable(fmeaTable);
+          });
         }
         itemWidth = 80.0;
       }

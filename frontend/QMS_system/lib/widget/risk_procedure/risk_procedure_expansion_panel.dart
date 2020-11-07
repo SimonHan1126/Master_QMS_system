@@ -66,7 +66,7 @@ class RiskProcedureExpansionPanelWidgetState extends State<RiskProcedureExpansio
         itemId: BaseUtil.getCurrentTimestamp(), description: "", name: "",
         tag: Constants.map_severity_probability_tag["probabilityDescription"])],
       mapRiskEstimation: {},
-      isApprove: false);
+      approve: Constants.unapproved);
     _rpListBloc.addRiskProcedure(riskProcedure);
     _updateUI(context,riskProcedure);
   }
@@ -200,7 +200,7 @@ class RiskProcedureExpansionPanelWidgetState extends State<RiskProcedureExpansio
       Map<String, dynamic> mapRiskProcedure = riskProcedure.toJson();
       mapRiskProcedure.forEach((key, value) {
         value = value ?? "";
-        if (key.compareTo("riskProcedureId") != 0 && key.compareTo("isApprove") != 0 && key.compareTo("mapRiskEstimation") != 0) {
+        if (key.compareTo("riskProcedureId") != 0 && key.compareTo("approve") != 0 && key.compareTo("mapRiskEstimation") != 0) {
 
           Widget widget;
 
@@ -252,6 +252,13 @@ class RiskProcedureExpansionPanelWidgetState extends State<RiskProcedureExpansio
     ));
   }
 
+  void _approveRiskProcedure(RiskProcedure riskProcedure) {
+    if (Constants.unapproved.compareTo(riskProcedure.approve) == 0) {
+      riskProcedure.approve = Constants.approved;
+      _rpListBloc.saveRiskProcedure(riskProcedure);
+    }
+  }
+
   List<IconButton> _buildItemExpansionPanelButtons(BuildContext context, RiskProcedure riskProcedure) {
     List<IconButton> list = List();
     list.add(IconButton(icon: Icon(Icons.delete, size: 25.0, color: Color(0xFF50AFC0),), onPressed: () {_removeRisProcedure(context, riskProcedure);},));
@@ -259,7 +266,7 @@ class RiskProcedureExpansionPanelWidgetState extends State<RiskProcedureExpansio
 
     if (widget._user.userPermission == Constants.user_permission_qa) {
       list.add(IconButton(icon: Icon(Icons.done_outline_rounded, size: 25.0, color: Color(0xFF50AFC0),), onPressed: () {
-        print("approve");
+        _approveRiskProcedure(riskProcedure);
       },));
     }
     return list;
@@ -281,8 +288,8 @@ class RiskProcedureExpansionPanelWidgetState extends State<RiskProcedureExpansio
       },
       children: _expansionPanelContentList.map<ExpansionPanel>((Item item) {
         final RiskProcedure element = item.riskProcedure;
-        element.isApprove??=false;
-        final isApproveText = element.isApprove ? "Approved" : "Unapproved";
+        element.approve = element.approve??"";
+        final isApproveText = element.approve.length == 0 ? Constants.unapproved : element.approve;
         String harm = element.harm.length > 0 ? element.harm : "New Risk Procedure";
         return ExpansionPanel(
           headerBuilder: (context, isExpandEd) {

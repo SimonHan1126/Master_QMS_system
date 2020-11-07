@@ -215,7 +215,7 @@ class RiskProcedureEditDialogState extends State<RiskProcedureEditDialog> {
       Map<String, dynamic> mapRiskProcedure = riskProcedure.toJson();
       mapRiskProcedure.forEach((key, value) {
         value = value ?? "";
-        if (key.compareTo("riskProcedureId") != 0 && key.compareTo("isApprove") != 0 && key.compareTo("mapRiskEstimation") != 0) {
+        if (key.compareTo("riskProcedureId") != 0 && key.compareTo("approve") != 0 && key.compareTo("mapRiskEstimation") != 0) {
 
           Widget itemWidget;
 
@@ -260,7 +260,6 @@ class RiskProcedureEditDialogState extends State<RiskProcedureEditDialog> {
   }
 
   callback(Map<String, dynamic> selectedValue) {
-    print("this is risk_estimation_edit_dialog selectedValue " + selectedValue.toString());
     String riskLevel = selectedValue["riskLevel"];
     String probabilityId = selectedValue["probabilityId"];
     String severityId = selectedValue["severityId"];

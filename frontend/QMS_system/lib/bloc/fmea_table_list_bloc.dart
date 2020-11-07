@@ -15,38 +15,50 @@ class FMEATableListBloc implements Bloc {
   Stream<List<FMEATable>> get fmeaTableListStream => _fmeaTableListController.stream;
   StreamSink<List<FMEATable>> get fmeaTableListSink => _fmeaTableListController.sink;
 
+  void _fmeaTableListControllerSink(var list) {
+    _fmeaTableListController.sink.add(
+        list.map<FMEATable>((json) => FMEATable.fromJson(json)).toList(growable: false)
+    );
+  }
+
   void getAllFMEATable() async {
     _fmeaTableList = await _helper.get("fmea/getAllFMEATable");
-    _fmeaTableListController.sink.add(
-        _fmeaTableList.map<FMEATable>((json) => FMEATable.fromJson(json)).toList(growable: false)
-    );
+    _fmeaTableListControllerSink(_fmeaTableList);
   }
 
   void deleteFMEATable(String fmeaTableId) async{
     _fmeaTableList = await _helper.get("fmea/removeFMEATable?fmeaTableId=$fmeaTableId");
-    _fmeaTableListController.sink.add(
-        _fmeaTableList.map<FMEATable>((json) => FMEATable.fromJson(json)).toList(growable: false)
-    );
+    _fmeaTableListControllerSink(_fmeaTableList);
   }
 
-  void updateFMEATable(FMEATable newTable) {
-    List<FMEATable> list = List();
-    _fmeaTableList.asMap().forEach((key, value) {
-      FMEATable table = FMEATable.fromJson(value);
-      if (table.hazardId == newTable.hazardId) {
-        list.add(newTable);
-      } else {
-        list.add(table);
+  void updateFMEATable(Map<String, dynamic> mapFMEATable) {
+    for (int i = 0; i < _fmeaTableList.length; i++) {
+      Map<String, dynamic> itemRP = _fmeaTableList[i];
+      if (itemRP["hazardId"] == mapFMEATable["hazardId"]) {
+        _fmeaTableList[i] = mapFMEATable;
+        break;
       }
-    });
-    _fmeaTableListController.sink.add(list);
+    }
+
+    _fmeaTableListControllerSink(_fmeaTableList);
   }
 
   void saveFMEATable(fmeaTable) async {
     final response = await _helper.post("fmea/saveFMEATable", fmeaTable);
+    updateFMEATable(response);
+  }
 
-    FMEATable responseTable = FMEATable.fromJson(response);
-    updateFMEATable(responseTable);
+  void addAFMEATable(fmeaTable) async {
+    final response = await _helper.post("fmea/saveFMEATable", fmeaTable);
+    _fmeaTableList.add(response);
+    _fmeaTableListControllerSink(_fmeaTableList);
+  }
+
+  void approveFMEATable(String fmeaTableId) async {
+    final response = await _helper.post("approve/approveFMEATable", fmeaTableId);
+    if (response is Map<String, dynamic>) {
+      updateFMEATable(response);
+    }
   }
 
   @override

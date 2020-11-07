@@ -31,7 +31,7 @@ public class RiskProcedure implements Serializable {
     private List<Item> probability;
     private List<ItemDescription> probabilityDescription;
     private Map<String,String> mapRiskEstimation;
-    private boolean isApprove;
+    private String approve;
 }
 
 @AllArgsConstructor

@@ -1,9 +1,9 @@
 package nz.ac.autuni.qmssystem.daoImpl;
 
 import com.mongodb.client.result.DeleteResult;
+import com.mongodb.client.result.UpdateResult;
 import nz.ac.autuni.qmssystem.dao.RiskProcedureDao;
 import nz.ac.autuni.qmssystem.model.RiskProcedure;
-import nz.ac.autuni.qmssystem.util.BaseUtil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -52,8 +52,7 @@ public class RiskProcedureDaoImpl implements RiskProcedureDao {
     @Override
     public RiskProcedure findRiskProcedureById(String id) {
         Query query = new Query(Criteria.where("_id").is(id));
-        RiskProcedure riskProcedure = mongoTemplate.findOne(query, RiskProcedure.class);
-        return riskProcedure;
+        return mongoTemplate.findOne(query, RiskProcedure.class);
     }
 
     @Override
@@ -62,11 +61,10 @@ public class RiskProcedureDaoImpl implements RiskProcedureDao {
     }
 
     @Override
-    public void approveRiskProcedure(String id) {
+    public UpdateResult approveRiskProcedure(String id) {
         Query query = new Query(Criteria.where("_id").is(id));
-
         Update update = new Update();
         update.set("isApprove", true);
-        mongoTemplate.updateFirst(query, update, RiskProcedure.class);
+        return mongoTemplate.updateFirst(query, update, RiskProcedure.class);
     }
 }

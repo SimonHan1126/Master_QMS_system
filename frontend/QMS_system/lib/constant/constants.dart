@@ -27,6 +27,9 @@ class Constants {
   static const String dropdown_fmea_type_of_action = "fmea_type_of_action";
   static const String dropdown_select_a_risk_procedure = "select_a_risk_procedure";
 
+  static const String approved = "Approved";
+  static const String unapproved = "Unapproved";
+
   // user_permission
   static const int user_permission_team_member = 0;
   static const int user_permission_manager = 1;

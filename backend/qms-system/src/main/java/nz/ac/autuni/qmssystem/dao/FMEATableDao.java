@@ -1,8 +1,8 @@
 package nz.ac.autuni.qmssystem.dao;
 
 import com.mongodb.client.result.DeleteResult;
+import com.mongodb.client.result.UpdateResult;
 import nz.ac.autuni.qmssystem.model.FMEATable;
-import nz.ac.autuni.qmssystem.model.RiskProcedure;
 
 import java.util.List;
 
@@ -22,5 +22,5 @@ public interface FMEATableDao {
 
     List<FMEATable> getAllFMEATable();
 
-    void approveFMEATable(String id);
+    UpdateResult approveFMEATable(String id);
 }

@@ -1,6 +1,7 @@
 package nz.ac.autuni.qmssystem.dao;
 
 import com.mongodb.client.result.DeleteResult;
+import com.mongodb.client.result.UpdateResult;
 import nz.ac.autuni.qmssystem.model.RiskProcedure;
 
 import java.util.List;
@@ -21,5 +22,5 @@ public interface RiskProcedureDao {
 
     List<RiskProcedure> getAllRiskProcedure();
 
-    void approveRiskProcedure(String id);
+    UpdateResult approveRiskProcedure(String id);
 }

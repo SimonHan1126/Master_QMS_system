@@ -1,6 +1,7 @@
 package nz.ac.autuni.qmssystem.daoImpl;
 
 import com.mongodb.client.result.DeleteResult;
+import com.mongodb.client.result.UpdateResult;
 import nz.ac.autuni.qmssystem.dao.FMEATableDao;
 import nz.ac.autuni.qmssystem.model.FMEATable;
 import nz.ac.autuni.qmssystem.util.BaseUtil;
@@ -54,10 +55,10 @@ public class FMEATableDaoImpl implements FMEATableDao {
     }
 
     @Override
-    public void approveFMEATable(String id) {
+    public UpdateResult approveFMEATable(String id) {
         Query query = new Query(Criteria.where("_id").is(id));
         Update update = new Update();
         update.set("acceptability", true);
-        mongoTemplate.updateFirst(query, update, FMEATable.class);
+        return mongoTemplate.updateFirst(query, update, FMEATable.class);
     }
 }

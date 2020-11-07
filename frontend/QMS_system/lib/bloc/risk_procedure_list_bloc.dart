@@ -15,41 +15,44 @@ class RiskProcedureListBloc implements Bloc {
   Stream<List<RiskProcedure>> get riskProcedureListStream => _riskProcedureListController.stream;
   StreamSink<List<RiskProcedure>> get riskProcedureListSink => _riskProcedureListController.sink;
 
+  void _riskProcedureListControllerSink(var list) {
+    _riskProcedureListController.sink.add(
+        list.map<RiskProcedure>((json) {
+          return RiskProcedure.fromJson(json);
+        }).toList(growable: false)
+    );
+  }
+
   void getAllRiskProcedure() async {
     _riskProcedureList = await _helper.get("risk_procedure/getAllRiskProcedure");
-    _riskProcedureListController.sink.add(
-        _riskProcedureList.map<RiskProcedure>((json) => RiskProcedure.fromJson(json)).toList(growable: false)
-    );
+    _riskProcedureListControllerSink(_riskProcedureList);
   }
 
   void deleteRiskProcedure(String riskProcedureId) async{
     _riskProcedureList = await _helper.get("risk_procedure/removeRiskProcedure?riskProcedureId=$riskProcedureId");
-    _riskProcedureListController.sink.add(
-        _riskProcedureList.map<RiskProcedure>((json) => RiskProcedure.fromJson(json)).toList(growable: false)
-    );
+    _riskProcedureListControllerSink(_riskProcedureList);
   }
 
   void addRiskProcedure(RiskProcedure riskProcedure) async {
     final response = await _helper.post("risk_procedure/saveRiskProcedure", riskProcedure);
     _riskProcedureList.add(response);
-    _riskProcedureListController.sink.add(
-        _riskProcedureList.map<RiskProcedure>((json) => RiskProcedure.fromJson(json)).toList(growable: false)
-    );
+    _riskProcedureListControllerSink(_riskProcedureList);
+  }
+
+  void _updateLocalRiskProcedureList(Map<String,dynamic> mapRiskProcedure) {
+    for (int i = 0; i < _riskProcedureList.length; i++) {
+      Map<String,dynamic> itemRP = _riskProcedureList[i];
+      if (itemRP["riskProcedureId"] == mapRiskProcedure["riskProcedureId"]) {
+        _riskProcedureList[i] = mapRiskProcedure;
+        break;
+      }
+    }
+    _riskProcedureListControllerSink(_riskProcedureList);
   }
 
   void saveRiskProcedure(RiskProcedure riskProcedure) async {
     final response = await _helper.post("risk_procedure/saveRiskProcedure", riskProcedure);
-    RiskProcedure responsedRP= RiskProcedure.fromJson(response);
-    List<RiskProcedure> list = List();
-    _riskProcedureList.asMap().forEach((key, value) {
-      RiskProcedure itemRP = RiskProcedure.fromJson(value);
-      if (itemRP.riskProcedureId == responsedRP.riskProcedureId) {
-        list.add(responsedRP);
-      } else {
-        list.add(itemRP);
-      }
-    });
-    _riskProcedureListController.sink.add(list);
+    _updateLocalRiskProcedureList(response);
   }
 
   void addOneItemForRiskProcedure(String riskProcedureId,String riskProcedureKey) {
@@ -59,9 +62,7 @@ class RiskProcedureListBloc implements Bloc {
         break;
       }
     }
-    _riskProcedureListController.sink.add(
-        _riskProcedureList.map<RiskProcedure>((json) => RiskProcedure.fromJson(json)).toList(growable: false)
-    );
+    _riskProcedureListControllerSink(_riskProcedureList);
   }
 
   void removeOneItemForRiskProcedure(String riskProcedureId,String riskProcedureKey) {
@@ -71,9 +72,7 @@ class RiskProcedureListBloc implements Bloc {
         break;
       }
     }
-    _riskProcedureListController.sink.add(
-        _riskProcedureList.map<RiskProcedure>((json) => RiskProcedure.fromJson(json)).toList(growable: false)
-    );
+    _riskProcedureListControllerSink(_riskProcedureList);
   }
 
   void addOneItemDescriptionForRiskProcedure(String riskProcedureId,String riskProcedureKey) {
@@ -83,9 +82,7 @@ class RiskProcedureListBloc implements Bloc {
         break;
       }
     }
-    _riskProcedureListController.sink.add(
-        _riskProcedureList.map<RiskProcedure>((json) => RiskProcedure.fromJson(json)).toList(growable: false)
-    );
+    _riskProcedureListControllerSink(_riskProcedureList);
   }
   void removeOneItemDescriptionForRiskProcedure(String riskProcedureId,String riskProcedureKey) {
     for (int i = 0; i < _riskProcedureList.length; i++) {
@@ -94,9 +91,7 @@ class RiskProcedureListBloc implements Bloc {
         break;
       }
     }
-    _riskProcedureListController.sink.add(
-        _riskProcedureList.map<RiskProcedure>((json) => RiskProcedure.fromJson(json)).toList(growable: false)
-    );
+    _riskProcedureListControllerSink(_riskProcedureList);
   }
 
   void updateOneItemForRiskProcedure(String riskProcedureId,String riskProcedureKey, String riskProcedureItemKey, String riskProcedureItemValue, int index) {
@@ -107,22 +102,24 @@ class RiskProcedureListBloc implements Bloc {
         break;
       }
     }
-    _riskProcedureListController.sink.add(
-        _riskProcedureList.map<RiskProcedure>((json) => RiskProcedure.fromJson(json)).toList(growable: false)
-    );
+    _riskProcedureListControllerSink(_riskProcedureList);
   }
 
   void updateHarmForRiskProcedure(String riskProcedureId, String harm) {
     for (int i = 0; i < _riskProcedureList.length; i++) {
       if(riskProcedureId.compareTo(_riskProcedureList[i]["riskProcedureId"]) == 0) {
-
         _riskProcedureList[i]["harm"] = harm;
         break;
       }
     }
-    _riskProcedureListController.sink.add(
-        _riskProcedureList.map<RiskProcedure>((json) => RiskProcedure.fromJson(json)).toList(growable: false)
-    );
+    _riskProcedureListControllerSink(_riskProcedureList);
+  }
+
+  void approveRiskProcedure(String riskProcedureId) async {
+    final response = await _helper.post("approve/approveRiskProcedure", riskProcedureId);
+    if (response is Map<String, dynamic>) {
+      _updateLocalRiskProcedureList(response);
+    }
   }
 
   @override
