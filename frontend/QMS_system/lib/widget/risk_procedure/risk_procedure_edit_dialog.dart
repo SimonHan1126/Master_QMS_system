@@ -21,6 +21,7 @@ class RiskProcedureEditDialogState extends State<RiskProcedureEditDialog> {
 
   final RiskProcedureBloc _riskProcedureBloc = RiskProcedureBloc();
 
+  String _harm;
 
   @override
   void initState() {
@@ -228,10 +229,10 @@ class RiskProcedureEditDialogState extends State<RiskProcedureEditDialog> {
                   child:  Text(Constants.map_risk_procedure_sub_title[key.toString()], style: TextStyle(fontWeight: FontWeight.bold)),
                 )
             );
-
+            _harm = value;
             itemWidget = new TextFormField(
-              onChanged: (String value) async {
-                _riskProcedureBloc.updateHarmForRiskProcedure(value);
+              onChanged: (String changedValue) async {
+                _harm = changedValue;
               },
               decoration: new InputDecoration(
                 labelText: value.toString(),
@@ -275,6 +276,7 @@ class RiskProcedureEditDialogState extends State<RiskProcedureEditDialog> {
         actions: [
           new FlatButton(
             onPressed: () {
+              _riskProcedureBloc.updateHarmForRiskProcedure(_harm);
               _riskProcedureBloc.saveRiskProcedure();
               widget._callback({"" : ""});
               Navigator.of(context).pop();

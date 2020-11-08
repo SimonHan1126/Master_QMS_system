@@ -29,6 +29,7 @@ class _RiskEstimationTableState extends State<RiskEstimationTable> {
 
     int listSeverityLength = listSeverity.length;
     int listProbabilityLength = listProbability.length;
+    Map<String, dynamic> mapRiskEstimation = widget._riskProcedure.mapRiskEstimation;
 
     for (int i = 0; i < listProbabilityLength; i++) {
       List<Widget> subTiles = List();
@@ -48,7 +49,6 @@ class _RiskEstimationTableState extends State<RiskEstimationTable> {
         rpiList.add(probabilityItem.toJson());
         rpiList.add(severityItem.toJson());
         Widget itemWidget;
-        Map<String, dynamic> mapRiskEstimation = widget._riskProcedure.mapRiskEstimation;
         String riskLevelKey = BaseUtil.getRiskEstimationKey(probabilityItem.id, severityItem.id);
         String riskLevel = mapRiskEstimation[riskLevelKey]??Constants.list_severity_probability_level[0];
         if (widget._isShowDropdownMenu) {

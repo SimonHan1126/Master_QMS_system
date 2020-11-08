@@ -230,14 +230,18 @@ class RiskProcedureExpansionPanelWidgetState extends State<RiskProcedureExpansio
       });
     }
 
-    tiles.add(RiskEstimationTable(riskProcedure, callback, false));
+    tiles.add(RiskEstimationTable(riskProcedure, _riskEstimationTableCallback, false));
 
     return ListBody(
       children: tiles,
     );
   }
 
-  callback(Map<String, dynamic> selectedValue) {
+  _riskEstimationTableCallback(Map<String, dynamic> selectedValue) {
+
+  }
+
+  _riskProcedureEditDialogCallback(Map<String, dynamic> selectedValue) {
     _rpListBloc.getAllRiskProcedure();
   }
 
@@ -245,7 +249,7 @@ class RiskProcedureExpansionPanelWidgetState extends State<RiskProcedureExpansio
     Navigator.of(context).push(new MaterialPageRoute(
       builder: (BuildContext context) {
         return Container(
-          child: RiskProcedureEditDialog(riskProcedure, callback),
+          child: RiskProcedureEditDialog(riskProcedure, _riskProcedureEditDialogCallback),
         );
       },
       fullscreenDialog: true,
@@ -290,6 +294,7 @@ class RiskProcedureExpansionPanelWidgetState extends State<RiskProcedureExpansio
         final RiskProcedure element = item.riskProcedure;
         element.approve = element.approve??"";
         final isApproveText = element.approve.length == 0 ? Constants.unapproved : element.approve;
+        element.harm = element.harm??"";
         String harm = element.harm.length > 0 ? element.harm : "New Risk Procedure";
         return ExpansionPanel(
           headerBuilder: (context, isExpandEd) {
