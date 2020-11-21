@@ -92,7 +92,7 @@ class Constants {
   };
 
   static const Map<String, String> map_fmea_table_sub_title = {
-    "selectARiskProcedure"        : "Select a Risk Procedure",
+    "selectARiskProcedure"        : "Risk Procedure Harm",
     "hazardClass"                 : "Hazard Class",
     "sourceId"                    : "Source Id",
     "foreseeableSequenceOfEvents" : "Foreseeable Sequence of Events",

@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:QMS_system/pages/login_page.dart';
-import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
@@ -19,19 +18,16 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return BotToastInit(
-        child:MaterialApp(
-          debugShowCheckedModeBanner: false,
-          title: 'QMS_AUT',
-          theme: ThemeData(
-            primarySwatch: Colors.green,
-          ),
-          navigatorObservers: [BotToastNavigatorObserver()],//2.registered route observer
-          home: LoginPage(),
-          routes: <String, WidgetBuilder>{
-            '/login': (BuildContext context) => LoginPage(),
-          },
-        )
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      title: 'QMS_AUT',
+      theme: ThemeData(
+      primarySwatch: Colors.green,
+      ),
+      home: LoginPage(),
+      routes: <String, WidgetBuilder>{
+      '/login': (BuildContext context) => LoginPage(),
+      },
     );
   }
 }

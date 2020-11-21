@@ -14,4 +14,12 @@ class BaseUtil {
   static String getRiskEstimationKey(String probabilityId, String severityId) {
     return probabilityId + "-" + severityId;
   }
+
+  static String getIsSeverityBeModifiedMapKey(String rskProcedureId, String severityId) {
+    return rskProcedureId + "-" + severityId;
+  }
+
+  static String getIsProbabilityBeModifiedMapKey(String rskProcedureId, String probabilityId) {
+    return rskProcedureId + "-" + probabilityId;
+  }
 }

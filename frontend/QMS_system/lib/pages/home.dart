@@ -1,6 +1,7 @@
 import 'package:QMS_system/constant/constants.dart';
 import 'package:QMS_system/constant/text_styles.dart';
 import 'package:QMS_system/model/user.dart';
+import 'package:QMS_system/observe/risk_procedure_observer.dart';
 import 'package:QMS_system/pages/admin.dart';
 import 'package:QMS_system/pages/fmea_table_page.dart';
 import 'package:QMS_system/pages/login_page.dart';
@@ -26,6 +27,17 @@ class HomePage extends StatefulWidget {
 class HomePageState extends State<HomePage> {
 
   int _selectedDrawerIndex = 0;
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {

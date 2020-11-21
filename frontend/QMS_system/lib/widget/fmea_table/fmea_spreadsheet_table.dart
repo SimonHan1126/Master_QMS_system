@@ -1,5 +1,3 @@
-import 'package:QMS_system/bloc/bloc_provider.dart';
-import 'package:QMS_system/bloc/fmea_table_list_bloc.dart';
 import 'package:QMS_system/constant/constants.dart';
 import 'package:QMS_system/model/dropdown_severity_item.dart';
 import 'package:QMS_system/model/dropdwon_probability_item.dart';
@@ -11,13 +9,18 @@ import 'package:QMS_system/util/risk_procedure_data.dart';
 import 'package:QMS_system/widget/common/drop_down_menu.dart';
 import 'package:flutter/material.dart';
 // ignore: avoid_web_libraries_in_flutter
-import 'dart:html' as html;
+// import 'dart:html' as html;
 
 class FMEASpreadsheetTable extends StatefulWidget {
 
   final User _user;
+  final RiskProcedure _riskProcedure;
+  final String _fmeaTableGroupId;
+  final List<FMEATable> _fmeaTableList;
+  final Function(Map<String, dynamic>) _saveCallback;
+  final Function(Map<String, dynamic>) _removeCallback;
 
-  FMEASpreadsheetTable(this._user);
+  FMEASpreadsheetTable(this._user, this._riskProcedure, this._fmeaTableGroupId, this._fmeaTableList, this._saveCallback, this._removeCallback);
 
   @override
   State<StatefulWidget> createState() {
@@ -27,9 +30,7 @@ class FMEASpreadsheetTable extends StatefulWidget {
 
 class FMEASpreadsheetTableState extends State<FMEASpreadsheetTable> {
 
-  final FMEATableListBloc _fmeaTableListBloc = FMEATableListBloc();
-
-  List<FMEATable> _listFMEATables = List();
+  List<FMEATable> _listFMEATables;
 
   List<RiskProcedure> _listRiskProcedures = List();
   //key: riskProcedureId
@@ -49,13 +50,79 @@ class FMEASpreadsheetTableState extends State<FMEASpreadsheetTable> {
 
   Map<String, String> _textFieldContentMap = {};
 
-  RiskProcedure _selectedRP;
-
   @override
   void initState() {
     super.initState();
-    _fmeaTableListBloc.getAllFMEATable();
+    // _fmeaTableListBloc.getAllFMEATable();
+    _initFMEATableList();
     _initRiskProcedures();
+  }
+
+  void _initFMEATableList() {
+    List<FMEATable> listFMEATables = new List<FMEATable>.from(widget._fmeaTableList);
+    List<RiskProcedureItem> sevrityList = widget._riskProcedure.severity??[];
+    List<RiskProcedureItem> probabilityList = widget._riskProcedure.probability??[];
+    Map<String, Map<String, dynamic>> severityToLevelMap = {};
+    Map<String, Map<String, dynamic>> probabilityToLevelMap = {};
+    sevrityList.asMap().forEach((key, value) {
+      severityToLevelMap[value.name] = {
+        "level" : value.level,
+        "isUsed" : false
+      };
+    });
+    probabilityList.asMap().forEach((key, value) {
+      probabilityToLevelMap[value.name] = {
+        "level" : value.level,
+        "isUsed" : false
+      };
+    });
+
+    listFMEATables.asMap().forEach((key, value) {
+      FMEATable fmeaTable = value;
+      String severityOfHarm = fmeaTable.severityOfHarm;
+      String probability = fmeaTable.probability;
+      String severityOfHarm2 = fmeaTable.severityOfHarm2;
+      String probability2 = fmeaTable.probability2;
+      severityToLevelMap[severityOfHarm]["isUsed"] = true;
+      severityToLevelMap[severityOfHarm2]["isUsed"] = true;
+      probabilityToLevelMap[probability]["isUsed"] = true;
+      probabilityToLevelMap[probability2]["isUsed"] = true;
+    });
+
+    severityToLevelMap.forEach((severityKey, severityValue) {
+      var isSeverityUsed = severityValue["isUsed"];
+      String severityLevel = severityValue["level"]??"1";
+      probabilityToLevelMap.forEach((probabilityKey, probabilityValue) {
+        var isProbabilityUsed = probabilityValue["isUsed"];
+        String probabilityLevel = probabilityValue["level"]??"1";
+        int numberRiskPriority = int.parse(severityLevel) * int.parse(probabilityLevel);
+
+        if (!isSeverityUsed || !isProbabilityUsed) {
+          listFMEATables.add(
+            FMEATable(
+              hazardId: BaseUtil.getCurrentTimestamp(),
+              hazardClass: "",
+              sourceId: "",
+              foreseeableSequenceOfEvents: "",
+              hazardousSituation: "",
+              harm: "",
+              severityOfHarm: severityKey,
+              probability: probabilityKey,
+              riskPriority: numberRiskPriority.toString(),
+              recommendingAction: "",
+              typeOfAction: "",
+              actionDone: "",
+              severityOfHarm2: severityKey,
+              probability2: probabilityKey,
+              residualRisk: numberRiskPriority.toString(),
+              selectedRPId: ""
+            )
+          );
+        }
+      });
+    });
+
+    _listFMEATables = listFMEATables;
   }
 
   void _initRiskProcedures() {
@@ -74,7 +141,7 @@ class FMEASpreadsheetTableState extends State<FMEASpreadsheetTable> {
   @override
   void dispose() {
     super.dispose();
-    _fmeaTableListBloc.dispose();
+    // _fmeaTableListBloc.dispose();
   }
 
   _addAnEmptyFMEATable() async {
@@ -96,8 +163,7 @@ class FMEASpreadsheetTableState extends State<FMEASpreadsheetTable> {
       residualRisk: "",
       selectedRPId: "",
     );
-    _fmeaTableListBloc.addAFMEATable(fmeaTable);
-    // _fmeaTableListBloc.getAllFMEATable();
+    // _fmeaTableListBloc.addAFMEATable(fmeaTable);
   }
 
   _saveInputtedFMEATable(BuildContext context,FMEATable fmeaTable) async {
@@ -115,7 +181,7 @@ class FMEASpreadsheetTableState extends State<FMEASpreadsheetTable> {
     fmeaTable.severityOfHarm2             = _textFieldContentMap['severityOfHarm2' + fmeaTable.hazardId];
     fmeaTable.probability2                = _textFieldContentMap['probability2' + fmeaTable.hazardId];
     fmeaTable.residualRisk                = _textFieldContentMap['residualRisk' + fmeaTable.hazardId];
-    fmeaTable.selectedRPId                = _textFieldContentMap['selectedRPId' + fmeaTable.hazardId];
+    fmeaTable.selectedRPId                = widget._riskProcedure.riskProcedureId;
 
     // Map<String, dynamic> mapFMEATable = fmeaTable.toJson();
 
@@ -131,28 +197,22 @@ class FMEASpreadsheetTableState extends State<FMEASpreadsheetTable> {
     // });
 
     if(!isAnyFieldTEmpty) {
-      _fmeaTableListBloc.saveFMEATable(fmeaTable);
-      // _updateUI(context, fmeaTable);
+      // _fmeaTableListBloc.saveFMEATable(fmeaTable);
+      widget._saveCallback({
+        "fmeaTableGroupId" : widget._fmeaTableGroupId,
+        "fmeaTable" : fmeaTable
+      });
     } else {
       // SnackBarUtil.showSnackBar(context, emptyKey + " cannot be empty!!!");
     }
   }
 
   _removeFMEATable(BuildContext context, FMEATable fmeaTable) async {
-
-    _fmeaTableListBloc.deleteFMEATable(fmeaTable.hazardId);
-    // int index = -1;
-    // _expansionPanelContentList.asMap().forEach((listIndex, element) {
-    //   if(fmeaTable.hazardId.compareTo(element.fmeaTable.hazardId) == 0) {
-    //     index = listIndex;
-    //   }
-    // });
-    // setState(() {
-    //   if (index >= 0) {
-    //     _expansionPanelContentList.removeAt(index);
-    //   }
-    // });
-    // SnackBarUtil.showSnackBar(context, "remove FMEA Table successfully");
+    // _fmeaTableListBloc.deleteFMEATable(fmeaTable.hazardId);
+    widget._removeCallback({
+      "fmeaTableGroupId" : widget._fmeaTableGroupId,
+      "fmeaTable" : fmeaTable
+    });
   }
 
   _updateFMEATableByKey(String fmeaTableId, String fmeaTableKey, String fmeaTableValue) {
@@ -161,7 +221,7 @@ class FMEASpreadsheetTableState extends State<FMEASpreadsheetTable> {
         if (fmeaTableId.compareTo(itemTable.hazardId) == 0) {
           Map<String,dynamic> map = itemTable.toJson();
           map[fmeaTableKey] = fmeaTableValue;
-          _fmeaTableListBloc.updateFMEATable(map);
+          // _fmeaTableListBloc.updateFMEATable(map);
           break;
         }
     }
@@ -345,48 +405,11 @@ class FMEASpreadsheetTableState extends State<FMEASpreadsheetTable> {
     );
   }
 
-  selectARiskProcedureCallback(Map<String, dynamic> selectedValue) {
-    setState(() {
-      _selectedRP = selectedValue["riskProcedure"];
-    });
-    String fmeaTableId = selectedValue["id"]??"";
-    for (int i = 0; i < _listFMEATables.length; i++) {
-      FMEATable newTable = _listFMEATables[i];
-      if (fmeaTableId.compareTo(newTable.hazardId) == 0) {
-        newTable.selectedRPId = _selectedRP.riskProcedureId;
-        _fmeaTableListBloc.updateFMEATable(newTable.toJson());
-        break;
-      }
-    }
-  }
-
-  Widget _buildSelectARiskProcedure(String fmeaTableId) {
-    Map<String,MaterialColor> mapHarmToColor = {};
-    List<MaterialColor> listColors = [
-      Colors.lightBlue,
-      Colors.lightGreen,
-      Colors.teal
-    ];
-    int loopCount = 0;
-    _mapRiskProcedures.forEach((key, value) {
-      RiskProcedure riskProcedure = value;
-      String harm = riskProcedure.harm??"";
-      riskProcedure.harm = harm.length > 0 ? harm : "New Risk Procedure";
-      mapHarmToColor[riskProcedure.harm] = listColors.elementAt(loopCount % 2);
-      loopCount++;
-    });
-    return Column(
-      children: [
-        DropDownMenu(
-            Constants.dropdown_select_a_risk_procedure,
-            fmeaTableId,
-            _listRiskProcedures.elementAt(0).harm,
-            listColors.elementAt(0),
-            _listRiskProcedures,
-            mapHarmToColor,
-            selectARiskProcedureCallback
+  Widget _buildSelectARiskProcedure() {
+    return Container(
+        child: Center(
+          child: Text(widget._riskProcedure.harm, style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),),
         )
-      ],
     );
   }
 
@@ -436,7 +459,7 @@ class FMEASpreadsheetTableState extends State<FMEASpreadsheetTable> {
       } else if (fmeakey.compareTo("typeOfAction") == 0) {
         spreadSheetItemWidget = _buildTypeOfAction(fmeaTableId,fmeakey, fmeaValue);
       } else if (fmeakey.compareTo("selectARiskProcedure") == 0) {
-        spreadSheetItemWidget = _buildSelectARiskProcedure(fmeaTableId);
+        spreadSheetItemWidget = _buildSelectARiskProcedure();
       } else {
         if (fmeakey.compareTo("riskPriority") == 0) {
           spreadSheetItemWidget = _buildRiskPriorityOrResidualRisk(mapRiskEstimation, fmeaTableId, fmeakey, "severityOfHarm", "probability");
@@ -453,7 +476,7 @@ class FMEASpreadsheetTableState extends State<FMEASpreadsheetTable> {
   void _approveFMEATable(FMEATable table) {
     if (!table.acceptability) {
       table.acceptability = true;
-      _fmeaTableListBloc.saveFMEATable(table);
+      // _fmeaTableListBloc.saveFMEATable(table);
     }
   }
 
@@ -473,12 +496,22 @@ class FMEASpreadsheetTableState extends State<FMEASpreadsheetTable> {
     String fmeaTableId;
     Map<String,dynamic> mapFMEATable = {};
     FMEATable fmeaTable = FMEATable();
+    var itemBgColor;
     if (passedIndex > 0) {
       fmeaTable = ftList.elementAt(passedIndex - 1)??FMEATable();
       fmeaTableId = fmeaTable.hazardId;
-      String rpId = fmeaTable.selectedRPId??"";
-      _selectedRP = rpId.length > 0 ? _mapRiskProcedures[rpId] : _listRiskProcedures[0];
       mapFMEATable = fmeaTable.toJson();
+      if (fmeaTable.selectedRPId.isEmpty) {
+        itemBgColor = Colors.deepPurple;
+      } else {
+        if (passedIndex % 2 == 0) {
+          itemBgColor = Colors.grey[400];
+        } else {
+          itemBgColor = Colors.white;
+        }
+      }
+    } else {
+      itemBgColor = Colors.grey[400];
     }
 
     int listSubTitleLength = listSubTitleKeys.length;
@@ -486,13 +519,8 @@ class FMEASpreadsheetTableState extends State<FMEASpreadsheetTable> {
     int saveIndex = listSubTitleLength;
     int removeIndex = listSubTitleLength + 1;
     int approveIndex = listSubTitleLength + 2;
+    
     return List.generate(columnCount, (currentGenIndex) {
-      var itemBgColor;
-      if (passedIndex % 2 == 0) {
-        itemBgColor = Colors.grey[400];
-      } else {
-        itemBgColor = Colors.white;
-      }
 
       Widget itemWidget;
       double itemWidth;
@@ -508,7 +536,7 @@ class FMEASpreadsheetTableState extends State<FMEASpreadsheetTable> {
           String curFMEAValue = mapFMEATable[key];
           textContent = mapFMEATable[key]??"";
           textFontWeight = FontWeight.normal;
-          itemWidget = _buildSpreadsheetItemWidget(_selectedRP, fmeaTableId, key, curFMEAValue);
+          itemWidget = _buildSpreadsheetItemWidget(widget._riskProcedure, fmeaTableId, key, curFMEAValue);
         }
         itemWidth = listContentWidth[currentGenIndex];
       } else if (currentGenIndex == saveIndex){
@@ -557,7 +585,7 @@ class FMEASpreadsheetTableState extends State<FMEASpreadsheetTable> {
     });
   }
 
-  List<Widget> _buildTableRows(BuildContext context) {
+  List<Widget> _buildTableRows() {
 
     return List<Widget>.generate(_listFMEATables.length + 1, (rowIndex) {
       return Row(
@@ -574,7 +602,7 @@ class FMEASpreadsheetTableState extends State<FMEASpreadsheetTable> {
           _addAnEmptyFMEATable();
         },
         color:  Color(0xFF50AFC0),
-        child: Text("Add A Column", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: 20)),
+        child: Text("Add A Row", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: 20)),
       ),
     );
   }
@@ -584,10 +612,10 @@ class FMEASpreadsheetTableState extends State<FMEASpreadsheetTable> {
       padding: EdgeInsets.fromLTRB(5, 0, 0, 10),
       child: RaisedButton(
         onPressed: () {
-          String url = Constants.download_report_url;
-          html.AnchorElement anchorElement =  new html.AnchorElement(href: url);
-          anchorElement.download = url;
-          anchorElement.click();
+          // String url = Constants.download_report_url;
+          // html.AnchorElement anchorElement =  new html.AnchorElement(href: url);
+          // anchorElement.download = url;
+          // anchorElement.click();
         },
         color:  Color(0xFF50AFC0),
         child: Text("Download Report", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: 20)),
@@ -603,8 +631,8 @@ class FMEASpreadsheetTableState extends State<FMEASpreadsheetTable> {
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _buildAddButton(context),
-              _buildDownloadReportButton(),
+              // _buildAddButton(context),
+              // _buildDownloadReportButton(),
             ],
           ),
           Row(
@@ -613,26 +641,16 @@ class FMEASpreadsheetTableState extends State<FMEASpreadsheetTable> {
               Flexible(
                 child: SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
-                  child: BlocProvider<FMEATableListBloc>(
-                    bloc: _fmeaTableListBloc,
-                    child: StreamBuilder(
-                      stream: _fmeaTableListBloc.fmeaTableListStream,
-                      builder: (context, snapshot) {
-                        _listFMEATables = snapshot.data;
-                        if (_listFMEATables == null) {
-                          return SizedBox.shrink();
-                        } else {
-                          return Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: _buildTableRows(context),
-                          );
-                        }
-                      },
-                    ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: _buildTableRows(),
                   ),
                 ),
               )
             ],
+          ),
+          Container(
+            height: 50,
           ),
         ],
       ),

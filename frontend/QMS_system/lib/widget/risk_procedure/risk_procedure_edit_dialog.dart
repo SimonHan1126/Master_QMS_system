@@ -2,6 +2,8 @@ import 'package:QMS_system/bloc/bloc_provider.dart';
 import 'package:QMS_system/bloc/risk_procedure_bloc.dart';
 import 'package:QMS_system/constant/constants.dart';
 import 'package:QMS_system/model/risk_procedure.dart';
+import 'package:QMS_system/observe/risk_procedure_observer.dart';
+import 'package:QMS_system/util/risk_procedure_data.dart';
 import 'package:QMS_system/widget/risk_procedure/risk_estimation_table.dart';
 import 'package:flutter/material.dart';
 
@@ -33,6 +35,15 @@ class RiskProcedureEditDialogState extends State<RiskProcedureEditDialog> {
   void dispose() {
     super.dispose();
     _riskProcedureBloc.dispose();
+  }
+
+  void _riskProcedureSeverityOrProbabilityUpdate(String rpKey, String riskProcedureId, String rpKeyId) {
+    print("_riskProcedureSeverityOrProbabilityUpdate " + rpKey);
+    if (rpKey.compareTo("severity") == 0) {
+      RiskProcedureData.setIsSeverityBeModifiedMap(riskProcedureId, rpKeyId);
+    } else if (rpKey.compareTo("probability") == 0) {
+      RiskProcedureData.setIsProbabilityBeModifiedMap(riskProcedureId, rpKeyId);
+    }
   }
 
   Widget _buildSubExpansionPanel(String riskProcedureId, String rpKey, var rpValue) {
@@ -71,6 +82,7 @@ class RiskProcedureEditDialogState extends State<RiskProcedureEditDialog> {
         RiskProcedureItem item = RiskProcedureItem.fromJson(rpValue[i]);
         String name = item.name ?? "";
         String level = item.level ?? "";
+        String id = item.id ?? "";
 
         InputDecoration inputDecorationName;
         InputDecoration inputDecorationLevel;
@@ -94,29 +106,26 @@ class RiskProcedureEditDialogState extends State<RiskProcedureEditDialog> {
           );
         }
 
-        rowList.add(
-            Row(
-              children: <Widget>[
-                Expanded(
-                  child: TextFormField(
-                      onChanged: (String value) async {
-                        _riskProcedureBloc.updateOneItemForRiskProcedure(riskProcedureId, rpKey, "name", value, i);
-                        _riskProcedureBloc.updateOneItemForRiskProcedure(riskProcedureId, rpKey + "Description", "name", value, i);
-                      },
-                      decoration: inputDecorationName
-                  ),
-                ),
-                Expanded(
-                  child: TextFormField(
-                      onChanged: (String value) async {
-                        _riskProcedureBloc.updateOneItemForRiskProcedure(riskProcedureId, rpKey, "level", value, i);
-                      },
-                      decoration: inputDecorationLevel
-                  ),
-                ),
-              ],
-            )
-        );
+        rowList.add(Row(
+          children: <Widget>[
+            Expanded(
+              child: TextFormField(
+                onChanged: (String value) async {
+                  _riskProcedureSeverityOrProbabilityUpdate(rpKey, riskProcedureId, id);
+                  _riskProcedureBloc.updateOneItemForRiskProcedure(riskProcedureId, rpKey, "name", value, i);
+                  _riskProcedureBloc.updateOneItemForRiskProcedure(riskProcedureId, rpKey + "Description", "name", value, i);
+                },
+                decoration: inputDecorationName),
+            ),
+            Expanded(
+              child: TextFormField(
+                  onChanged: (String value) async {
+                    _riskProcedureBloc.updateOneItemForRiskProcedure(riskProcedureId, rpKey, "level", value, i);
+                  },
+                  decoration: inputDecorationLevel),
+            ),
+          ],
+        ));
       }
     } else {
       listTitleButtons = List();

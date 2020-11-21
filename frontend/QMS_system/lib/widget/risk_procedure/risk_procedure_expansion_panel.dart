@@ -3,6 +3,7 @@ import 'package:QMS_system/bloc/risk_procedure_list_bloc.dart';
 import 'package:QMS_system/constant/constants.dart';
 import 'package:QMS_system/model/risk_procedure.dart';
 import 'package:QMS_system/model/user.dart';
+import 'package:QMS_system/observe/risk_procedure_observer.dart';
 import 'package:QMS_system/util/base_util.dart';
 import 'package:QMS_system/util/risk_procedure_data.dart';
 import 'package:QMS_system/util/snackbar_util.dart';
@@ -32,7 +33,6 @@ class RiskProcedureExpansionPanelWidgetState extends State<RiskProcedureExpansio
     super.initState();
     _rpListBloc.getAllRiskProcedure();
   }
-
 
   @override
   void dispose() {

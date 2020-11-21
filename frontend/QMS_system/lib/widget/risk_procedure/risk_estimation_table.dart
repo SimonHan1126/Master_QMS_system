@@ -53,13 +53,13 @@ class _RiskEstimationTableState extends State<RiskEstimationTable> {
         String riskLevel = mapRiskEstimation[riskLevelKey]??Constants.list_severity_probability_level[0];
         if (widget._isShowDropdownMenu) {
           itemWidget =  DropDownMenu(
-              Constants.dropdown_tag_risk_procedure,
-              widget._riskProcedure.riskProcedureId,
-              riskLevel,
-              Colors.green,
-              rpiList,
-              Constants.map_severity_probability_level_to_color,
-              callback);
+            Constants.dropdown_tag_risk_procedure,
+            widget._riskProcedure.riskProcedureId,
+            riskLevel,
+            Colors.green,
+            rpiList,
+            Constants.map_severity_probability_level_to_color,
+            callback);
         } else {
           itemWidget = Text(riskLevel, style: TextStyle(backgroundColor: Constants.map_severity_probability_level_to_color[riskLevel]));
         }

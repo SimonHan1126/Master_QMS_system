@@ -1,4 +1,5 @@
 import 'package:QMS_system/model/user.dart';
+import 'package:QMS_system/observe/risk_procedure_observer.dart';
 import 'package:QMS_system/widget/risk_procedure/risk_procedure_expansion_panel.dart';
 import 'package:QMS_system/widget/common/sub_page_title.dart';
 import 'package:flutter/material.dart';
@@ -27,6 +28,12 @@ class _RiskProcedurePageState extends State<RiskProcedurePage> {
         ),
       ),
     );
+  }
+
+
+  @override
+  void initState() {
+    super.initState();
   }
 
   @override
